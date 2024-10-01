@@ -5,9 +5,10 @@ import { Runner } from '@pixi/runner';
 export default class Button extends PIXI.Container {
   private view: PIXI.Sprite;
   private isPressed: boolean;
-  private runner: Runner;
+  
+  public runner: Runner;
 
-  constructor(textureName) {
+  constructor(textureName: string) {
     super();
 
     this.view = null;
@@ -18,11 +19,11 @@ export default class Button extends PIXI.Container {
     this._init(textureName);
   }
 
-  _init(textureName) {
+  _init(textureName: string) {
     this._initView(textureName);
   }
 
-  _initView(textureName) {
+  _initView(textureName: string) {
     const texture = PIXI.Assets.get(textureName);
     const view = this.view = new PIXI.Sprite(texture);
     this.addChild(view);

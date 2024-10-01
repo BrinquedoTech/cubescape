@@ -1,5 +1,6 @@
 import * as THREE from 'three';
 import GameScene from './GameScene/GameScene';
+import { RotateDirection } from './Enums/RotateDirection';
 
 export default class Scene3D extends THREE.Group {
   private data: any;
@@ -17,7 +18,8 @@ export default class Scene3D extends THREE.Group {
     this.init();
   }
 
-  update(dt) {
+  public update(dt: number): void {
+    this.gameScene.update(dt);
   }
 
   onPointerMove(x, y) {
@@ -27,6 +29,10 @@ export default class Scene3D extends THREE.Group {
   }
 
   onPointerUp(x, y) {
+  }
+
+  public rotateCubeToDirection(rotateDirection: RotateDirection): void {
+    this.gameScene.rotateCubeToDirection(rotateDirection);
   }
 
 

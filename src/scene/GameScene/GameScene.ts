@@ -3,6 +3,7 @@ import Cube from './Cube/Cube';
 import LevelsConfig from '../Configs/LevelsConfig';
 import { ILevelConfig } from '../Interfaces/ILevelConfig';
 import PlayCharacter from './PlayCharacter/PlayCharacter';
+import { RotateDirection } from '../Enums/RotateDirection';
 
 export default class GameScene extends THREE.Group {
   private cube: Cube;
@@ -17,7 +18,9 @@ export default class GameScene extends THREE.Group {
   }
 
   public update(dt: number): void {
-    
+    if (this.cube) {
+      this.cube.update(dt);
+    }
   }
 
   public startLevel(levelId: number): void {
@@ -25,6 +28,10 @@ export default class GameScene extends THREE.Group {
 
     this.cube.init(levelConfig);
     this.playCharacter.init(levelConfig);
+  }
+
+  public rotateCubeToDirection(rotateDirection: RotateDirection): void {
+    this.cube.rotateToDirection(rotateDirection);
   }
 
   private init(): void {
@@ -39,6 +46,6 @@ export default class GameScene extends THREE.Group {
 
   private initPlayCharacter(): void {
     const playCharacter = this.playCharacter = new PlayCharacter();
-    this.add(playCharacter);
+    this.cube.add(playCharacter);
   }
 }

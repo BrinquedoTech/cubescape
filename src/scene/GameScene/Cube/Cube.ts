@@ -5,16 +5,48 @@ import VertexConfig from '../../Configs/VertexConfig';
 import { EdgeAxisConfig, EdgeDistanceConfig } from '../../Configs/EdgeConfig';
 import { CubeSurfaceAxisConfig, SurfaceDistanceConfig } from '../../Configs/SurfaceConfig';
 import { IEdgeAxisConfig, ICubeSurfaceAxisConfig } from '../../Interfaces/ICubeConfig';
+import { RotateDirection } from '../../Enums/RotateDirection';
 
 export default class Cube extends THREE.Group {
   private levelConfig: ILevelConfig;
+  private rotationDirection: RotateDirection;
+  private rotationProgress: number = 0;
+  private rotationSpeed: number = 2;
+  private isRotating: boolean;
 
   constructor() {
     super();
   }
 
   public update(dt: number): void {
+    if (this.isRotating) {
+      this.rotationProgress += dt * this.rotationSpeed;
 
+      if (this.rotationProgress >= 1) {
+        this.isRotating = false;
+        this.rotationProgress = 0;
+        this.rotationDirection = null;
+
+        this.rotation.x = Math.round(this.rotation.x / (Math.PI * 0.5)) * Math.PI * 0.5;
+        this.rotation.y = Math.round(this.rotation.y / (Math.PI * 0.5)) * Math.PI * 0.5;
+        this.rotation.z = Math.round(this.rotation.z / (Math.PI * 0.5)) * Math.PI * 0.5;        
+      }
+
+      switch (this.rotationDirection) {
+        case RotateDirection.Right:
+          this.rotateOnWorldAxis(new THREE.Vector3(0, 1, 0), -Math.PI * 0.5 * dt * this.rotationSpeed);
+          break;
+        case RotateDirection.Left:
+          this.rotateOnWorldAxis(new THREE.Vector3(0, 1, 0), Math.PI * 0.5 * dt * this.rotationSpeed);
+          break;
+        case RotateDirection.Up:
+          this.rotateOnWorldAxis(new THREE.Vector3(1, 0, 0), Math.PI * 0.5 * dt * this.rotationSpeed);
+          break;
+        case RotateDirection.Down:
+          this.rotateOnWorldAxis(new THREE.Vector3(1, 0, 0), -Math.PI * 0.5 * dt * this.rotationSpeed);
+          break
+      }
+    }
   }
 
   public init(levelConfig: ILevelConfig): void {
@@ -26,6 +58,23 @@ export default class Cube extends THREE.Group {
     this.initEdges();
     this.initSurfaces();
   }
+
+  public rotateToDirection(rotateDirection: RotateDirection): void {
+    if (this.isRotating) {
+      return;
+    }
+
+    this.isRotating = true;
+    this.rotationDirection = rotateDirection;
+  }
+
+  // public rotateClockwise(): void {
+
+  // }
+
+  // public rotateCounterClockwise(): void {
+
+  // }
 
   private removeCube(): void {
 

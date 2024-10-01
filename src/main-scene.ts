@@ -1,6 +1,6 @@
+import { RotateDirection } from "./scene/Enums/RotateDirection";
 import Scene3D from "./scene/scene3d";
 import UI from "./ui/ui";
-
 
 export default class MainScene {
   private data: any;
@@ -41,7 +41,36 @@ export default class MainScene {
   }
 
   _initSignals() {
+    this.ui.runner.rotateRight.add({
+      rotateRight: () => {
+        this.scene3D.rotateCubeToDirection(RotateDirection.Right);
+        console.log('rotateRight');
+      }
+    });
 
+    this.ui.runner.rotateLeft.add({
+      rotateLeft: () => {
+        this.scene3D.rotateCubeToDirection(RotateDirection.Left);
+        console.log('rotateLeft');
+      }
+    });
+
+    this.ui.runner.rotateUp.add({
+      rotateUp: () => {
+        this.scene3D.rotateCubeToDirection(RotateDirection.Up);
+        console.log('rotateUp');
+      }
+    });
+
+    this.ui.runner.rotateDown.add({
+      rotateDown: () => {
+        this.scene3D.rotateCubeToDirection(RotateDirection.Down);
+        console.log('rotateDown');
+      }
+    });
+
+
+    // this._ui.on('onPointerMove', (msg, x, y) => this._scene3D.onPointerMove(x, y));
     // this._ui.on('onPointerMove', (msg, x, y) => this._scene3D.onPointerMove(x, y));
     // this._ui.on('onPointerDown', (msg, x, y) => this._scene3D.onPointerDown(x, y));
     // this._ui.on('onPointerUp', (msg, x, y) => this._scene3D.onPointerUp(x, y));

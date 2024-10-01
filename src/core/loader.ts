@@ -11,7 +11,11 @@ const models = [
 ];
 
 const pixiAssets = [
-  'assets/btn_spin_up.png'
+  'assets/btn_spin_up.png',
+  'assets/arrow-right.png',
+  'assets/arrow-left.png',
+  'assets/arrow-up.png',
+  'assets/arrow-down.png',
 ];
 
 const loadingPercentElement = document.querySelector('.loading-percent');
