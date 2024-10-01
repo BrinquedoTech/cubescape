@@ -1,4 +1,12 @@
+import * as THREE from 'three';
+import { CubeSide } from "../Enums/CubeSide";
+
 export interface ILevelConfig {
+  playCharacter: {
+    position: THREE.Vector2;
+    direction: number;
+    surface: CubeSide;
+  };
   size: number;
   map: {
     surfaces: ILevelMapConfig;

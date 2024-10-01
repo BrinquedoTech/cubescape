@@ -6,7 +6,7 @@ export interface IEdgeAxisConfig {
   axis: string;
 }
 
-export interface ISurfaceAxisConfig {
+export interface ICubeSurfaceAxisConfig {
   side: CubeSide;
   configIndex: number;
   xAxis: string;
