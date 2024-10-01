@@ -1,0 +1,67 @@
+import * as PIXI from 'pixi.js';
+import TWEEN from 'three/addons/libs/tween.module.js';
+import { Runner } from '@pixi/runner';
+
+export default class Button extends PIXI.Container {
+  private view: PIXI.Sprite;
+  private isPressed: boolean;
+  private runner: Runner;
+
+  constructor(textureName) {
+    super();
+
+    this.view = null;
+    this.isPressed = false;
+
+    this.runner = new Runner('click');
+
+    this._init(textureName);
+  }
+
+  _init(textureName) {
+    this._initView(textureName);
+  }
+
+  _initView(textureName) {
+    const texture = PIXI.Assets.get(textureName);
+    const view = this.view = new PIXI.Sprite(texture);
+    this.addChild(view);
+
+    view.anchor.set(0.5);
+
+    view.eventMode = 'static';
+    view.cursor  = 'pointer';
+
+    view.on('pointerdown', () => {
+      this.isPressed = true;
+      this._onScaleIn();
+    });
+
+    view.on('pointerup', () => {
+      this.isPressed = false;
+      this.runner.emit();
+      this._onScaleOut();
+    });
+
+    view.on('pointerout', () => {
+      if (this.isPressed) {
+        this.isPressed = false;
+        this._onScaleOut();
+      }
+    });
+  }
+
+  _onScaleIn() {
+    new TWEEN.Tween(this.scale)
+      .to({ x: 0.97, y: 0.97 }, 100)
+      .easing(TWEEN.Easing.Sinusoidal.In)
+      .start();
+  }
+
+  _onScaleOut() {
+    new TWEEN.Tween(this.scale)
+      .to({ x: 1, y: 1 }, 100)
+      .easing(TWEEN.Easing.Sinusoidal.Out)
+      .start();
+  }
+}
