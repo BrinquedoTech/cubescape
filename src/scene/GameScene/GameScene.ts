@@ -3,7 +3,7 @@ import Cube from './Cube/Cube';
 import LevelsConfig from '../Configs/LevelsConfig';
 import { ILevelConfig } from '../Interfaces/ILevelConfig';
 import PlayCharacter from './PlayCharacter/PlayCharacter';
-import { RotateDirection } from '../Enums/RotateDirection';
+import { RotateDirection, TurnDirection } from '../Enums/RotateDirection';
 
 export default class GameScene extends THREE.Group {
   private cube: Cube;
@@ -30,8 +30,12 @@ export default class GameScene extends THREE.Group {
     this.playCharacter.init(levelConfig);
   }
 
-  public rotateCubeToDirection(rotateDirection: RotateDirection): void {
+  public rotateCube(rotateDirection: RotateDirection): void {
     this.cube.rotateToDirection(rotateDirection);
+  }
+
+  public turnCube(turnDirection: TurnDirection): void {
+    this.cube.turn(turnDirection);
   }
 
   private init(): void {

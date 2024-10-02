@@ -4,3 +4,8 @@ export enum RotateDirection {
   Left = 'LEFT',
   Right = 'RIGHT',
 }
+
+export enum TurnDirection {
+  Clockwise = 'CLOCKWISE',
+  CounterClockwise = 'COUNTERCLOCKWISE',
+}

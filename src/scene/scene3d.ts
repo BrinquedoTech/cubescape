@@ -1,12 +1,12 @@
 import * as THREE from 'three';
 import GameScene from './GameScene/GameScene';
-import { RotateDirection } from './Enums/RotateDirection';
+import { RotateDirection, TurnDirection } from './Enums/RotateDirection';
 
 export default class Scene3D extends THREE.Group {
   private data: any;
   private scene: any;
   private camera: any;
-  private gameScene: any;
+  private gameScene: GameScene;
 
   constructor(data) {
     super();
@@ -32,9 +32,12 @@ export default class Scene3D extends THREE.Group {
   }
 
   public rotateCubeToDirection(rotateDirection: RotateDirection): void {
-    this.gameScene.rotateCubeToDirection(rotateDirection);
+    this.gameScene.rotateCube(rotateDirection);
   }
 
+  public turnCubeToDirection(turnDirection: TurnDirection): void {
+    this.gameScene.turnCube(turnDirection);
+  }
 
   private init(): void {
     this.gameScene = new GameScene();

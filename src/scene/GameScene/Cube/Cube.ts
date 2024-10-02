@@ -5,48 +5,34 @@ import VertexConfig from '../../Configs/VertexConfig';
 import { EdgeAxisConfig, EdgeDistanceConfig } from '../../Configs/EdgeConfig';
 import { CubeSurfaceAxisConfig, SurfaceDistanceConfig } from '../../Configs/SurfaceConfig';
 import { IEdgeAxisConfig, ICubeSurfaceAxisConfig } from '../../Interfaces/ICubeConfig';
-import { RotateDirection } from '../../Enums/RotateDirection';
+import { RotateDirection, TurnDirection } from '../../Enums/RotateDirection';
+import RotateWithEasingHelper from './RotateWithEasingHelper';
+
 
 export default class Cube extends THREE.Group {
   private levelConfig: ILevelConfig;
-  private rotationDirection: RotateDirection;
-  private rotationProgress: number = 0;
-  private rotationSpeed: number = 2;
-  private isRotating: boolean;
+  private rotateWithEasingHelper: RotateWithEasingHelper;
 
   constructor() {
     super();
+
+    this.initRotateWithEasingHelper();
   }
 
   public update(dt: number): void {
-    if (this.isRotating) {
-      this.rotationProgress += dt * this.rotationSpeed;
+    this.rotateWithEasingHelper.update(dt);
+  }
 
-      if (this.rotationProgress >= 1) {
-        this.isRotating = false;
-        this.rotationProgress = 0;
-        this.rotationDirection = null;
+  public rotateToDirection(rotateDirection: RotateDirection): void {
+    this.rotateWithEasingHelper.rotateToDirection(rotateDirection);
+  }
 
-        this.rotation.x = Math.round(this.rotation.x / (Math.PI * 0.5)) * Math.PI * 0.5;
-        this.rotation.y = Math.round(this.rotation.y / (Math.PI * 0.5)) * Math.PI * 0.5;
-        this.rotation.z = Math.round(this.rotation.z / (Math.PI * 0.5)) * Math.PI * 0.5;        
-      }
+  public turn(turnDirection: TurnDirection): void {
+    this.rotateWithEasingHelper.turn(turnDirection);
+  }
 
-      switch (this.rotationDirection) {
-        case RotateDirection.Right:
-          this.rotateOnWorldAxis(new THREE.Vector3(0, 1, 0), -Math.PI * 0.5 * dt * this.rotationSpeed);
-          break;
-        case RotateDirection.Left:
-          this.rotateOnWorldAxis(new THREE.Vector3(0, 1, 0), Math.PI * 0.5 * dt * this.rotationSpeed);
-          break;
-        case RotateDirection.Up:
-          this.rotateOnWorldAxis(new THREE.Vector3(1, 0, 0), Math.PI * 0.5 * dt * this.rotationSpeed);
-          break;
-        case RotateDirection.Down:
-          this.rotateOnWorldAxis(new THREE.Vector3(1, 0, 0), -Math.PI * 0.5 * dt * this.rotationSpeed);
-          break
-      }
-    }
+  private initRotateWithEasingHelper(): void {
+    this.rotateWithEasingHelper = new RotateWithEasingHelper(this);
   }
 
   public init(levelConfig: ILevelConfig): void {
@@ -58,23 +44,6 @@ export default class Cube extends THREE.Group {
     this.initEdges();
     this.initSurfaces();
   }
-
-  public rotateToDirection(rotateDirection: RotateDirection): void {
-    if (this.isRotating) {
-      return;
-    }
-
-    this.isRotating = true;
-    this.rotationDirection = rotateDirection;
-  }
-
-  // public rotateClockwise(): void {
-
-  // }
-
-  // public rotateCounterClockwise(): void {
-
-  // }
 
   private removeCube(): void {
 

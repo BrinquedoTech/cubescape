@@ -1,5 +1,5 @@
 import * as PIXI from 'pixi.js';
-import Button from './button';
+import Button from './Button';
 import { Runner } from '@pixi/runner';
 
 export default class UI extends PIXI.Container {
@@ -7,19 +7,21 @@ export default class UI extends PIXI.Container {
   private buttonRotateLeft: Button;
   private buttonRotateUp: Button;
   private buttonRotateDown: Button;
+  private buttonRotateClockwise: Button;
+  private buttonRotateCounterClockwise: Button;
 
   public runner: any;
 
   constructor() {
     super();
 
-    this.buttonRotateRight = null;
-
     this.runner = {
       'rotateRight': new Runner('rotateRight'),
       'rotateLeft': new Runner('rotateLeft'),
       'rotateUp': new Runner('rotateUp'),
       'rotateDown': new Runner('rotateDown'),
+      'rotateClockwise': new Runner('rotateClockwise'),
+      'rotateCounterClockwise': new Runner('rotateCounterClockwise'),
     };
 
     this._init();
@@ -40,6 +42,12 @@ export default class UI extends PIXI.Container {
 
     this.buttonRotateDown.x = width * 0.5;
     this.buttonRotateDown.y = height * 0.5 + 350;
+
+    this.buttonRotateClockwise.x = width * 0.5 + 350;
+    this.buttonRotateClockwise.y = height * 0.5 - 350;
+
+    this.buttonRotateCounterClockwise.x = width * 0.5 - 350;
+    this.buttonRotateCounterClockwise.y = height * 0.5 - 350;
   }
 
   _init() {
@@ -76,6 +84,24 @@ export default class UI extends PIXI.Container {
     buttonRotateDown.runner.add({
       click: () => {
         this.runner.rotateDown.emit('rotateDown');
+      }
+    });
+
+    const buttonRotateClockwise = this.buttonRotateClockwise = new Button('assets/arrow-clockwise.png');
+    this.addChild(buttonRotateClockwise);
+
+    buttonRotateClockwise.runner.add({
+      click: () => {
+        this.runner.rotateClockwise.emit('rotateClockwise');
+      }
+    });
+
+    const buttonRotateCounterClockwise = this.buttonRotateCounterClockwise = new Button('assets/arrow-counter-clockwise.png');
+    this.addChild(buttonRotateCounterClockwise);
+
+    buttonRotateCounterClockwise.runner.add({
+      click: () => {
+        this.runner.rotateCounterClockwise.emit('rotateCounterClockwise');
       }
     });
   }

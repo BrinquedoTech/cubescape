@@ -1,6 +1,6 @@
-import { RotateDirection } from "./scene/Enums/RotateDirection";
+import { RotateDirection, TurnDirection } from "./scene/Enums/RotateDirection";
 import Scene3D from "./scene/scene3d";
-import UI from "./ui/ui";
+import UI from "./ui/UI";
 
 export default class MainScene {
   private data: any;
@@ -41,33 +41,14 @@ export default class MainScene {
   }
 
   _initSignals() {
-    this.ui.runner.rotateRight.add({
-      rotateRight: () => {
-        this.scene3D.rotateCubeToDirection(RotateDirection.Right);
-        console.log('rotateRight');
-      }
-    });
+    this.ui.runner.rotateRight.add({ rotateRight: () => this.scene3D.rotateCubeToDirection(RotateDirection.Right) });
+    this.ui.runner.rotateLeft.add({ rotateLeft: () => this.scene3D.rotateCubeToDirection(RotateDirection.Left) });
+    this.ui.runner.rotateUp.add({ rotateUp: () => this.scene3D.rotateCubeToDirection(RotateDirection.Up) });
+    this.ui.runner.rotateDown.add({ rotateDown: () => this.scene3D.rotateCubeToDirection(RotateDirection.Down) });
+    this.ui.runner.rotateClockwise.add({ rotateClockwise: () => this.scene3D.turnCubeToDirection(TurnDirection.Clockwise) });
+    this.ui.runner.rotateCounterClockwise.add({ rotateCounterClockwise: () => this.scene3D.turnCubeToDirection(TurnDirection.CounterClockwise) });
 
-    this.ui.runner.rotateLeft.add({
-      rotateLeft: () => {
-        this.scene3D.rotateCubeToDirection(RotateDirection.Left);
-        console.log('rotateLeft');
-      }
-    });
-
-    this.ui.runner.rotateUp.add({
-      rotateUp: () => {
-        this.scene3D.rotateCubeToDirection(RotateDirection.Up);
-        console.log('rotateUp');
-      }
-    });
-
-    this.ui.runner.rotateDown.add({
-      rotateDown: () => {
-        this.scene3D.rotateCubeToDirection(RotateDirection.Down);
-        console.log('rotateDown');
-      }
-    });
+    
 
 
     // this._ui.on('onPointerMove', (msg, x, y) => this._scene3D.onPointerMove(x, y));
