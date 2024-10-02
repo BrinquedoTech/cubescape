@@ -6,33 +6,33 @@ import { EdgeAxisConfig, EdgeDistanceConfig } from '../../Configs/EdgeConfig';
 import { CubeSurfaceAxisConfig, SurfaceDistanceConfig } from '../../Configs/SurfaceConfig';
 import { IEdgeAxisConfig, ICubeSurfaceAxisConfig } from '../../Interfaces/ICubeConfig';
 import { RotateDirection, TurnDirection } from '../../Enums/RotateDirection';
-import RotateWithEasingHelper from './RotateWithEasingHelper';
+import CubeRotateController from './CubeRotateController';
 
 
 export default class Cube extends THREE.Group {
   private levelConfig: ILevelConfig;
-  private rotateWithEasingHelper: RotateWithEasingHelper;
+  private cubeRotateController: CubeRotateController;
 
   constructor() {
     super();
 
-    this.initRotateWithEasingHelper();
+    this.initCubeRotateController();
   }
 
   public update(dt: number): void {
-    this.rotateWithEasingHelper.update(dt);
+    this.cubeRotateController.update(dt);
   }
 
   public rotateToDirection(rotateDirection: RotateDirection): void {
-    this.rotateWithEasingHelper.rotateToDirection(rotateDirection);
+    this.cubeRotateController.rotateToDirection(rotateDirection);
   }
 
   public turn(turnDirection: TurnDirection): void {
-    this.rotateWithEasingHelper.turn(turnDirection);
+    this.cubeRotateController.turn(turnDirection);
   }
 
-  private initRotateWithEasingHelper(): void {
-    this.rotateWithEasingHelper = new RotateWithEasingHelper(this);
+  private initCubeRotateController(): void {
+    this.cubeRotateController = new CubeRotateController(this);
   }
 
   public init(levelConfig: ILevelConfig): void {

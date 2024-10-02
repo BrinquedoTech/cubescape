@@ -41,14 +41,12 @@ export default class MainScene {
   }
 
   _initSignals() {
-    this.ui.runner.rotateRight.add({ rotateRight: () => this.scene3D.rotateCubeToDirection(RotateDirection.Right) });
-    this.ui.runner.rotateLeft.add({ rotateLeft: () => this.scene3D.rotateCubeToDirection(RotateDirection.Left) });
-    this.ui.runner.rotateUp.add({ rotateUp: () => this.scene3D.rotateCubeToDirection(RotateDirection.Up) });
-    this.ui.runner.rotateDown.add({ rotateDown: () => this.scene3D.rotateCubeToDirection(RotateDirection.Down) });
-    this.ui.runner.rotateClockwise.add({ rotateClockwise: () => this.scene3D.turnCubeToDirection(TurnDirection.Clockwise) });
-    this.ui.runner.rotateCounterClockwise.add({ rotateCounterClockwise: () => this.scene3D.turnCubeToDirection(TurnDirection.CounterClockwise) });
-
-    
+    this.ui.emitter.on('rotateRight', () => this.scene3D.rotateCubeToDirection(RotateDirection.Right));
+    this.ui.emitter.on('rotateLeft', () => this.scene3D.rotateCubeToDirection(RotateDirection.Left));
+    this.ui.emitter.on('rotateUp', () => this.scene3D.rotateCubeToDirection(RotateDirection.Up));
+    this.ui.emitter.on('rotateDown', () => this.scene3D.rotateCubeToDirection(RotateDirection.Down));
+    this.ui.emitter.on('rotateClockwise', () => this.scene3D.turnCubeToDirection(TurnDirection.Clockwise));
+    this.ui.emitter.on('rotateCounterClockwise', () => this.scene3D.turnCubeToDirection(TurnDirection.CounterClockwise));
 
 
     // this._ui.on('onPointerMove', (msg, x, y) => this._scene3D.onPointerMove(x, y));

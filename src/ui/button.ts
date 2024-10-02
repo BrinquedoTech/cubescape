@@ -1,20 +1,22 @@
 import * as PIXI from 'pixi.js';
 import TWEEN from 'three/addons/libs/tween.module.js';
-import { Runner } from '@pixi/runner';
+import mitt, { Emitter } from 'mitt';
+
+type Events = {
+  click: string;
+};
 
 export default class Button extends PIXI.Container {
   private view: PIXI.Sprite;
   private isPressed: boolean;
-  
-  public runner: Runner;
+
+  public emitter: Emitter<Events> = mitt<Events>();
 
   constructor(textureName: string) {
     super();
 
     this.view = null;
     this.isPressed = false;
-
-    this.runner = new Runner('click');
 
     this._init(textureName);
   }
@@ -40,7 +42,7 @@ export default class Button extends PIXI.Container {
 
     view.on('pointerup', () => {
       this.isPressed = false;
-      this.runner.emit();
+      this.emitter.emit('click');
       this._onScaleOut();
     });
 

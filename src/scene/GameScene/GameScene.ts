@@ -4,6 +4,8 @@ import LevelsConfig from '../Configs/LevelsConfig';
 import { ILevelConfig } from '../Interfaces/ILevelConfig';
 import PlayCharacter from './PlayCharacter/PlayCharacter';
 import { RotateDirection, TurnDirection } from '../Enums/RotateDirection';
+import { ButtonType } from '../Enums/ButtonType';
+import { ButtonConfig } from '../Configs/ButtonsConfig';
 
 export default class GameScene extends THREE.Group {
   private cube: Cube;
@@ -41,6 +43,7 @@ export default class GameScene extends THREE.Group {
   private init(): void {
     this.initCube();
     this.initPlayCharacter();
+    this.initKeyboardEvents();
   }
 
   private initCube(): void {
@@ -51,5 +54,24 @@ export default class GameScene extends THREE.Group {
   private initPlayCharacter(): void {
     const playCharacter = this.playCharacter = new PlayCharacter();
     this.cube.add(playCharacter);
+  }
+
+  private initKeyboardEvents(): void {
+    window.addEventListener("keydown", (event) => this.onPressDownSignal(event));
+  }
+
+  private onPressDownSignal(event: KeyboardEvent): void {
+    for (const value in ButtonType) {
+      const buttonType = ButtonType[value];
+      const config = ButtonConfig[buttonType];
+
+      if (config.keyCode && config.keyCode.includes(event.code)) {
+        this.onButtonPress(buttonType);
+      }
+    }
+  }
+
+  private onButtonPress(buttonType: ButtonType): void {
+    
   }
 }

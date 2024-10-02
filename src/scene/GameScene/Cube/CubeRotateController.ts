@@ -3,7 +3,7 @@ import { RotateDirection, TurnDirection } from "../../Enums/RotateDirection";
 import TWEEN from 'three/addons/libs/tween.module.js';
 import GameplayConfig from '../../Configs/GameplayConfig';
 
-export default class RotateWithEasingHelper {
+export default class CubeRotateController {
   private object: THREE.Object3D;
   private rotationDirection: RotateDirection;
   private turnDirection: TurnDirection;

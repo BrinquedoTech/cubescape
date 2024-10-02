@@ -1,108 +1,50 @@
 import * as PIXI from 'pixi.js';
-import Button from './Button';
-import { Runner } from '@pixi/runner';
+import mitt, { Emitter } from 'mitt';
+import RotateButtons from './RotateButtons';
+
+type Events = {
+  rotateRight: string;
+  rotateLeft: string;
+  rotateUp: string;
+  rotateDown: string;
+  rotateClockwise: string;
+  rotateCounterClockwise: string;
+};
 
 export default class UI extends PIXI.Container {
-  private buttonRotateRight: Button;
-  private buttonRotateLeft: Button;
-  private buttonRotateUp: Button;
-  private buttonRotateDown: Button;
-  private buttonRotateClockwise: Button;
-  private buttonRotateCounterClockwise: Button;
+  private rotateButtons: RotateButtons;
 
-  public runner: any;
+  public emitter: Emitter<Events> = mitt<Events>();
 
   constructor() {
     super();
 
-    this.runner = {
-      'rotateRight': new Runner('rotateRight'),
-      'rotateLeft': new Runner('rotateLeft'),
-      'rotateUp': new Runner('rotateUp'),
-      'rotateDown': new Runner('rotateDown'),
-      'rotateClockwise': new Runner('rotateClockwise'),
-      'rotateCounterClockwise': new Runner('rotateCounterClockwise'),
-    };
-
-    this._init();
+    this.init();
   }
 
   onResize() {
+    this.rotateButtons.onResize();
+
     const width = window.innerWidth;
     const height = window.innerHeight;
 
-    this.buttonRotateRight.x = width * 0.5 + 350;
-    this.buttonRotateRight.y = height * 0.5;
-
-    this.buttonRotateLeft.x = width * 0.5 - 350;
-    this.buttonRotateLeft.y = height * 0.5;
-
-    this.buttonRotateUp.x = width * 0.5;
-    this.buttonRotateUp.y = height * 0.5 - 350;
-
-    this.buttonRotateDown.x = width * 0.5;
-    this.buttonRotateDown.y = height * 0.5 + 350;
-
-    this.buttonRotateClockwise.x = width * 0.5 + 350;
-    this.buttonRotateClockwise.y = height * 0.5 - 350;
-
-    this.buttonRotateCounterClockwise.x = width * 0.5 - 350;
-    this.buttonRotateCounterClockwise.y = height * 0.5 - 350;
+    this.rotateButtons.x = width * 0.5;
+    this.rotateButtons.y = height * 0.5;
   }
 
-  _init() {
-    const buttonRotateRight = this.buttonRotateRight = new Button('assets/arrow-right.png');
-    this.addChild(buttonRotateRight);
+  private init(): void {
+    this.initRotateButtons();
+  }
 
-    buttonRotateRight.runner.add({
-      click: () => {
-        this.runner.rotateRight.emit('rotateRight');
-      }
-    });
+  private initRotateButtons(): void {
+    const rotateButtons = this.rotateButtons = new RotateButtons();
+    this.addChild(rotateButtons);
 
-    const buttonRotateLeft = this.buttonRotateLeft = new Button('assets/arrow-left.png');
-    this.addChild(buttonRotateLeft);
-
-    buttonRotateLeft.runner.add({
-      click: () => {
-        this.runner.rotateLeft.emit('rotateLeft');
-      }
-    });
-
-    const buttonRotateUp = this.buttonRotateUp = new Button('assets/arrow-up.png');
-    this.addChild(buttonRotateUp);
-
-    buttonRotateUp.runner.add({
-      click: () => {
-        this.runner.rotateUp.emit('rotateUp');
-      }
-    });
-
-    const buttonRotateDown = this.buttonRotateDown = new Button('assets/arrow-down.png');
-    this.addChild(buttonRotateDown);
-
-    buttonRotateDown.runner.add({
-      click: () => {
-        this.runner.rotateDown.emit('rotateDown');
-      }
-    });
-
-    const buttonRotateClockwise = this.buttonRotateClockwise = new Button('assets/arrow-clockwise.png');
-    this.addChild(buttonRotateClockwise);
-
-    buttonRotateClockwise.runner.add({
-      click: () => {
-        this.runner.rotateClockwise.emit('rotateClockwise');
-      }
-    });
-
-    const buttonRotateCounterClockwise = this.buttonRotateCounterClockwise = new Button('assets/arrow-counter-clockwise.png');
-    this.addChild(buttonRotateCounterClockwise);
-
-    buttonRotateCounterClockwise.runner.add({
-      click: () => {
-        this.runner.rotateCounterClockwise.emit('rotateCounterClockwise');
-      }
-    });
+    rotateButtons.emitter.on('rotateRight', () => this.emitter.emit('rotateRight'));
+    rotateButtons.emitter.on('rotateLeft', () => this.emitter.emit('rotateLeft'));
+    rotateButtons.emitter.on('rotateUp', () => this.emitter.emit('rotateUp'));
+    rotateButtons.emitter.on('rotateDown', () => this.emitter.emit('rotateDown'));
+    rotateButtons.emitter.on('rotateClockwise', () => this.emitter.emit('rotateClockwise'));
+    rotateButtons.emitter.on('rotateCounterClockwise', () => this.emitter.emit('rotateCounterClockwise'));
   }
 }
