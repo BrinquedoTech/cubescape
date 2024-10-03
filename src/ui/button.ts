@@ -7,7 +7,6 @@ type Events = {
 };
 
 export default class Button extends PIXI.Container {
-  private view: PIXI.Sprite;
   private isPressed: boolean;
 
   public emitter: Emitter<Events> = mitt<Events>();
@@ -15,7 +14,6 @@ export default class Button extends PIXI.Container {
   constructor(textureName: string) {
     super();
 
-    this.view = null;
     this.isPressed = false;
 
     this._init(textureName);
@@ -27,7 +25,7 @@ export default class Button extends PIXI.Container {
 
   _initView(textureName: string) {
     const texture = PIXI.Assets.get(textureName);
-    const view = this.view = new PIXI.Sprite(texture);
+    const view = new PIXI.Sprite(texture);
     this.addChild(view);
 
     view.anchor.set(0.5);

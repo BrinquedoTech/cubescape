@@ -3,14 +3,14 @@ import { CubeSide } from '../Enums/CubeSide';
 import { ICubeSurfaceAxisConfig } from '../Interfaces/ICubeConfig';
 import { CubeRotationDirection } from '../Enums/CubeRotationDirection';
 
-const SurfaceDistanceConfig: THREE.Vector3[] = [
-  new THREE.Vector3(0, 0, 1), // Front
-  new THREE.Vector3(1, 0, 0), // Right
-  new THREE.Vector3(-1, 0, 0), // Left
-  new THREE.Vector3(0, 1, 0), // Top
-  new THREE.Vector3(0, -1, 0), // Down
-  new THREE.Vector3(0, 0, -1), // Back
-];
+const SurfaceVectorConfig: { [key in CubeSide]: THREE.Vector3 } = {
+  [CubeSide.Front]: new THREE.Vector3(0, 0, 1),
+  [CubeSide.Right]: new THREE.Vector3(1, 0, 0),
+  [CubeSide.Left]: new THREE.Vector3(-1, 0, 0),
+  [CubeSide.Top]: new THREE.Vector3(0, 1, 0),
+  [CubeSide.Bottom]: new THREE.Vector3(0, -1, 0),
+  [CubeSide.Back]: new THREE.Vector3(0, 0, -1),
+};
 
 const CubeSurfaceAxisConfig: ICubeSurfaceAxisConfig[] = [
   { side: CubeSide.Front, configIndex: 0, xAxis: 'x', yAxis: 'y', zAxis: 'z', xFactor: 1, yFactor: -1 },
@@ -78,4 +78,4 @@ const LocalEdgeDirections = {
   },
 }
 
-export { SurfaceDistanceConfig, CubeSurfaceAxisConfig, CharacterSurfaceConfig, SideVectorConfig, LocalEdgeDirections };
+export { SurfaceVectorConfig, CubeSurfaceAxisConfig, CharacterSurfaceConfig, SideVectorConfig, LocalEdgeDirections };

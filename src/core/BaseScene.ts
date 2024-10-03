@@ -143,8 +143,8 @@ export default class BaseScene {
   }
 
   initAxesHelper() {
-    const axesHelper = new THREE.AxesHelper(5);
-    this.scene.add(axesHelper);
+    // const axesHelper = new THREE.AxesHelper(5);
+    // this.scene.add(axesHelper);
   }
 
   _initOnResize() {

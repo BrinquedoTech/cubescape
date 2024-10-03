@@ -3,23 +3,26 @@ import { ILevelConfig } from '../../Interfaces/ILevelConfig';
 import GameplayConfig from '../../Configs/GameplayConfig';
 import VertexConfig from '../../Configs/VertexConfig';
 import { EdgeAxisConfig, EdgeDistanceConfig } from '../../Configs/EdgeConfig';
-import { CubeSurfaceAxisConfig, SurfaceDistanceConfig } from '../../Configs/SurfaceConfig';
+import { CubeSurfaceAxisConfig, SurfaceVectorConfig } from '../../Configs/SurfaceConfig';
 import { IEdgeAxisConfig, ICubeSurfaceAxisConfig } from '../../Interfaces/ICubeConfig';
 import { RotateDirection, TurnDirection } from '../../Enums/RotateDirection';
 import CubeRotationController from './CubeRotationController';
 import { CubeSide } from '../../Enums/CubeSide';
 import { CubeRotationDirection } from '../../Enums/CubeRotationDirection';
 import { CubeState } from '../../Enums/CubeState';
+import CubeDebug from './CubeDebug';
 
 export default class Cube extends THREE.Group {
   private levelConfig: ILevelConfig;
   private cubeRotationController: CubeRotationController;
-  private state: CubeState;
+  private cubeDebug: CubeDebug;
+  private state: CubeState = CubeState.Idle;
 
   constructor() {
     super();
 
     this.initCubeRotationController();
+    this.initCubeDebug();
   }
 
   public update(dt: number): void {
@@ -56,6 +59,11 @@ export default class Cube extends THREE.Group {
     });
   }
 
+  private initCubeDebug(): void {
+    const cubeDebug = this.cubeDebug = new CubeDebug();
+    this.add(cubeDebug);
+  }
+
   public init(levelConfig: ILevelConfig): void {
     this.levelConfig = levelConfig;
 
@@ -64,6 +72,8 @@ export default class Cube extends THREE.Group {
     this.initInnerCube();
     this.initEdges();
     this.initSurfaces();
+
+    this.cubeDebug.setLevelConfig(levelConfig);
   }
 
   private removeCube(): void {
@@ -144,9 +154,9 @@ export default class Cube extends THREE.Group {
             const surfaceCell = new THREE.Mesh(geometry, material);
             this.add(surfaceCell);
 
-            surfaceCell.position.x = SurfaceDistanceConfig[cubeSurfaceAxisConfig.configIndex].x * distance;
-            surfaceCell.position.y = SurfaceDistanceConfig[cubeSurfaceAxisConfig.configIndex].y * distance;
-            surfaceCell.position.z = SurfaceDistanceConfig[cubeSurfaceAxisConfig.configIndex].z * distance;
+            surfaceCell.position.x = SurfaceVectorConfig[cubeSurfaceAxisConfig.side].x * distance;
+            surfaceCell.position.y = SurfaceVectorConfig[cubeSurfaceAxisConfig.side].y * distance;
+            surfaceCell.position.z = SurfaceVectorConfig[cubeSurfaceAxisConfig.side].z * distance;
 
             surfaceCell.position[cubeSurfaceAxisConfig.xAxis] += j * GameplayConfig.cellSize * cubeSurfaceAxisConfig.xFactor - offset * cubeSurfaceAxisConfig.xFactor;
             surfaceCell.position[cubeSurfaceAxisConfig.yAxis] += i * GameplayConfig.cellSize * cubeSurfaceAxisConfig.yFactor - offset * cubeSurfaceAxisConfig.yFactor;
