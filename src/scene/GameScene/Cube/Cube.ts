@@ -9,10 +9,12 @@ import { RotateDirection, TurnDirection } from '../../Enums/RotateDirection';
 import CubeRotationController from './CubeRotationController';
 import { CubeSide } from '../../Enums/CubeSide';
 import { CubeRotationDirection } from '../../Enums/CubeRotationDirection';
+import { CubeState } from '../../Enums/CubeState';
 
 export default class Cube extends THREE.Group {
   private levelConfig: ILevelConfig;
   private cubeRotationController: CubeRotationController;
+  private state: CubeState;
 
   constructor() {
     super();
@@ -26,10 +28,12 @@ export default class Cube extends THREE.Group {
 
   public rotateToDirection(rotateDirection: RotateDirection): void {
     this.cubeRotationController.rotateToDirection(rotateDirection);
+    this.state = CubeState.Rotating;
   }
 
   public turn(turnDirection: TurnDirection): void {
     this.cubeRotationController.turn(turnDirection);
+    this.state = CubeState.Rotating;
   }
 
   public getCurrentSide(): CubeSide {
@@ -40,8 +44,16 @@ export default class Cube extends THREE.Group {
     return this.cubeRotationController.getCurrentRotationDirection();
   }
 
+  public getState(): CubeState {
+    return this.state;
+  }
+
   private initCubeRotationController(): void {
     this.cubeRotationController = new CubeRotationController(this);
+
+    this.cubeRotationController.emitter.on('endRotating', () => {
+      this.state = CubeState.Idle;
+    });
   }
 
   public init(levelConfig: ILevelConfig): void {

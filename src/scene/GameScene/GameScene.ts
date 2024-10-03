@@ -9,6 +9,8 @@ import { ButtonType } from '../Enums/ButtonType';
 import { MoveDirection } from '../Enums/MoveDirection';
 import { CubeSide } from '../Enums/CubeSide';
 import { CubeRotationDirection } from '../Enums/CubeRotationDirection';
+import { MoveSurfaceDirectionConfig } from '../Configs/CharacterConfig';
+import { CubeState } from '../Enums/CubeState';
 
 export default class GameScene extends THREE.Group {
   private cube: Cube;
@@ -55,38 +57,9 @@ export default class GameScene extends THREE.Group {
     const sideMap: number[][] = this.levelConfig.map.surfaces[currentSide];
     const surfacePosition: THREE.Vector2 = this.playCharacter.getSurfacePosition();
 
-    let targetPosition: THREE.Vector2;
-
-    const moveDirectionConfig = {
-      [MoveDirection.Right]: {
-        [CubeRotationDirection.Top]: { x: 1, y: 0 },
-        [CubeRotationDirection.Bottom]: { x: -1, y: 0 },
-        [CubeRotationDirection.Right]: { x: 0, y: 1 },
-        [CubeRotationDirection.Left]: { x: 0, y: -1 },
-      },
-      [MoveDirection.Left]: {
-        [CubeRotationDirection.Top]: { x: -1, y: 0 },
-        [CubeRotationDirection.Bottom]: { x: 1, y: 0 },
-        [CubeRotationDirection.Right]: { x: 0, y: -1 },
-        [CubeRotationDirection.Left]: { x: 0, y: 1 },
-      },
-      [MoveDirection.Up]: {
-        [CubeRotationDirection.Top]: { x: 0, y: -1 },
-        [CubeRotationDirection.Bottom]: { x: 0, y: 1 },
-        [CubeRotationDirection.Right]: { x: 1, y: 0 },
-        [CubeRotationDirection.Left]: { x: -1, y: 0 },
-      },
-      [MoveDirection.Down]: {
-        [CubeRotationDirection.Top]: { x: 0, y: 1 },
-        [CubeRotationDirection.Bottom]: { x: 0, y: -1 },
-        [CubeRotationDirection.Right]: { x: -1, y: 0 },
-        [CubeRotationDirection.Left]: { x: 1, y: 0 },
-      },
-    }
-
-    targetPosition = new THREE.Vector2(
-      surfacePosition.x + moveDirectionConfig[moveDirection][currentRotationDirection].x,
-      surfacePosition.y + moveDirectionConfig[moveDirection][currentRotationDirection].y,
+    const targetPosition = new THREE.Vector2(
+      surfacePosition.x + MoveSurfaceDirectionConfig[moveDirection][currentRotationDirection].x,
+      surfacePosition.y + MoveSurfaceDirectionConfig[moveDirection][currentRotationDirection].y,
     );
 
     if (targetPosition.x < 0 || targetPosition.x >= this.levelConfig.size || targetPosition.y < 0 || targetPosition.y >= this.levelConfig.size) {
@@ -129,6 +102,9 @@ export default class GameScene extends THREE.Group {
     };
 
     const moveDirection: MoveDirection = directionConfig[buttonType];
-    this.moveCharacter(moveDirection);
+
+    if (this.cube.getState() === CubeState.Idle) {
+      this.moveCharacter(moveDirection);
+    }
   }
 }

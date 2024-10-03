@@ -54,15 +54,15 @@ const LocalEdgeDirections = {
   },
   [CubeSide.Left]: {
     [CubeRotationDirection.Top]: new THREE.Vector3(0, 1, 0),
-    [CubeRotationDirection.Right]: new THREE.Vector3(0, 0, -1),
-    [CubeRotationDirection.Bottom]: new THREE.Vector3(0, -1, 0),
-    [CubeRotationDirection.Left]: new THREE.Vector3(0, 0, 1),
-  },
-  [CubeSide.Right]: {
-    [CubeRotationDirection.Top]: new THREE.Vector3(0, 1, 0),
     [CubeRotationDirection.Right]: new THREE.Vector3(0, 0, 1),
     [CubeRotationDirection.Bottom]: new THREE.Vector3(0, -1, 0),
     [CubeRotationDirection.Left]: new THREE.Vector3(0, 0, -1),
+  },
+  [CubeSide.Right]: {
+    [CubeRotationDirection.Top]: new THREE.Vector3(0, 1, 0),
+    [CubeRotationDirection.Right]: new THREE.Vector3(0, 0, -1),
+    [CubeRotationDirection.Bottom]: new THREE.Vector3(0, -1, 0),
+    [CubeRotationDirection.Left]: new THREE.Vector3(0, 0, 1),
   },
   [CubeSide.Top]: {
     [CubeRotationDirection.Top]: new THREE.Vector3(0, 0, -1),

@@ -5,6 +5,11 @@ import GameplayConfig from '../../Configs/GameplayConfig';
 import { CubeSide } from '../../Enums/CubeSide';
 import { LocalEdgeDirections, SideVectorConfig } from '../../Configs/SurfaceConfig';
 import { CubeRotationDirection } from '../../Enums/CubeRotationDirection';
+import mitt, { Emitter } from 'mitt';
+
+type Events = {
+  endRotating: string;
+};
 
 export default class CubeRotationController {
   private object: THREE.Object3D;
@@ -17,6 +22,8 @@ export default class CubeRotationController {
   private rotationAngle: number;
   private currentSide: CubeSide = CubeSide.Front;
   private currentRotationDirection: CubeRotationDirection = CubeRotationDirection.Top;
+
+  public emitter: Emitter<Events> = mitt<Events>();
 
   constructor(object: THREE.Object3D) {
     this.object = object;
@@ -54,6 +61,7 @@ export default class CubeRotationController {
         this.snapRotation();
         this.calculateCurrentSide();
         this.calculateCurrentRotationDirection();
+        this.emitter.emit('endRotating');
       }
     }
   }
