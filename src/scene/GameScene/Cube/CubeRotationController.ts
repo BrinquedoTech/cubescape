@@ -2,8 +2,11 @@ import * as THREE from 'three';
 import { RotateDirection, TurnDirection } from "../../Enums/RotateDirection";
 import TWEEN from 'three/addons/libs/tween.module.js';
 import GameplayConfig from '../../Configs/GameplayConfig';
+import { CubeSide } from '../../Enums/CubeSide';
+import { LocalEdgeDirections, SideVectorConfig } from '../../Configs/SurfaceConfig';
+import { CubeRotationDirection } from '../../Enums/CubeRotationDirection';
 
-export default class CubeRotateController {
+export default class CubeRotationController {
   private object: THREE.Object3D;
   private rotationDirection: RotateDirection;
   private turnDirection: TurnDirection;
@@ -12,6 +15,8 @@ export default class CubeRotateController {
   private isRotating: boolean;
   private lastEasedAngle: number;
   private rotationAngle: number;
+  private currentSide: CubeSide = CubeSide.Front;
+  private currentRotationDirection: CubeRotationDirection = CubeRotationDirection.Top;
 
   constructor(object: THREE.Object3D) {
     this.object = object;
@@ -47,6 +52,8 @@ export default class CubeRotateController {
       if (this.rotationProgress >= 1) {
         this.resetProgress();
         this.snapRotation();
+        this.calculateCurrentSide();
+        this.calculateCurrentRotationDirection();
       }
     }
   }
@@ -67,6 +74,14 @@ export default class CubeRotateController {
 
     this.isRotating = true;
     this.turnDirection = turnDirection;
+  }
+
+  public getCurrentSide(): CubeSide { 
+    return this.currentSide;
+  }
+
+  public getCurrentRotationDirection(): CubeRotationDirection {
+    return this.currentRotationDirection;
   }
 
   private resetProgress(): void {
@@ -108,6 +123,53 @@ export default class CubeRotateController {
       case TurnDirection.CounterClockwise:
         this.object.rotateOnWorldAxis(new THREE.Vector3(0, 0, 1), deltaAngle);
         break;
+    }
+  }
+
+  private calculateCurrentSide(): void {
+    const matrixWorld: THREE.Matrix4 = this.object.matrixWorld;
+
+    let activeSide: CubeSide = null;
+    let smallestAngle: number = Infinity;
+  
+    const forwardDirection = new THREE.Vector3(0, 0, 1);
+  
+    for (const side in SideVectorConfig) {
+      const sideVector: THREE.Vector3 = SideVectorConfig[side].clone().applyMatrix4(matrixWorld).normalize();
+      const angle: number = sideVector.angleTo(forwardDirection);
+  
+      if (angle < smallestAngle) {
+        smallestAngle = angle;
+        activeSide = side as CubeSide;
+      }
+    }
+
+    this.currentSide = activeSide;
+  }
+
+  private calculateCurrentRotationDirection(): void {
+    const worldQuaternion = this.object.quaternion;
+
+    const worldTop: THREE.Vector3 = LocalEdgeDirections[this.currentSide][CubeRotationDirection.Top].clone().applyQuaternion(worldQuaternion);
+    const worldRight: THREE.Vector3 = LocalEdgeDirections[this.currentSide][CubeRotationDirection.Right].clone().applyQuaternion(worldQuaternion);
+    const worldBottom: THREE.Vector3 = LocalEdgeDirections[this.currentSide][CubeRotationDirection.Bottom].clone().applyQuaternion(worldQuaternion);
+    const worldLeft: THREE.Vector3 = LocalEdgeDirections[this.currentSide][CubeRotationDirection.Left].clone().applyQuaternion(worldQuaternion);
+
+    const worldUp = new THREE.Vector3(0, 1, 0);
+
+    const topDot: number = worldTop.dot(worldUp);
+    const rightDot: number = worldRight.dot(worldUp);
+    const bottomDot: number = worldBottom.dot(worldUp);
+    const leftDot: number = worldLeft.dot(worldUp);
+
+    if (topDot > rightDot && topDot > bottomDot && topDot > leftDot) {
+      this.currentRotationDirection = CubeRotationDirection.Top;
+    } else if (rightDot > topDot && rightDot > bottomDot && rightDot > leftDot) {
+      this.currentRotationDirection = CubeRotationDirection.Right;
+    } else if (bottomDot > topDot && bottomDot > rightDot && bottomDot > leftDot) {
+      this.currentRotationDirection = CubeRotationDirection.Bottom;
+    } else if (leftDot > topDot && leftDot > rightDot && leftDot > bottomDot) {
+      this.currentRotationDirection = CubeRotationDirection.Left;
     }
   }
 }

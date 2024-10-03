@@ -41,7 +41,7 @@ const LevelsConfig: ILevelConfig[] = [
           [0, 0, 0, 1, 0, 0],
           [0, 0, 0, 1, 0, 0],
         ],
-        [CubeSide.Down]: [
+        [CubeSide.Bottom]: [
           [0, 1, 1, 1, 1, 0],
           [0, 1, 0, 0, 0, 0],
           [0, 1, 1, 1, 0, 0],
@@ -76,7 +76,7 @@ const LevelsConfig: ILevelConfig[] = [
     playCharacter: {
       position: new THREE.Vector2(0, 0),
       direction: 0,
-      surface: CubeSide.Front,
+      side: CubeSide.Front,
     },
   },
 ]

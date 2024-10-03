@@ -5,7 +5,7 @@ export interface ILevelConfig {
   playCharacter: {
     position: THREE.Vector2;
     direction: number;
-    surface: CubeSide;
+    side: CubeSide;
   };
   size: number;
   map: {

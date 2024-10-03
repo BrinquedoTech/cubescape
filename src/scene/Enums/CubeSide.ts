@@ -3,6 +3,6 @@ export enum CubeSide {
   Right = 'RIGHT',
   Left = 'LEFT',
   Top = 'TOP',
-  Down = 'DOWN',
+  Bottom = 'BOTTOM',
   Back = 'BACK',
 }

@@ -6,33 +6,42 @@ import { EdgeAxisConfig, EdgeDistanceConfig } from '../../Configs/EdgeConfig';
 import { CubeSurfaceAxisConfig, SurfaceDistanceConfig } from '../../Configs/SurfaceConfig';
 import { IEdgeAxisConfig, ICubeSurfaceAxisConfig } from '../../Interfaces/ICubeConfig';
 import { RotateDirection, TurnDirection } from '../../Enums/RotateDirection';
-import CubeRotateController from './CubeRotateController';
-
+import CubeRotationController from './CubeRotationController';
+import { CubeSide } from '../../Enums/CubeSide';
+import { CubeRotationDirection } from '../../Enums/CubeRotationDirection';
 
 export default class Cube extends THREE.Group {
   private levelConfig: ILevelConfig;
-  private cubeRotateController: CubeRotateController;
+  private cubeRotationController: CubeRotationController;
 
   constructor() {
     super();
 
-    this.initCubeRotateController();
+    this.initCubeRotationController();
   }
 
   public update(dt: number): void {
-    this.cubeRotateController.update(dt);
+    this.cubeRotationController.update(dt);
   }
 
   public rotateToDirection(rotateDirection: RotateDirection): void {
-    this.cubeRotateController.rotateToDirection(rotateDirection);
+    this.cubeRotationController.rotateToDirection(rotateDirection);
   }
 
   public turn(turnDirection: TurnDirection): void {
-    this.cubeRotateController.turn(turnDirection);
+    this.cubeRotationController.turn(turnDirection);
   }
 
-  private initCubeRotateController(): void {
-    this.cubeRotateController = new CubeRotateController(this);
+  public getCurrentSide(): CubeSide {
+    return this.cubeRotationController.getCurrentSide();
+  }
+
+  public getCurrentRotationDirection(): CubeRotationDirection {
+    return this.cubeRotationController.getCurrentRotationDirection();
+  }
+
+  private initCubeRotationController(): void {
+    this.cubeRotationController = new CubeRotationController(this);
   }
 
   public init(levelConfig: ILevelConfig): void {
