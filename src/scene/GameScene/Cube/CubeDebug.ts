@@ -5,7 +5,7 @@ import GameplayConfig from '../../Configs/GameplayConfig';
 import { CubeSide } from '../../Enums/CubeSide';
 import { SurfaceRotationConfig, SurfaceVectorConfig } from '../../Configs/SurfaceConfig';
 import { CubeRotationDirection } from '../../Enums/CubeRotationDirection';
-import { CubeEdgeName, CubeEdgeNameVectorsConfig, CubeSideName } from '../../Configs/DebugTextConfig';
+import { CubeEdgeName, CubeEdgeNameVectorsConfig, CubeSideName, GridRotationConfig } from '../../Configs/VisualDebugConfig';
 
 export default class CubeDebug extends THREE.Group {
   private levelConfig: ILevelConfig;
@@ -34,19 +34,10 @@ export default class CubeDebug extends THREE.Group {
   }
 
   private initGrid(): void {
-    const gridRotationConfig: { [key in CubeSide]: THREE.Vector3 } = {
-      [CubeSide.Front]: new THREE.Vector3(Math.PI * 0.5, 0, 0),
-      [CubeSide.Back]: new THREE.Vector3(Math.PI * 0.5, Math.PI, 0),
-      [CubeSide.Left]: new THREE.Vector3(0, 0, Math.PI * 0.5),
-      [CubeSide.Right]: new THREE.Vector3(0, 0, -Math.PI * 0.5),
-      [CubeSide.Top]: new THREE.Vector3(0, 0, 0),
-      [CubeSide.Bottom]: new THREE.Vector3(Math.PI, 0, 0),
-    };
-
     const size: number = this.levelConfig.size * GameplayConfig.cellSize;
 
     for (const side in CubeSide) {
-      const rotation: THREE.Vector3 = gridRotationConfig[CubeSide[side]];
+      const rotation: THREE.Vector3 = GridRotationConfig[CubeSide[side]];
       const position: THREE.Vector3 = SurfaceVectorConfig[CubeSide[side]].clone().multiplyScalar(size * 0.5 + GameplayConfig.cellSize + this.textOffset);
 
       const grid = new THREE.GridHelper(size, this.levelConfig.size, 0x0000ff, 0x808080);
