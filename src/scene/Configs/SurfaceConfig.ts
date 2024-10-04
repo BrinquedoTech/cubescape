@@ -12,6 +12,15 @@ const SurfaceVectorConfig: { [key in CubeSide]: THREE.Vector3 } = {
   [CubeSide.Back]: new THREE.Vector3(0, 0, -1),
 };
 
+const SurfaceRotationConfig: { [key in CubeSide]: THREE.Vector3 } = {
+  [CubeSide.Front]: new THREE.Vector3(0, 0, 0),
+  [CubeSide.Back]: new THREE.Vector3(0, Math.PI, 0),
+  [CubeSide.Left]: new THREE.Vector3(0, -Math.PI * 0.5, 0),
+  [CubeSide.Right]: new THREE.Vector3(0, Math.PI * 0.5, 0),
+  [CubeSide.Top]: new THREE.Vector3(-Math.PI * 0.5, 0, 0),
+  [CubeSide.Bottom]: new THREE.Vector3(Math.PI * 0.5, 0, 0),
+};
+
 const CubeSurfaceAxisConfig: ICubeSurfaceAxisConfig[] = [
   { side: CubeSide.Front, configIndex: 0, xAxis: 'x', yAxis: 'y', zAxis: 'z', xFactor: 1, yFactor: -1 },
   { side: CubeSide.Left, configIndex: 2, xAxis: 'z', yAxis: 'y', zAxis: 'x', xFactor: 1, yFactor: -1 },
@@ -78,4 +87,4 @@ const LocalEdgeDirections = {
   },
 }
 
-export { SurfaceVectorConfig, CubeSurfaceAxisConfig, CharacterSurfaceConfig, SideVectorConfig, LocalEdgeDirections };
+export { SurfaceVectorConfig, CubeSurfaceAxisConfig, CharacterSurfaceConfig, SideVectorConfig, LocalEdgeDirections, SurfaceRotationConfig };
