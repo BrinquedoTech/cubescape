@@ -10,13 +10,13 @@ const LevelsConfig: ILevelConfig[] = [
     map: {
       surfaces: {
         [CubeSide.Front]: [
+          [0, 0, 0, 0, 0, 0, 1],
           [0, 0, 0, 0, 0, 0, 0],
+          [0, 1, 1, 1, 0, 0, 0],
           [0, 0, 0, 0, 0, 0, 0],
-          [0, 0, 0, 0, 0, 0, 0],
-          [0, 0, 0, 0, 0, 0, 0],
-          [0, 0, 0, 0, 0, 0, 0],
-          [0, 0, 0, 0, 0, 0, 0],
-          [0, 0, 0, 0, 0, 0, 0],
+          [0, 0, 1, 0, 0, 0, 0],
+          [0, 0, 1, 0, 0, 0, 0],
+          [0, 0, 1, 1, 1, 1, 1],
         ],
         [CubeSide.Left]: [
           [0, 0, 0, 0, 0, 0, 0],
@@ -80,7 +80,7 @@ const LevelsConfig: ILevelConfig[] = [
       },
     },
     playCharacter: {
-      position: new THREE.Vector2(0, 0),
+      gridPosition: new THREE.Vector2(0, 0),
       direction: 0,
       side: CubeSide.Front,
     },

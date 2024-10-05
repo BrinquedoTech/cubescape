@@ -19,6 +19,10 @@ export default class Scene3D extends THREE.Group {
   }
 
   public update(dt: number): void {
+    if (dt > 0.1) {
+      dt = 0.1;
+    }
+
     this.gameScene.update(dt);
   }
 

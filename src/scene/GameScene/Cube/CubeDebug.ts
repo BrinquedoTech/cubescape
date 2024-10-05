@@ -34,11 +34,11 @@ export default class CubeDebug extends THREE.Group {
   }
 
   private initGrid(): void {
-    const size: number = this.levelConfig.size * GameplayConfig.cellSize;
+    const size: number = this.levelConfig.size * GameplayConfig.gridSize;
 
     for (const side in CubeSide) {
       const rotation: THREE.Vector3 = GridRotationConfig[CubeSide[side]];
-      const position: THREE.Vector3 = SurfaceVectorConfig[CubeSide[side]].clone().multiplyScalar(size * 0.5 + GameplayConfig.cellSize + this.textOffset);
+      const position: THREE.Vector3 = SurfaceVectorConfig[CubeSide[side]].clone().multiplyScalar(size * 0.5 + GameplayConfig.gridSize + this.textOffset);
 
       const grid = new THREE.GridHelper(size, this.levelConfig.size, 0x0000ff, 0x808080);
       this.add(grid);
@@ -55,11 +55,11 @@ export default class CubeDebug extends THREE.Group {
   }
 
   private initCubeSideName(): void {
-    const offsetUp = new THREE.Vector3(0, this.levelConfig.size * GameplayConfig.cellSize * 0.5 + GameplayConfig.cellSize * 0.7, 0);
+    const offsetUp = new THREE.Vector3(0, this.levelConfig.size * GameplayConfig.gridSize * 0.5 + GameplayConfig.gridSize * 0.7, 0);
   
     for (const side in CubeSide) {
       const rotation: THREE.Vector3 = SurfaceRotationConfig[CubeSide[side]];
-      const position: THREE.Vector3 = SurfaceVectorConfig[CubeSide[side]].clone().multiplyScalar(this.levelConfig.size * GameplayConfig.cellSize * 0.5 + GameplayConfig.cellSize + this.textOffset);
+      const position: THREE.Vector3 = SurfaceVectorConfig[CubeSide[side]].clone().multiplyScalar(this.levelConfig.size * GameplayConfig.gridSize * 0.5 + GameplayConfig.gridSize + this.textOffset);
   
       const cubeSideText: Text = this.createText(CubeSideName[CubeSide[side]], 0.6);
       this.add(cubeSideText);
@@ -74,7 +74,7 @@ export default class CubeDebug extends THREE.Group {
   private initCubeEdgeName(): void {
     for (const side in CubeSide) {
       const rotation: THREE.Vector3 = SurfaceRotationConfig[CubeSide[side]];
-      const position: THREE.Vector3 = SurfaceVectorConfig[CubeSide[side]].clone().multiplyScalar(this.levelConfig.size * GameplayConfig.cellSize * 0.5 + GameplayConfig.cellSize + this.textOffset);
+      const position: THREE.Vector3 = SurfaceVectorConfig[CubeSide[side]].clone().multiplyScalar(this.levelConfig.size * GameplayConfig.gridSize * 0.5 + GameplayConfig.gridSize + this.textOffset);
       const surfaceGroup = new THREE.Group();
       this.add(surfaceGroup);
       surfaceGroup.position.copy(position);
@@ -84,7 +84,7 @@ export default class CubeDebug extends THREE.Group {
         const cubeSideText: Text = this.createText(CubeEdgeName[CubeRotationDirection[edge]], 0.3);
         surfaceGroup.add(cubeSideText);
         
-        const edgePosition = CubeEdgeNameVectorsConfig[CubeRotationDirection[edge]].position.clone().multiplyScalar(this.levelConfig.size * GameplayConfig.cellSize * 0.5 + GameplayConfig.cellSize * 0.2);
+        const edgePosition = CubeEdgeNameVectorsConfig[CubeRotationDirection[edge]].position.clone().multiplyScalar(this.levelConfig.size * GameplayConfig.gridSize * 0.5 + GameplayConfig.gridSize * 0.2);
         cubeSideText.position.copy(edgePosition);
 
         const edgeRotation = CubeEdgeNameVectorsConfig[CubeRotationDirection[edge]].rotation;

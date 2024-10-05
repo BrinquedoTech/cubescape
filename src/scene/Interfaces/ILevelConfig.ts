@@ -3,7 +3,7 @@ import { CubeSide } from "../Enums/CubeSide";
 
 export interface ILevelConfig {
   playCharacter: {
-    position: THREE.Vector2;
+    gridPosition: THREE.Vector2;
     direction: number;
     side: CubeSide;
   };

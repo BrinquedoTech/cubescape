@@ -1,11 +1,12 @@
+import * as THREE from 'three';
 import { CubeRotationDirection } from "../Enums/CubeRotationDirection";
 import { MoveDirection } from "../Enums/MoveDirection";
 
-export type IMoveSurfaceDirectionConfig = {
+export type IMovementDirectionByCubeRotationConfig = {
     [key in MoveDirection]: {
         [key in CubeRotationDirection]: {
-            x: number;
-            y: number;
+            position: THREE.Vector2;
+            direction: MoveDirection;
         };
     };
 };
