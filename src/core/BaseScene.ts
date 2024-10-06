@@ -1,7 +1,7 @@
 import * as THREE from 'three';
 import * as PIXI from 'pixi.js';
 import TWEEN from 'three/addons/libs/tween.module.js';
-import MainScene from '../MainScene';
+import MainScene from './MainScene';
 import SCENE_CONFIG from './configs/scene-config';
 import Loader from './loader';
 import Scene3DDebugMenu from './helpers/gui-helper/scene-3d-debug-menu';

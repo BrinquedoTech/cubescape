@@ -1,12 +1,12 @@
-import { RotateDirection, TurnDirection } from "./scene/Enums/RotateDirection";
-import Scene3D from "./scene/Scene3d";
-import UI from "./ui/UI";
+import { RotateDirection, TurnDirection } from "../scene/Enums/RotateDirection";
+import ThreeJSScene from "../scene/ThreeJSScene";
+import UI from "../UI/UI";
 
 export default class MainScene {
   private data: any;
   private scene: any;
   // private camera: any;
-  private scene3D: Scene3D;
+  private scene3D: ThreeJSScene;
   private ui: UI;
 
   constructor(data: any) {
@@ -27,7 +27,7 @@ export default class MainScene {
   }
 
   _init() {
-    this.scene3D = new Scene3D();
+    this.scene3D = new ThreeJSScene();
     this._initUI();
 
     this._initSignals();

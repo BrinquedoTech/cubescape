@@ -2,7 +2,7 @@ import * as THREE from 'three';
 import GameScene from './GameScene/GameScene';
 import { RotateDirection, TurnDirection } from './Enums/RotateDirection';
 
-export default class Scene3D extends THREE.Group {
+export default class ThreeJSScene extends THREE.Group {
   // private data: any;
   // private scene: any;
   // private camera: any;
