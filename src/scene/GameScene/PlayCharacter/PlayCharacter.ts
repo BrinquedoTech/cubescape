@@ -16,6 +16,7 @@ export default class PlayCharacter extends THREE.Group {
   private surfacePosition: THREE.Vector2 = new THREE.Vector2();
   private state: PlayCharacterState = PlayCharacterState.Idle;
   private isCrossedCellCenter: boolean = false;
+  private targetGridPosition: THREE.Vector2 = new THREE.Vector2();
 
 
   private isActive: boolean = false;
@@ -27,7 +28,31 @@ export default class PlayCharacter extends THREE.Group {
   }
 
   public update(dt: number) {
+    if (this.state === PlayCharacterState.Moving) {
+      // moving using targetGridPosition
+      const speed: number = 15;
+      const distance: number = speed * dt;
 
+      const surfacePosition: THREE.Vector2 = this.surfacePosition;
+
+      const newX: number = this.targetGridPosition.x * GameplayConfig.gridSize;
+      const newY: number = this.targetGridPosition.y * GameplayConfig.gridSize;
+
+      // interpolate position to targetGridPosition
+      const diffX = newX - surfacePosition.x;
+      const diffY = newY - surfacePosition.y;
+
+      if (Math.abs(diffX) < distance && Math.abs(diffY) < distance) {
+        this.setPositionOnActiveSurface(newX, newY);
+        this.stopMoving();
+      } else {
+        this.setPositionOnActiveSurface(surfacePosition.x + diffX * distance, surfacePosition.y + diffY * distance);
+      }
+
+
+
+
+    }
   }
 
   public init(levelConfig: ILevelConfig): void {
@@ -48,6 +73,11 @@ export default class PlayCharacter extends THREE.Group {
 
   public setGridPositionOnActiveSurface(x: number, y: number): void {
     this.setGridPosition(this.activeSurface, x, y);
+  }
+
+  public moveToGridCell(gridX: number, gridY: number): void {
+    this.state = PlayCharacterState.Moving;
+    this.targetGridPosition.set(gridX, gridY);
   }
 
   public setPosition(cubeSide: CubeSide, x: number, y: number): void {
@@ -80,8 +110,8 @@ export default class PlayCharacter extends THREE.Group {
   }
 
   public moveToDirection(direction: MoveDirection): void {
-    this.state = PlayCharacterState.Moving;
-    this.movingDirection = direction; 
+    // this.state = PlayCharacterState.Moving;
+    // this.movingDirection = direction; 
   }
 
   public stopMoving(): void {

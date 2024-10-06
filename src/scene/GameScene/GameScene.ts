@@ -29,34 +29,34 @@ export default class GameScene extends THREE.Group {
   }
 
   public update(dt: number): void {
-    if (this.playCharacter.getState() === PlayCharacterState.Moving) {
-      const speed: number = 20;
-      const distance: number = speed * dt;
+    // if (this.playCharacter.getState() === PlayCharacterState.Moving) {
+    //   const speed: number = 20;
+    //   const distance: number = speed * dt;
 
-      const surfacePosition: THREE.Vector2 = this.playCharacter.getSurfacePosition();
-      const movingDirection: MoveDirection = this.playCharacter.getMovingDirection();
+    //   const surfacePosition: THREE.Vector2 = this.playCharacter.getSurfacePosition();
+    //   const movingDirection: MoveDirection = this.playCharacter.getMovingDirection();
 
-      const newX: number = surfacePosition.x + MovementDirectionConfig[movingDirection].vector.x * distance;
-      const newY: number = surfacePosition.y + MovementDirectionConfig[movingDirection].vector.y * distance;
+    //   const newX: number = surfacePosition.x + MovementDirectionConfig[movingDirection].vector.x * distance;
+    //   const newY: number = surfacePosition.y + MovementDirectionConfig[movingDirection].vector.y * distance;
 
-      if (distance > GameplayConfig.gridSize * 0.5) {
-        this.playCharacter.setIsCrossedCellCenter(false);
-      }
+    //   if (distance > GameplayConfig.gridSize * 0.5) {
+    //     this.playCharacter.setIsCrossedCellCenter(false);
+    //   }
 
-      if (this.playCharacter.isCrossedCenterGridCell(newX, newY) && !this.playCharacter.getIsCrossedCellCenter()) {
-        this.playCharacter.setIsCrossedCellCenter(true);
+    //   if (this.playCharacter.isCrossedCenterGridCell(newX, newY) && !this.playCharacter.getIsCrossedCellCenter()) {
+    //     this.playCharacter.setIsCrossedCellCenter(true);
 
-        const playCharacterGridPosition: THREE.Vector2 = this.playCharacter.getGridPosition();
+    //     const playCharacterGridPosition: THREE.Vector2 = this.playCharacter.getGridPosition();
 
-        if (!this.isNextCellAvailable(playCharacterGridPosition.x, playCharacterGridPosition.y, movingDirection)) {
-          this.playCharacter.stopMoving();
-          this.playCharacter.setIsCrossedCellCenter(false);
-          // this.playCharacter.setGridPositionOnActiveSurface(playCharacterGridPosition.x, playCharacterGridPosition.y);
-        }
-      } else {
-        this.playCharacter.setPositionOnActiveSurface(newX, newY);
-      }
-    }
+    //     if (!this.isNextCellAvailable(playCharacterGridPosition.x, playCharacterGridPosition.y, movingDirection)) {
+    //       this.playCharacter.stopMoving();
+    //       this.playCharacter.setIsCrossedCellCenter(false);
+    //       // this.playCharacter.setGridPositionOnActiveSurface(playCharacterGridPosition.x, playCharacterGridPosition.y);
+    //     }
+    //   } else {
+    //     this.playCharacter.setPositionOnActiveSurface(newX, newY);
+    //   }
+    // }
 
     if (this.cube) {
       this.cube.update(dt);
@@ -67,25 +67,25 @@ export default class GameScene extends THREE.Group {
     }
   }
 
-  private isNextCellAvailable(startCellX: number, startCellY: number, movingDirection: MoveDirection): boolean {
-    const currentSide: CubeSide = this.cube.getCurrentSide();
-    const sideMap: number[][] = this.levelConfig.map.surfaces[currentSide];
+  // private isNextCellAvailable(startCellX: number, startCellY: number, movingDirection: MoveDirection): boolean {
+  //   const currentSide: CubeSide = this.cube.getCurrentSide();
+  //   const sideMap: number[][] = this.levelConfig.map.surfaces[currentSide];
 
-    const targetGridPosition = new THREE.Vector2(
-      startCellX + MovementDirectionConfig[movingDirection].vector.x,
-      startCellY + MovementDirectionConfig[movingDirection].vector.y,
-    );
+  //   const targetGridPosition = new THREE.Vector2(
+  //     startCellX + MovementDirectionConfig[movingDirection].vector.x,
+  //     startCellY + MovementDirectionConfig[movingDirection].vector.y,
+  //   );
     
-    if (targetGridPosition.x < 0 || targetGridPosition.x >= this.levelConfig.size || targetGridPosition.y < 0 || targetGridPosition.y >= this.levelConfig.size) {
-      return false;
-    }
+  //   if (targetGridPosition.x < 0 || targetGridPosition.x >= this.levelConfig.size || targetGridPosition.y < 0 || targetGridPosition.y >= this.levelConfig.size) {
+  //     return false;
+  //   }
 
-    if (sideMap[targetGridPosition.y][targetGridPosition.x] === 1) {
-      return false
-    }
+  //   if (sideMap[targetGridPosition.y][targetGridPosition.x] === 1) {
+  //     return false
+  //   }
 
-    return true;
-  }
+  //   return true;
+  // }
 
   private isCellAvailable(cellX: number, cellY: number): boolean {
     const currentSide: CubeSide = this.cube.getCurrentSide();
@@ -135,7 +135,8 @@ export default class GameScene extends THREE.Group {
     }
 
     if (!this.isCellsEqual(playCharacterGridPosition, targetGridPosition)) {
-      this.playCharacter.setGridPositionOnActiveSurface(targetGridPosition.x, targetGridPosition.y);
+      // this.playCharacter.setGridPositionOnActiveSurface(targetGridPosition.x, targetGridPosition.y);
+      this.playCharacter.moveToGridCell(targetGridPosition.x, targetGridPosition.y);
     }
 
   }
