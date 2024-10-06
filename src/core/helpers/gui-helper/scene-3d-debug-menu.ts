@@ -5,7 +5,7 @@ import GUIHelper from "./gui-helper";
 import { OrbitControls } from "three/examples/jsm/Addons.js";
 
 export default class Scene3DDebugMenu {
-  private scene: any;
+  // private scene: any;
   private camera: any;
   private renderer: any;
   private pixiApp: any;
@@ -13,14 +13,14 @@ export default class Scene3DDebugMenu {
   private fpsStats: any;
   private rendererStats: any;
   private orbitControls: any;
-  private gridHelper: any;
-  private axesHelper: any;
-  private baseGUI: any;
+  // private gridHelper: any;
+  // private axesHelper: any;
+  // private baseGUI: any;
   
   private _isAssetsLoaded: boolean;
 
-  constructor(scene, camera, renderer, pixiApp) {
-    this.scene = scene;
+  constructor(camera, renderer, pixiApp) {
+    // this.scene = scene;
     this.camera = camera;
     this.renderer = renderer;
     this.pixiApp = pixiApp;
@@ -28,9 +28,9 @@ export default class Scene3DDebugMenu {
     this.fpsStats = null;
     this.rendererStats = null;
     this.orbitControls = null;
-    this.gridHelper = null;
-    this.axesHelper = null;
-    this.baseGUI = null;
+    // this.gridHelper = null;
+    // this.axesHelper = null;
+    // this.baseGUI = null;
 
     this._isAssetsLoaded = false;
 

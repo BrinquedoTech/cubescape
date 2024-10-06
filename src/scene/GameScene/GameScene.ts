@@ -12,7 +12,6 @@ import { CubeRotationDirection } from '../Enums/CubeRotationDirection';
 import { MovementDirectionByCubeRotationConfig, MovementDirectionConfig } from '../Configs/CharacterConfig';
 import { CubeState } from '../Enums/CubeState';
 import { PlayCharacterState } from '../Enums/PlayCharacterState';
-import GameplayConfig from '../Configs/GameplayConfig';
 
 export default class GameScene extends THREE.Group {
   private cube: Cube;
@@ -110,9 +109,9 @@ export default class GameScene extends THREE.Group {
   }
 
   private moveCharacter(moveDirection: MoveDirection): void {
-    const currentSide: CubeSide = this.cube.getCurrentSide();
+    // const currentSide: CubeSide = this.cube.getCurrentSide();
     const currentRotationDirection: CubeRotationDirection = this.cube.getCurrentRotationDirection();
-    const sideMap: number[][] = this.levelConfig.map.surfaces[currentSide];
+    // const sideMap: number[][] = this.levelConfig.map.surfaces[currentSide];
 
     const movingDirection: MoveDirection = MovementDirectionByCubeRotationConfig[moveDirection][currentRotationDirection].direction;
 

@@ -3,17 +3,17 @@ import GameScene from './GameScene/GameScene';
 import { RotateDirection, TurnDirection } from './Enums/RotateDirection';
 
 export default class Scene3D extends THREE.Group {
-  private data: any;
-  private scene: any;
-  private camera: any;
+  // private data: any;
+  // private scene: any;
+  // private camera: any;
   private gameScene: GameScene;
 
-  constructor(data) {
+  constructor() {
     super();
 
-    this.data = data,
-    this.scene = data.scene,
-    this.camera = data.camera,
+    // this.data = data,
+    // this.scene = data.scene,
+    // this.camera = data.camera,
 
     this.init();
   }
@@ -26,14 +26,14 @@ export default class Scene3D extends THREE.Group {
     this.gameScene.update(dt);
   }
 
-  onPointerMove(x, y) {
-  }
+  // onPointerMove(x, y) {
+  // }
 
-  onPointerDown(x, y) {
-  }
+  // onPointerDown(x, y) {
+  // }
 
-  onPointerUp(x, y) {
-  }
+  // onPointerUp(x, y) 
+  // }
 
   public rotateCubeToDirection(rotateDirection: RotateDirection): void {
     this.gameScene.rotateCube(rotateDirection);

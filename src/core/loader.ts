@@ -34,12 +34,12 @@ export default class Loader {
     this._loadPixiAssets();
   }
 
-  _onBlackAssetsProgress(item, progress) { // eslint-disable-line no-unused-vars
+  // _onBlackAssetsProgress(item, progress) { // eslint-disable-line no-unused-vars
     // progressRatio = progress;
 
     // const percent = Math.floor(progressRatio * 100);
     // loadingPercentElement.innerHTML = `${percent}%`;
-  }
+  // }
 
   _onBlackAssetsLoaded() {
     // this.removeFromParent();
@@ -96,7 +96,7 @@ export default class Loader {
     }, 100);
   }
 
-  _onThreeJSAssetsProgress(itemUrl, itemsLoaded, itemsTotal) {
+  _onThreeJSAssetsProgress() {
     const percent = Math.floor(0.5 * 100);
     loadingPercentElement.innerHTML = `${percent}%`;
   }

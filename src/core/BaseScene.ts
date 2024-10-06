@@ -14,7 +14,7 @@ export default class BaseScene {
   private loadingOverlay: any;
   private mainScene: any;
   private scene3DDebugMenu: any;
-  private orbitControls: any;
+  // private orbitControls: any;
   private pixiApp: any;
 
   private windowSizes: any;
@@ -27,7 +27,7 @@ export default class BaseScene {
     this.loadingOverlay = null;
     this.mainScene = null;
     this.scene3DDebugMenu = null;
-    this.orbitControls = null;
+    // this.orbitControls = null;
     this.pixiApp = null;
 
     this.windowSizes = {};
@@ -172,8 +172,8 @@ export default class BaseScene {
   }
 
   _initScene3DDebugMenu() {
-    this.scene3DDebugMenu = new Scene3DDebugMenu(this.scene, this.camera, this.renderer, this.pixiApp);
-    this.orbitControls = this.scene3DDebugMenu.getOrbitControls();
+    this.scene3DDebugMenu = new Scene3DDebugMenu(this.camera, this.renderer, this.pixiApp);
+    // this.orbitControls = this.scene3DDebugMenu.getOrbitControls();
   }
 
   _initUpdate() {

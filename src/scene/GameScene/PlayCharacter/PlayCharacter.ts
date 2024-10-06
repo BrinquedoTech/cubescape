@@ -7,7 +7,7 @@ import { MoveDirection } from '../../Enums/MoveDirection';
 import { PlayCharacterState } from '../../Enums/PlayCharacterState';
 
 export default class PlayCharacter extends THREE.Group {
-  private view: THREE.Mesh;
+  // private view: THREE.Mesh;
   private levelConfig: ILevelConfig;
   private activeSurface: CubeSide;
   private previousGridPosition: THREE.Vector2 = new THREE.Vector2();
@@ -109,10 +109,10 @@ export default class PlayCharacter extends THREE.Group {
     this.currentGridPosition.set(gridX, gridY);
   }
 
-  public moveToDirection(direction: MoveDirection): void {
+  // public moveToDirection(direction: MoveDirection): void {
     // this.state = PlayCharacterState.Moving;
     // this.movingDirection = direction; 
-  }
+  // }
 
   public stopMoving(): void {
     this.state = PlayCharacterState.Idle;
@@ -171,7 +171,7 @@ export default class PlayCharacter extends THREE.Group {
   private initView(): void {
     const geometry = new THREE.SphereGeometry(0.5, 32, 32);
     const material = new THREE.MeshStandardMaterial({ color: 0x00ff00 });
-    const view = this.view = new THREE.Mesh(geometry, material);
+    const view = new THREE.Mesh(geometry, material);
     this.add(view);
 
     view.scale.set(GameplayConfig.gridScale, GameplayConfig.gridScale, GameplayConfig.gridScale);
