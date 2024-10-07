@@ -28,35 +28,6 @@ export default class GameScene extends THREE.Group {
   }
 
   public update(dt: number): void {
-    // if (this.playCharacter.getState() === PlayCharacterState.Moving) {
-    //   const speed: number = 20;
-    //   const distance: number = speed * dt;
-
-    //   const surfacePosition: THREE.Vector2 = this.playCharacter.getSurfacePosition();
-    //   const movingDirection: MoveDirection = this.playCharacter.getMovingDirection();
-
-    //   const newX: number = surfacePosition.x + MovementDirectionConfig[movingDirection].vector.x * distance;
-    //   const newY: number = surfacePosition.y + MovementDirectionConfig[movingDirection].vector.y * distance;
-
-    //   if (distance > GameplayConfig.gridSize * 0.5) {
-    //     this.playCharacter.setIsCrossedCellCenter(false);
-    //   }
-
-    //   if (this.playCharacter.isCrossedCenterGridCell(newX, newY) && !this.playCharacter.getIsCrossedCellCenter()) {
-    //     this.playCharacter.setIsCrossedCellCenter(true);
-
-    //     const playCharacterGridPosition: THREE.Vector2 = this.playCharacter.getGridPosition();
-
-    //     if (!this.isNextCellAvailable(playCharacterGridPosition.x, playCharacterGridPosition.y, movingDirection)) {
-    //       this.playCharacter.stopMoving();
-    //       this.playCharacter.setIsCrossedCellCenter(false);
-    //       // this.playCharacter.setGridPositionOnActiveSurface(playCharacterGridPosition.x, playCharacterGridPosition.y);
-    //     }
-    //   } else {
-    //     this.playCharacter.setPositionOnActiveSurface(newX, newY);
-    //   }
-    // }
-
     if (this.cube) {
       this.cube.update(dt);
     }
@@ -65,26 +36,6 @@ export default class GameScene extends THREE.Group {
       this.playCharacter.update(dt);
     }
   }
-
-  // private isNextCellAvailable(startCellX: number, startCellY: number, movingDirection: MoveDirection): boolean {
-  //   const currentSide: CubeSide = this.cube.getCurrentSide();
-  //   const sideMap: number[][] = this.levelConfig.map.surfaces[currentSide];
-
-  //   const targetGridPosition = new THREE.Vector2(
-  //     startCellX + MovementDirectionConfig[movingDirection].vector.x,
-  //     startCellY + MovementDirectionConfig[movingDirection].vector.y,
-  //   );
-    
-  //   if (targetGridPosition.x < 0 || targetGridPosition.x >= this.levelConfig.size || targetGridPosition.y < 0 || targetGridPosition.y >= this.levelConfig.size) {
-  //     return false;
-  //   }
-
-  //   if (sideMap[targetGridPosition.y][targetGridPosition.x] === 1) {
-  //     return false
-  //   }
-
-  //   return true;
-  // }
 
   private isCellAvailable(cellX: number, cellY: number): boolean {
     const currentSide: CubeSide = this.cube.getCurrentSide();
@@ -109,9 +60,7 @@ export default class GameScene extends THREE.Group {
   }
 
   private moveCharacter(moveDirection: MoveDirection): void {
-    // const currentSide: CubeSide = this.cube.getCurrentSide();
     const currentRotationDirection: CubeRotationDirection = this.cube.getCurrentRotationDirection();
-    // const sideMap: number[][] = this.levelConfig.map.surfaces[currentSide];
 
     const movingDirection: MoveDirection = MovementDirectionByCubeRotationConfig[moveDirection][currentRotationDirection].direction;
 
@@ -133,15 +82,13 @@ export default class GameScene extends THREE.Group {
       }
     }
 
-    if (!this.isCellsEqual(playCharacterGridPosition, targetGridPosition)) {
-      // this.playCharacter.setGridPositionOnActiveSurface(targetGridPosition.x, targetGridPosition.y);
+    if (!this.isGridCellsEqual(playCharacterGridPosition, targetGridPosition)) {
       this.playCharacter.moveToGridCell(targetGridPosition.x, targetGridPosition.y);
     }
-
   }
 
-  private isCellsEqual(cell1: THREE.Vector2, cell2: THREE.Vector2): boolean {
-    return cell1.x === cell2.x && cell1.y === cell2.y;
+  private isGridCellsEqual(cell1Position: THREE.Vector2, cell2Position: THREE.Vector2): boolean {
+    return cell1Position.x === cell2Position.x && cell1Position.y === cell2Position.y;
   }
 
   private init(): void {

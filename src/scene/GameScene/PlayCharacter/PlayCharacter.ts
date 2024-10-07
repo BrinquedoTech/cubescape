@@ -3,21 +3,21 @@ import { ILevelConfig } from '../../Interfaces/ILevelConfig';
 import { CubeSide } from '../../Enums/CubeSide';
 import GameplayConfig from '../../Configs/GameplayConfig';
 import { CharacterSurfaceConfig } from '../../Configs/SurfaceConfig';
-import { MoveDirection } from '../../Enums/MoveDirection';
 import { PlayCharacterState } from '../../Enums/PlayCharacterState';
+import TWEEN from 'three/addons/libs/tween.module.js';
 
 export default class PlayCharacter extends THREE.Group {
   // private view: THREE.Mesh;
   private levelConfig: ILevelConfig;
   private activeSurface: CubeSide;
-  private previousGridPosition: THREE.Vector2 = new THREE.Vector2();
   private currentGridPosition: THREE.Vector2 = new THREE.Vector2();
-  private movingDirection: MoveDirection;
   private surfacePosition: THREE.Vector2 = new THREE.Vector2();
   private state: PlayCharacterState = PlayCharacterState.Idle;
-  private isCrossedCellCenter: boolean = false;
-  private targetGridPosition: THREE.Vector2 = new THREE.Vector2();
-
+  
+  private targetSurfacePosition: THREE.Vector2 = new THREE.Vector2();
+  private startMovingPosition: THREE.Vector2 = new THREE.Vector2();
+  private elapsedTime: number = 0;
+  private duration: number = 0;
 
   private isActive: boolean = false;
 
@@ -29,29 +29,24 @@ export default class PlayCharacter extends THREE.Group {
 
   public update(dt: number) {
     if (this.state === PlayCharacterState.Moving) {
-      // moving using targetGridPosition
-      const speed: number = 15;
-      const distance: number = speed * dt;
+      this.elapsedTime += dt;
 
-      const surfacePosition: THREE.Vector2 = this.surfacePosition;
+      const t = Math.min(this.elapsedTime / this.duration, 1);
 
-      const newX: number = this.targetGridPosition.x * GameplayConfig.gridSize;
-      const newY: number = this.targetGridPosition.y * GameplayConfig.gridSize;
+      const easeT = TWEEN.Easing.Quintic.Out(t);
 
-      // interpolate position to targetGridPosition
-      const diffX = newX - surfacePosition.x;
-      const diffY = newY - surfacePosition.y;
+      const targetX = this.startMovingPosition.x + (this.targetSurfacePosition.x - this.startMovingPosition.x) * easeT;
+      const targetY = this.startMovingPosition.y + (this.targetSurfacePosition.y - this.startMovingPosition.y) * easeT;
 
-      if (Math.abs(diffX) < distance && Math.abs(diffY) < distance) {
-        this.setPositionOnActiveSurface(newX, newY);
+      this.setPositionOnActiveSurface(targetX, targetY);
+
+      if (t >= 1) {
         this.stopMoving();
-      } else {
-        this.setPositionOnActiveSurface(surfacePosition.x + diffX * distance, surfacePosition.y + diffY * distance);
+        this.state = PlayCharacterState.Idle;
+        this.setGridPositionOnActiveSurface(this.targetSurfacePosition.x, this.targetSurfacePosition.y);
+
+        this.elapsedTime = 0;
       }
-
-
-
-
     }
   }
 
@@ -77,7 +72,23 @@ export default class PlayCharacter extends THREE.Group {
 
   public moveToGridCell(gridX: number, gridY: number): void {
     this.state = PlayCharacterState.Moving;
-    this.targetGridPosition.set(gridX, gridY);
+    this.targetSurfacePosition.set(gridX * GameplayConfig.gridSize, gridY * GameplayConfig.gridSize);
+    this.startMovingPosition.set(this.surfacePosition.x, this.surfacePosition.y);
+
+    const distance = this.calculateGridLineDistance(this.currentGridPosition.x, this.currentGridPosition.y, gridX, gridY);
+    this.duration = distance * 0.07;
+  }
+
+  private calculateGridLineDistance(x1: number, y1: number, x2: number, y2: number): number {
+    if (x1 === x2) {
+      return Math.abs(y1 - y2);
+    }
+
+    if (y1 === y2) {
+      return Math.abs(x1 - x2);
+    }
+
+    return null;
   }
 
   public setPosition(cubeSide: CubeSide, x: number, y: number): void {
@@ -92,7 +103,7 @@ export default class PlayCharacter extends THREE.Group {
     this.position.set(newX, newY, newZ);
     this.surfacePosition.set(x, y);
 
-    this.calculateGridPosition();
+    this.calculateGridPosition(this.surfacePosition.x, this.surfacePosition.y);
   }
 
   public setGridPosition(cubeSide: CubeSide, gridX: number, gridY: number): void {
@@ -105,26 +116,11 @@ export default class PlayCharacter extends THREE.Group {
     const newZ: number = surfaceConfig.z !== null ? (surfaceConfig.z * GameplayConfig.gridSize - startOffset) * surfaceConfig.zFactor : distance * surfaceConfig.zFactor;
 
     this.position.set(newX, newY, newZ);
-    this.previousGridPosition.set(this.currentGridPosition.x, this.currentGridPosition.y);
     this.currentGridPosition.set(gridX, gridY);
   }
 
-  // public moveToDirection(direction: MoveDirection): void {
-    // this.state = PlayCharacterState.Moving;
-    // this.movingDirection = direction; 
-  // }
-
   public stopMoving(): void {
     this.state = PlayCharacterState.Idle;
-    this.movingDirection = null;
-  }
-
-  public getSurfacePosition(): THREE.Vector2 {
-    return this.surfacePosition;
-  }
-
-  public getMovingDirection(): MoveDirection {
-    return this.movingDirection;
   }
 
   public isActivated(): boolean {
@@ -135,37 +131,14 @@ export default class PlayCharacter extends THREE.Group {
     return this.state;
   }
 
-  public setIsCrossedCellCenter(value: boolean): void {
-    this.isCrossedCellCenter = value;
-  }
-
-  public getIsCrossedCellCenter(): boolean {
-    return this.isCrossedCellCenter;
-  }
-
   public getGridPosition(): THREE.Vector2 {
     return this.currentGridPosition;
   }
 
-  public isCrossedCenterGridCell(x: number, y: number): boolean {
-    const cellCenterX = Math.round(x / GameplayConfig.gridSize) * GameplayConfig.gridSize;
-    const cellCenterY = Math.round(y / GameplayConfig.gridSize) * GameplayConfig.gridSize;
-
-    return Math.abs(x - cellCenterX) < GameplayConfig.gridSize * 0.1 && Math.abs(y - cellCenterY) < GameplayConfig.gridSize * 0.1;
-  }
-
-  private calculateGridPosition(): void {
-    const gridX: number = Math.round(this.surfacePosition.x / GameplayConfig.gridSize);
-    const gridY: number = Math.round(this.surfacePosition.y / GameplayConfig.gridSize);
-
-    if (gridX !== this.currentGridPosition.x || gridY !== this.currentGridPosition.y) {
-      // console.log(`%c new cell `, 'background: #222; color: #dd0000', gridX, gridY);
-      this.previousGridPosition.set(this.currentGridPosition.x, this.currentGridPosition.y);
-      this.currentGridPosition.set(gridX, gridY);
-      this.isCrossedCellCenter = false;
-    }
-    // console.log(gridX, gridY);
-    // this.setGridPosition(this.activeSurface, gridX, gridY);
+  private calculateGridPosition(x: number, y: number): void {
+    const gridX: number = Math.round(x / GameplayConfig.gridSize);
+    const gridY: number = Math.round(y / GameplayConfig.gridSize);
+    this.currentGridPosition.set(gridX, gridY);
   }
 
   private initView(): void {
