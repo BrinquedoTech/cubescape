@@ -13,6 +13,7 @@ import { MovementDirectionByButtonConfig, MovementDirectionByCubeRotationConfig,
 import { CubeState } from '../Enums/CubeState';
 import { PlayerCharacterState } from '../Enums/PlayerCharacterState';
 import GridHelper from '../Helpers/GridHelper';
+import { LevelType } from '../Enums/LevelType';
 
 export default class GameScene extends THREE.Group {
   private cube: Cube;
@@ -25,7 +26,7 @@ export default class GameScene extends THREE.Group {
 
     this.init();
 
-    this.startLevel(0);
+    this.startLevel(LevelType.Level02);
   }
 
   public update(dt: number): void {
@@ -38,8 +39,8 @@ export default class GameScene extends THREE.Group {
     }
   }
 
-  public startLevel(levelId: number): void {
-    const levelConfig: ILevelConfig = this.levelConfig = LevelsConfig[levelId];
+  public startLevel(levelType: LevelType): void {
+    const levelConfig: ILevelConfig = this.levelConfig = LevelsConfig[levelType];
 
     this.cube.init(levelConfig);
     this.playerCharacter.init(levelConfig);
