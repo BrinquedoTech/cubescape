@@ -38,12 +38,12 @@ const CubeEdgeNameVectorsConfig: { [key in CubeRotationDirection]: { position: T
 }
 
 const GridRotationConfig: { [key in CubeSide]: THREE.Vector3 } = {
-  [CubeSide.Front]: new THREE.Vector3(Math.PI * 0.5, 0, 0),
-  [CubeSide.Back]: new THREE.Vector3(Math.PI * 0.5, Math.PI, 0),
-  [CubeSide.Left]: new THREE.Vector3(0, 0, Math.PI * 0.5),
-  [CubeSide.Right]: new THREE.Vector3(0, 0, -Math.PI * 0.5),
-  [CubeSide.Top]: new THREE.Vector3(0, 0, 0),
-  [CubeSide.Bottom]: new THREE.Vector3(Math.PI, 0, 0),
+  [CubeSide.Front]: new THREE.Vector3(0, 0, 0),
+  [CubeSide.Back]: new THREE.Vector3(0, Math.PI, 0),
+  [CubeSide.Left]: new THREE.Vector3(0, Math.PI * 0.5, 0),
+  [CubeSide.Right]: new THREE.Vector3(0, -Math.PI * 0.5, 0),
+  [CubeSide.Top]: new THREE.Vector3(-Math.PI * 0.5, 0, 0),
+  [CubeSide.Bottom]: new THREE.Vector3(Math.PI * 0.5, 0, 0),
 };
 
 export { CubeSideName, CubeEdgeName, CubeEdgeNameVectorsConfig, GridRotationConfig };

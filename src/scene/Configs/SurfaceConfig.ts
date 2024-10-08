@@ -1,16 +1,7 @@
 import * as THREE from 'three';
 import { CubeSide } from '../Enums/CubeSide';
-import { ICubeSurfaceAxisConfig } from '../Interfaces/ICubeConfig';
+import { ICharacterSurfaceConfig, ICubeSurfaceAxisConfig, ILocalEdgeDirections } from '../Interfaces/ICubeConfig';
 import { CubeRotationDirection } from '../Enums/CubeRotationDirection';
-
-const SurfaceVectorConfig: { [key in CubeSide]: THREE.Vector3 } = {
-  [CubeSide.Front]: new THREE.Vector3(0, 0, 1),
-  [CubeSide.Right]: new THREE.Vector3(1, 0, 0),
-  [CubeSide.Left]: new THREE.Vector3(-1, 0, 0),
-  [CubeSide.Top]: new THREE.Vector3(0, 1, 0),
-  [CubeSide.Bottom]: new THREE.Vector3(0, -1, 0),
-  [CubeSide.Back]: new THREE.Vector3(0, 0, -1),
-};
 
 const SurfaceRotationConfig: { [key in CubeSide]: THREE.Vector3 } = {
   [CubeSide.Front]: new THREE.Vector3(0, 0, 0),
@@ -19,18 +10,27 @@ const SurfaceRotationConfig: { [key in CubeSide]: THREE.Vector3 } = {
   [CubeSide.Right]: new THREE.Vector3(0, Math.PI * 0.5, 0),
   [CubeSide.Top]: new THREE.Vector3(-Math.PI * 0.5, 0, 0),
   [CubeSide.Bottom]: new THREE.Vector3(Math.PI * 0.5, 0, 0),
-};
+}
 
-const CubeSurfaceAxisConfig: ICubeSurfaceAxisConfig[] = [
-  { side: CubeSide.Front, configIndex: 0, xAxis: 'x', yAxis: 'y', zAxis: 'z', xFactor: 1, yFactor: -1 },
-  { side: CubeSide.Left, configIndex: 2, xAxis: 'z', yAxis: 'y', zAxis: 'x', xFactor: 1, yFactor: -1 },
-  { side: CubeSide.Right, configIndex: 1, xAxis: 'z', yAxis: 'y', zAxis: 'x', xFactor: -1, yFactor: -1 },
-  { side: CubeSide.Top, configIndex: 3, xAxis: 'x', yAxis: 'z', zAxis: 'y', xFactor: 1, yFactor: 1 },
-  { side: CubeSide.Bottom, configIndex: 4, xAxis: 'x', yAxis: 'z', zAxis: 'y', xFactor: 1, yFactor: -1 },
-  { side: CubeSide.Back, configIndex: 5, xAxis: 'x', yAxis: 'y', zAxis: 'z', xFactor: -1, yFactor: -1 },
-];
+const SideVectorConfig: { [key in CubeSide]: THREE.Vector3 } = {
+  [CubeSide.Front]: new THREE.Vector3(0, 0, 1),
+  [CubeSide.Right]: new THREE.Vector3(1, 0, 0),
+  [CubeSide.Left]: new THREE.Vector3(-1, 0, 0),
+  [CubeSide.Top]: new THREE.Vector3(0, 1, 0),
+  [CubeSide.Bottom]: new THREE.Vector3(0, -1, 0),
+  [CubeSide.Back]: new THREE.Vector3(0, 0, -1),
+}
 
-const CharacterSurfaceConfig = {
+const CubeSurfaceAxisConfig: { [key in CubeSide]: ICubeSurfaceAxisConfig } = {
+  [CubeSide.Front]: { xAxis: 'x', yAxis: 'y', zAxis: 'z', xFactor: 1, yFactor: -1 },
+  [CubeSide.Left]: { xAxis: 'z', yAxis: 'y', zAxis: 'x', xFactor: 1, yFactor: -1 },
+  [CubeSide.Right]: { xAxis: 'z', yAxis: 'y', zAxis: 'x', xFactor: -1, yFactor: -1 },
+  [CubeSide.Top]: { xAxis: 'x', yAxis: 'z', zAxis: 'y', xFactor: 1, yFactor: 1 },
+  [CubeSide.Bottom]: { xAxis: 'x', yAxis: 'z', zAxis: 'y', xFactor: 1, yFactor: -1 },
+  [CubeSide.Back]: { xAxis: 'x', yAxis: 'y', zAxis: 'z', xFactor: -1, yFactor: -1 },
+}
+
+const CharacterSurfaceConfig: { [key in CubeSide]: (x: number, y: number) => ICharacterSurfaceConfig } = {
   [CubeSide.Front]: (x: number, y: number) => { return { xFactor: 1, yFactor: -1, zFactor: 1, x: x, y: y, z: null }},
   [CubeSide.Left]: (x: number, y: number) => { return { xFactor: -1, yFactor: -1, zFactor: 1, x: null, y: y, z: x }},
   [CubeSide.Right]: (x: number, y: number) => { return { xFactor: 1, yFactor: -1, zFactor: -1, x: null, y: y, z: x }},
@@ -39,16 +39,7 @@ const CharacterSurfaceConfig = {
   [CubeSide.Back]: (x: number, y: number) => { return { xFactor: -1, yFactor: -1, zFactor: -1, x: x, y: y, z: null }},
 }
 
-const SideVectorConfig: { [key in CubeSide]: THREE.Vector3} = {
-  [CubeSide.Front]: new THREE.Vector3(0, 0, 1),
-  [CubeSide.Right]: new THREE.Vector3(1, 0, 0),
-  [CubeSide.Left]: new THREE.Vector3(-1, 0, 0),
-  [CubeSide.Top]: new THREE.Vector3(0, 1, 0),
-  [CubeSide.Bottom]: new THREE.Vector3(0, -1, 0),
-  [CubeSide.Back]: new THREE.Vector3(0, 0, -1),
-};
-
-const LocalEdgeDirections = {
+const LocalEdgeDirections: ILocalEdgeDirections = {
   [CubeSide.Front]: {
     [CubeRotationDirection.Top]: new THREE.Vector3(0, 1, 0),
     [CubeRotationDirection.Right]: new THREE.Vector3(1, 0, 0),
@@ -87,4 +78,4 @@ const LocalEdgeDirections = {
   },
 }
 
-export { SurfaceVectorConfig, CubeSurfaceAxisConfig, CharacterSurfaceConfig, SideVectorConfig, LocalEdgeDirections, SurfaceRotationConfig };
+export { CubeSurfaceAxisConfig, CharacterSurfaceConfig, SideVectorConfig, LocalEdgeDirections, SurfaceRotationConfig };

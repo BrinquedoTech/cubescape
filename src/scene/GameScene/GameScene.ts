@@ -14,6 +14,8 @@ import { CubeState } from '../Enums/CubeState';
 import { PlayerCharacterState } from '../Enums/PlayerCharacterState';
 import GridHelper from '../Helpers/GridHelper';
 import { LevelType } from '../Enums/LevelType';
+import { ICubeSurfaceAxisConfig } from '../Interfaces/ICubeConfig';
+import { CubeSurfaceAxisConfig } from '../Configs/SurfaceConfig';
 
 export default class GameScene extends THREE.Group {
   private cube: Cube;
@@ -63,7 +65,11 @@ export default class GameScene extends THREE.Group {
     const startPoint: number = playerCharacterGridPosition[activeAxis];
     const targetGridPosition: THREE.Vector2 = new THREE.Vector2(playerCharacterGridPosition.x, playerCharacterGridPosition.y);
 
-    for (let i = startPoint + sign; i >= 0 && i < this.levelConfig.size; i += sign) {
+    const cubeSide: CubeSide = this.cube.getCurrentSide();
+    const cubeSurfaceAxisConfig: ICubeSurfaceAxisConfig = CubeSurfaceAxisConfig[cubeSide];
+    const gridSize: number = activeAxis === 'x' ? this.levelConfig.size[cubeSurfaceAxisConfig.xAxis] : this.levelConfig.size[cubeSurfaceAxisConfig.yAxis];
+
+    for (let i = startPoint + sign; i >= 0 && i < gridSize; i += sign) {
       const nextCellX: number = activeAxis === 'x' ? i : playerCharacterGridPosition.x;
       const nextCellY: number = activeAxis === 'y' ? i : playerCharacterGridPosition.y;
 

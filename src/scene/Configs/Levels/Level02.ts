@@ -3,8 +3,8 @@ import { CubeEdge } from "../../Enums/CubeEdge";
 import { CubeSide } from "../../Enums/CubeSide";
 import { ILevelConfig } from "../../Interfaces/ILevelConfig";
 
-const Level01: ILevelConfig = {
-  size: 7,
+const Level02: ILevelConfig = {
+  size: new THREE.Vector3(5, 6, 7),
   map: {
     surfaces: {
       [CubeSide.Front]: [
@@ -84,4 +84,4 @@ const Level01: ILevelConfig = {
   },
 };
 
-export default Level01;
+export default Level02;

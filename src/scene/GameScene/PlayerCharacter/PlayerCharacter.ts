@@ -2,11 +2,12 @@ import * as THREE from 'three';
 import { ILevelConfig } from '../../Interfaces/ILevelConfig';
 import { CubeSide } from '../../Enums/CubeSide';
 import GameplayConfig from '../../Configs/GameplayConfig';
-import { CharacterSurfaceConfig } from '../../Configs/SurfaceConfig';
+import { CharacterSurfaceConfig, CubeSurfaceAxisConfig } from '../../Configs/SurfaceConfig';
 import { PlayerCharacterState } from '../../Enums/PlayerCharacterState';
 import TWEEN from 'three/addons/libs/tween.module.js';
 import GridHelper from '../../Helpers/GridHelper';
 import { PlayerCharacterConfig } from '../../Configs/PlayerCharacterConfig';
+import { ICubeSurfaceAxisConfig } from '../../Interfaces/ICubeConfig';
 
 export default class PlayerCharacter extends THREE.Group {
   // private view: THREE.Mesh;
@@ -18,6 +19,7 @@ export default class PlayerCharacter extends THREE.Group {
   
   private startMovingPosition: THREE.Vector2 = new THREE.Vector2();
   private targetMovingPosition: THREE.Vector2 = new THREE.Vector2();
+  private targetMovingGridPosition: THREE.Vector2 = new THREE.Vector2();
   private movingElapsedTime: number = 0;
   private movingDuration: number = 0;
 
@@ -45,7 +47,7 @@ export default class PlayerCharacter extends THREE.Group {
         this.stopMoving();
         this.state = PlayerCharacterState.Idle;
         this.movingElapsedTime = 0;
-        this.setGridPositionOnActiveSurface(this.targetMovingPosition.x, this.targetMovingPosition.y);
+        this.setGridPositionOnActiveSurface(this.targetMovingGridPosition.x, this.targetMovingGridPosition.y);
       }
     }
   }
@@ -74,19 +76,25 @@ export default class PlayerCharacter extends THREE.Group {
     this.state = PlayerCharacterState.Moving;
     this.targetMovingPosition.set(gridX * GameplayConfig.gridSize, gridY * GameplayConfig.gridSize);
     this.startMovingPosition.set(this.surfacePosition.x, this.surfacePosition.y);
+    this.targetMovingGridPosition.set(gridX, gridY);
 
     const distance: number = GridHelper.calculateGridLineDistance(this.gridPosition.x, this.gridPosition.y, gridX, gridY);
     this.movingDuration = distance * PlayerCharacterConfig.speedCoefficient;
   }
 
   public setPosition(cubeSide: CubeSide, x: number, y: number): void {
-    const distance: number = (this.levelConfig.size + 1) * 0.5 * GameplayConfig.gridSize;
-    const startOffset: number = (this.levelConfig.size - 1) * 0.5 * GameplayConfig.gridSize;
+    const cubeSurfaceAxisConfig: ICubeSurfaceAxisConfig = CubeSurfaceAxisConfig[cubeSide];
+    const distance: number = (this.levelConfig.size[cubeSurfaceAxisConfig.zAxis] + 1) * 0.5 * GameplayConfig.gridSize;
 
-    const surfaceConfig = CharacterSurfaceConfig[cubeSide](x, y);    
-    const newX: number = surfaceConfig.x !== null ? (surfaceConfig.x - startOffset) * surfaceConfig.xFactor : distance * surfaceConfig.xFactor;
-    const newY: number = surfaceConfig.y !== null ? (surfaceConfig.y - startOffset) * surfaceConfig.yFactor : distance * surfaceConfig.yFactor;
-    const newZ: number = surfaceConfig.z !== null ? (surfaceConfig.z - startOffset) * surfaceConfig.zFactor : distance * surfaceConfig.zFactor;
+    const surfaceConfig = CharacterSurfaceConfig[cubeSide](x, y); 
+
+    const startOffsetX: number = (this.levelConfig.size[cubeSurfaceAxisConfig.xAxis] - 1) * 0.5 * GameplayConfig.gridSize;
+    const startOffsetY: number = (this.levelConfig.size[cubeSurfaceAxisConfig.yAxis] - 1) * 0.5 * GameplayConfig.gridSize;
+    const startOffsetZ: number = surfaceConfig.x === null ? startOffsetX : startOffsetY;
+
+    const newX: number = surfaceConfig.x !== null ? (surfaceConfig.x - startOffsetX) * surfaceConfig.xFactor : distance * surfaceConfig.xFactor;
+    const newY: number = surfaceConfig.y !== null ? (surfaceConfig.y - startOffsetY) * surfaceConfig.yFactor : distance * surfaceConfig.yFactor;
+    const newZ: number = surfaceConfig.z !== null ? (surfaceConfig.z - startOffsetZ) * surfaceConfig.zFactor : distance * surfaceConfig.zFactor;
 
     this.position.set(newX, newY, newZ);
     this.surfacePosition.set(x, y);
@@ -96,16 +104,22 @@ export default class PlayerCharacter extends THREE.Group {
   }
 
   public setGridPosition(cubeSide: CubeSide, gridX: number, gridY: number): void {
-    const distance: number = (this.levelConfig.size + 1) * 0.5 * GameplayConfig.gridSize;
-    const startOffset: number = (this.levelConfig.size - 1) * 0.5 * GameplayConfig.gridSize;
+    const cubeSurfaceAxisConfig: ICubeSurfaceAxisConfig = CubeSurfaceAxisConfig[cubeSide];
+    const distance: number = (this.levelConfig.size[cubeSurfaceAxisConfig.zAxis] + 1) * 0.5 * GameplayConfig.gridSize;
 
-    const surfaceConfig = CharacterSurfaceConfig[cubeSide](gridX, gridY);    
-    const newX: number = surfaceConfig.x !== null ? (surfaceConfig.x * GameplayConfig.gridSize - startOffset) * surfaceConfig.xFactor : distance * surfaceConfig.xFactor;
-    const newY: number = surfaceConfig.y !== null ? (surfaceConfig.y * GameplayConfig.gridSize - startOffset) * surfaceConfig.yFactor : distance * surfaceConfig.yFactor;
-    const newZ: number = surfaceConfig.z !== null ? (surfaceConfig.z * GameplayConfig.gridSize - startOffset) * surfaceConfig.zFactor : distance * surfaceConfig.zFactor;
+    const surfaceConfig = CharacterSurfaceConfig[cubeSide](gridX, gridY);
+
+    const startOffsetX: number = (this.levelConfig.size[cubeSurfaceAxisConfig.xAxis] - 1) * 0.5 * GameplayConfig.gridSize;
+    const startOffsetY: number = (this.levelConfig.size[cubeSurfaceAxisConfig.yAxis] - 1) * 0.5 * GameplayConfig.gridSize;
+    const startOffsetZ: number = surfaceConfig.x === null ? startOffsetX : startOffsetY;
+
+    const newX: number = surfaceConfig.x !== null ? (surfaceConfig.x * GameplayConfig.gridSize - startOffsetX) * surfaceConfig.xFactor : distance * surfaceConfig.xFactor;
+    const newY: number = surfaceConfig.y !== null ? (surfaceConfig.y * GameplayConfig.gridSize - startOffsetY) * surfaceConfig.yFactor : distance * surfaceConfig.yFactor;
+    const newZ: number = surfaceConfig.z !== null ? (surfaceConfig.z * GameplayConfig.gridSize - startOffsetZ) * surfaceConfig.zFactor : distance * surfaceConfig.zFactor;
 
     this.position.set(newX, newY, newZ);
     this.gridPosition.set(gridX, gridY);
+    this.surfacePosition.set(gridX * GameplayConfig.gridSize, gridY * GameplayConfig.gridSize);
   }
 
   public stopMoving(): void {
