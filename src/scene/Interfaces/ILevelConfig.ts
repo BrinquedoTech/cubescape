@@ -2,7 +2,7 @@ import * as THREE from 'three';
 import { CubeSide } from "../Enums/CubeSide";
 
 export interface ILevelConfig {
-  playCharacter: {
+  playerCharacter: {
     gridPosition: THREE.Vector2;
     direction: number;
     side: CubeSide;

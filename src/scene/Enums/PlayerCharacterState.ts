@@ -1,4 +1,4 @@
-export enum PlayCharacterState {
+export enum PlayerCharacterState {
   Idle = 'IDLE',
   Moving = 'MOVING',
 }

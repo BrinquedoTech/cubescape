@@ -10,3 +10,7 @@ export type IMovementDirectionByCubeRotationConfig = {
         };
     };
 };
+
+export interface IPlayerCharacterConfig {
+  speedCoefficient: number;
+}

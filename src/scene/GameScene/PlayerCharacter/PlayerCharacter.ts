@@ -3,21 +3,23 @@ import { ILevelConfig } from '../../Interfaces/ILevelConfig';
 import { CubeSide } from '../../Enums/CubeSide';
 import GameplayConfig from '../../Configs/GameplayConfig';
 import { CharacterSurfaceConfig } from '../../Configs/SurfaceConfig';
-import { PlayCharacterState } from '../../Enums/PlayCharacterState';
+import { PlayerCharacterState } from '../../Enums/PlayerCharacterState';
 import TWEEN from 'three/addons/libs/tween.module.js';
+import GridHelper from '../../Helpers/GridHelper';
+import { PlayerCharacterConfig } from '../../Configs/PlayerCharacterConfig';
 
-export default class PlayCharacter extends THREE.Group {
+export default class PlayerCharacter extends THREE.Group {
   // private view: THREE.Mesh;
   private levelConfig: ILevelConfig;
   private activeSurface: CubeSide;
-  private currentGridPosition: THREE.Vector2 = new THREE.Vector2();
+  private gridPosition: THREE.Vector2 = new THREE.Vector2();
   private surfacePosition: THREE.Vector2 = new THREE.Vector2();
-  private state: PlayCharacterState = PlayCharacterState.Idle;
+  private state: PlayerCharacterState = PlayerCharacterState.Idle;
   
-  private targetSurfacePosition: THREE.Vector2 = new THREE.Vector2();
   private startMovingPosition: THREE.Vector2 = new THREE.Vector2();
-  private elapsedTime: number = 0;
-  private duration: number = 0;
+  private targetMovingPosition: THREE.Vector2 = new THREE.Vector2();
+  private movingElapsedTime: number = 0;
+  private movingDuration: number = 0;
 
   private isActive: boolean = false;
 
@@ -28,24 +30,22 @@ export default class PlayCharacter extends THREE.Group {
   }
 
   public update(dt: number) {
-    if (this.state === PlayCharacterState.Moving) {
-      this.elapsedTime += dt;
+    if (this.state === PlayerCharacterState.Moving) {
+      this.movingElapsedTime += dt;
 
-      const t = Math.min(this.elapsedTime / this.duration, 1);
+      const t: number = Math.min(this.movingElapsedTime / this.movingDuration, 1);
+      const easeT: number = TWEEN.Easing.Quintic.Out(t);
 
-      const easeT = TWEEN.Easing.Quintic.Out(t);
-
-      const targetX = this.startMovingPosition.x + (this.targetSurfacePosition.x - this.startMovingPosition.x) * easeT;
-      const targetY = this.startMovingPosition.y + (this.targetSurfacePosition.y - this.startMovingPosition.y) * easeT;
+      const targetX: number = this.startMovingPosition.x + (this.targetMovingPosition.x - this.startMovingPosition.x) * easeT;
+      const targetY: number = this.startMovingPosition.y + (this.targetMovingPosition.y - this.startMovingPosition.y) * easeT;
 
       this.setPositionOnActiveSurface(targetX, targetY);
 
       if (t >= 1) {
         this.stopMoving();
-        this.state = PlayCharacterState.Idle;
-        this.setGridPositionOnActiveSurface(this.targetSurfacePosition.x, this.targetSurfacePosition.y);
-
-        this.elapsedTime = 0;
+        this.state = PlayerCharacterState.Idle;
+        this.movingElapsedTime = 0;
+        this.setGridPositionOnActiveSurface(this.targetMovingPosition.x, this.targetMovingPosition.y);
       }
     }
   }
@@ -53,8 +53,8 @@ export default class PlayCharacter extends THREE.Group {
   public init(levelConfig: ILevelConfig): void {
     this.levelConfig = levelConfig;
 
-    const gridPosition: THREE.Vector2 = levelConfig.playCharacter.gridPosition;
-    this.setActiveSurface(levelConfig.playCharacter.side);
+    const gridPosition: THREE.Vector2 = levelConfig.playerCharacter.gridPosition;
+    this.setActiveSurface(levelConfig.playerCharacter.side);
     this.setGridPosition(this.activeSurface, gridPosition.x, gridPosition.y);
   }
 
@@ -71,24 +71,12 @@ export default class PlayCharacter extends THREE.Group {
   }
 
   public moveToGridCell(gridX: number, gridY: number): void {
-    this.state = PlayCharacterState.Moving;
-    this.targetSurfacePosition.set(gridX * GameplayConfig.gridSize, gridY * GameplayConfig.gridSize);
+    this.state = PlayerCharacterState.Moving;
+    this.targetMovingPosition.set(gridX * GameplayConfig.gridSize, gridY * GameplayConfig.gridSize);
     this.startMovingPosition.set(this.surfacePosition.x, this.surfacePosition.y);
 
-    const distance = this.calculateGridLineDistance(this.currentGridPosition.x, this.currentGridPosition.y, gridX, gridY);
-    this.duration = distance * 0.07;
-  }
-
-  private calculateGridLineDistance(x1: number, y1: number, x2: number, y2: number): number {
-    if (x1 === x2) {
-      return Math.abs(y1 - y2);
-    }
-
-    if (y1 === y2) {
-      return Math.abs(x1 - x2);
-    }
-
-    return null;
+    const distance: number = GridHelper.calculateGridLineDistance(this.gridPosition.x, this.gridPosition.y, gridX, gridY);
+    this.movingDuration = distance * PlayerCharacterConfig.speedCoefficient;
   }
 
   public setPosition(cubeSide: CubeSide, x: number, y: number): void {
@@ -103,7 +91,8 @@ export default class PlayCharacter extends THREE.Group {
     this.position.set(newX, newY, newZ);
     this.surfacePosition.set(x, y);
 
-    this.calculateGridPosition(this.surfacePosition.x, this.surfacePosition.y);
+    const gridPosition: THREE.Vector2 = GridHelper.calculateGridPositionByCoordinates(x, y);
+    this.gridPosition.set(gridPosition.x, gridPosition.y);
   }
 
   public setGridPosition(cubeSide: CubeSide, gridX: number, gridY: number): void {
@@ -116,29 +105,23 @@ export default class PlayCharacter extends THREE.Group {
     const newZ: number = surfaceConfig.z !== null ? (surfaceConfig.z * GameplayConfig.gridSize - startOffset) * surfaceConfig.zFactor : distance * surfaceConfig.zFactor;
 
     this.position.set(newX, newY, newZ);
-    this.currentGridPosition.set(gridX, gridY);
+    this.gridPosition.set(gridX, gridY);
   }
 
   public stopMoving(): void {
-    this.state = PlayCharacterState.Idle;
+    this.state = PlayerCharacterState.Idle;
   }
 
   public isActivated(): boolean {
     return this.isActive;
   }
 
-  public getState(): PlayCharacterState {
+  public getState(): PlayerCharacterState {
     return this.state;
   }
 
   public getGridPosition(): THREE.Vector2 {
-    return this.currentGridPosition;
-  }
-
-  private calculateGridPosition(x: number, y: number): void {
-    const gridX: number = Math.round(x / GameplayConfig.gridSize);
-    const gridY: number = Math.round(y / GameplayConfig.gridSize);
-    this.currentGridPosition.set(gridX, gridY);
+    return this.gridPosition;
   }
 
   private initView(): void {

@@ -79,7 +79,7 @@ const LevelsConfig: ILevelConfig[] = [
         [CubeEdge.BackRight]: [1, 0, 1, 1, 1, 1, 1],
       },
     },
-    playCharacter: {
+    playerCharacter: {
       gridPosition: new THREE.Vector2(0, 0),
       direction: 0,
       side: CubeSide.Front,

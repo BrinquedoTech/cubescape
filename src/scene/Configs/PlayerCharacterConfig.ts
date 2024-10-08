@@ -1,7 +1,12 @@
 import * as THREE from 'three';
 import { CubeRotationDirection } from "../Enums/CubeRotationDirection";
 import { MoveDirection } from "../Enums/MoveDirection";
-import { IMovementDirectionByCubeRotationConfig } from "../Interfaces/ICharacterConfig";
+import { IMovementDirectionByCubeRotationConfig, IPlayerCharacterConfig } from "../Interfaces/ICharacterConfig";
+import { ButtonType } from '../Enums/ButtonType';
+
+const PlayerCharacterConfig: IPlayerCharacterConfig = {
+  speedCoefficient: 0.07,
+}
 
 const MovementDirectionByCubeRotationConfig: IMovementDirectionByCubeRotationConfig = {
   [MoveDirection.Right]: {
@@ -97,5 +102,11 @@ const MovementDirectionConfig: { [key in MoveDirection]: { vector: THREE.Vector2
   },
 };
 
+const MovementDirectionByButtonConfig: { [key in ButtonType]: MoveDirection } = {
+  [ButtonType.Right]: MoveDirection.Right,
+  [ButtonType.Left]: MoveDirection.Left,
+  [ButtonType.Up]: MoveDirection.Up,
+  [ButtonType.Down]: MoveDirection.Down,
+};
 
-export { MovementDirectionByCubeRotationConfig, MovementDirectionConfig };
+export { MovementDirectionByCubeRotationConfig, MovementDirectionConfig, MovementDirectionByButtonConfig, PlayerCharacterConfig };
