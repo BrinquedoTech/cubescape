@@ -4,7 +4,7 @@ import { CubeSide } from "../../Enums/CubeSide";
 import { ILevelConfig } from "../../Interfaces/ILevelConfig";
 
 const Level02: ILevelConfig = {
-  size: new THREE.Vector3(5, 6, 7),
+  size: new THREE.Vector3(7, 7, 7),
   map: {
     surfaces: {
       [CubeSide.Front]: [

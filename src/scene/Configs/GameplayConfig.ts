@@ -1,5 +1,5 @@
 const GameplayConfig = {
-  gridSize: 1.3,
+  gridSize: 1,
   gridScale: 1,
   cubeRotationSpeed: 2,
 }
