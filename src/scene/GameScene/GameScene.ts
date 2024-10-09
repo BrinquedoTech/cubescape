@@ -158,12 +158,12 @@ export default class GameScene extends THREE.Group {
     return resultMap;
   }
 
-  private isCellAvailable(cellX: number, cellY: number): boolean {
-    const currentSide: CubeSide = this.cube.getCurrentSide();
-    const sideMap: number[][] = this.levelConfig.map.surfaces[currentSide];
+  // private isCellAvailable(cellX: number, cellY: number): boolean {
+  //   const currentSide: CubeSide = this.cube.getCurrentSide();
+  //   const sideMap: number[][] = this.levelConfig.map.surfaces[currentSide];
 
-    return sideMap[cellY][cellX] === 1 ? false : true;
-  }
+  //   return sideMap[cellY][cellX] === 1 ? false : true;
+  // }
 
   private init(): void {
     this.initCube();
