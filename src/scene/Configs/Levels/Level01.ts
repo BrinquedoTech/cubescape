@@ -17,7 +17,7 @@ const Level01: ILevelConfig = {
         [0, 0, 1, 1, 1, 1, 1],
       ],
       [CubeSide.Left]: [
-        [0, 0, 0, 0, 0, 0, 0],
+        [0, 0, 0, 0, 0, 0, 1],
         [0, 0, 0, 0, 0, 0, 0],
         [0, 0, 0, 0, 0, 0, 0],
         [0, 0, 0, 0, 0, 0, 0],
@@ -26,13 +26,13 @@ const Level01: ILevelConfig = {
         [0, 0, 0, 0, 0, 0, 0],
       ],
       [CubeSide.Right]: [
-        [1, 1, 1, 1, 1, 0, 1],
-        [1, 0, 0, 0, 0, 0, 1],
-        [1, 0, 1, 1, 1, 1, 1],
-        [1, 0, 1, 0, 0, 0, 1],
-        [1, 0, 0, 0, 1, 0, 1],
-        [1, 1, 1, 0, 0, 0, 0],
-        [1, 1, 1, 1, 1, 1, 1],
+        [0, 0, 0, 0, 0, 0, 1],
+        [0, 0, 0, 0, 0, 0, 0],
+        [0, 0, 0, 0, 0, 0, 0],
+        [0, 0, 0, 0, 0, 0, 0],
+        [0, 0, 0, 0, 0, 0, 0],
+        [0, 0, 0, 0, 0, 0, 0],
+        [0, 0, 0, 0, 0, 0, 0],
       ],
       [CubeSide.Top]: [
         [0, 0, 0, 0, 0, 0, 0],
@@ -63,18 +63,18 @@ const Level01: ILevelConfig = {
       ],
     },
     edges: {
-      [CubeEdge.FrontTop]: [1, 1, 1, 1, 1, 0, 1],
+      [CubeEdge.FrontTop]: [0, 1, 1, 1, 1, 1, 1],
       [CubeEdge.FrontDown]: [0, 1, 1, 1, 1, 1, 1],
-      [CubeEdge.FrontLeft]: [1, 1, 1, 1, 1, 1, 0],
-      [CubeEdge.FrontRight]: [1, 0, 1, 1, 1, 1, 1],
-      [CubeEdge.TopLeft]: [1, 1, 1, 1, 1, 1, 1],
-      [CubeEdge.TopRight]: [1, 0, 1, 1, 1, 1, 1],
-      [CubeEdge.DownLeft]: [1, 1, 1, 1, 1, 1, 1],
-      [CubeEdge.DownRight]: [1, 1, 1, 1, 1, 1, 1],
-      [CubeEdge.BackTop]: [1, 1, 1, 1, 1, 1, 1],
-      [CubeEdge.BackDown]: [1, 1, 1, 1, 1, 1, 1],
-      [CubeEdge.BackLeft]: [1, 1, 1, 1, 1, 1, 1],
-      [CubeEdge.BackRight]: [1, 0, 1, 1, 1, 1, 1],
+      [CubeEdge.FrontLeft]: [0, 1, 1, 1, 1, 1, 1],
+      [CubeEdge.FrontRight]: [0, 1, 1, 1, 1, 1, 1],
+      [CubeEdge.TopLeft]: [0, 1, 1, 1, 1, 1, 1],
+      [CubeEdge.TopRight]: [0, 1, 1, 1, 1, 1, 1],
+      [CubeEdge.DownLeft]: [0, 1, 1, 1, 1, 1, 1],
+      [CubeEdge.DownRight]: [0, 1, 1, 1, 1, 1, 1],
+      [CubeEdge.BackTop]: [0, 1, 1, 1, 1, 1, 1],
+      [CubeEdge.BackDown]: [0, 1, 1, 1, 1, 1, 1],
+      [CubeEdge.BackLeft]: [0, 1, 1, 1, 1, 1, 1],
+      [CubeEdge.BackRight]: [0, 1, 1, 1, 1, 1, 1],
     },
   },
   playerCharacter: {
@@ -85,86 +85,3 @@ const Level01: ILevelConfig = {
 };
 
 export default Level01;
-
-// const Level01: ILevelConfig = {
-//     size: new THREE.Vector3(5, 6, 7),
-//     map: {
-//       surfaces: {
-//         [CubeSide.Front]: [
-//           // sizeX x sizeY
-//           [0, 0, 0, 0, 0],
-//           [0, 0, 0, 0, 0],
-//           [0, 0, 0, 0, 0],
-//           [0, 0, 0, 0, 0],
-//           [0, 0, 0, 0, 1],
-//           [0, 0, 0, 0, 1],
-//         ],
-//         [CubeSide.Left]: [
-//           // sizeZ x sizeY
-//           [1, 0, 0, 0, 0, 0, 0],
-//           [0, 0, 0, 0, 0, 0, 0],
-//           [0, 0, 0, 0, 0, 0, 0],
-//           [0, 0, 0, 0, 0, 0, 0],
-//           [0, 0, 0, 0, 0, 0, 1],
-//           [0, 0, 0, 0, 0, 0, 1],
-//         ],
-//         [CubeSide.Right]: [
-//           // sizeZ x sizeY
-//           [0, 0, 0, 0, 0, 0, 0],
-//           [0, 0, 0, 0, 0, 0, 0],
-//           [0, 0, 0, 0, 0, 0, 0],
-//           [0, 0, 0, 0, 0, 0, 0],
-//           [0, 0, 0, 0, 0, 0, 1],
-//           [0, 0, 0, 0, 0, 0, 1],
-//         ],
-//         [CubeSide.Top]: [
-//           // sizeX x sizeZ
-//           [1, 0, 0, 0, 0],
-//           [0, 0, 0, 0, 0],
-//           [0, 0, 0, 0, 0],
-//           [0, 0, 0, 0, 0],
-//           [0, 0, 0, 0, 0],
-//           [0, 0, 0, 0, 1],
-//           [0, 0, 0, 0, 1],
-//         ],
-//         [CubeSide.Bottom]: [
-//           // sizeX x sizeZ
-//           [1, 0, 0, 0, 0],
-//           [0, 0, 0, 0, 0],
-//           [0, 0, 0, 0, 0],
-//           [0, 0, 0, 0, 0],
-//           [0, 0, 0, 0, 0],
-//           [0, 0, 0, 0, 1],
-//           [0, 0, 0, 0, 1],
-//         ],
-//         [CubeSide.Back]: [
-//           // sizeX x sizeY
-//           [1, 0, 0, 0, 0],
-//           [0, 0, 0, 0, 0],
-//           [0, 0, 0, 0, 0],
-//           [0, 0, 0, 0, 0],
-//           [0, 0, 0, 0, 1],
-//           [0, 0, 0, 0, 1],
-//         ],
-//       },
-//       edges: {
-//         [CubeEdge.FrontTop]: [1, 1, 1, 1, 1], // sizeX
-//         [CubeEdge.FrontDown]: [1, 1, 1, 1, 1], // sizeX
-//         [CubeEdge.FrontLeft]: [1, 1, 1, 1, 1, 1], // sizeY
-//         [CubeEdge.FrontRight]: [1, 1, 1, 1, 1, 1], // sizeY
-//         [CubeEdge.TopLeft]: [1, 1, 1, 1, 1, 1, 1], // sizeZ
-//         [CubeEdge.TopRight]: [1, 1, 1, 1, 1, 1, 1], // sizeZ
-//         [CubeEdge.DownLeft]: [1, 1, 1, 1, 1, 1, 1], // sizeZ
-//         [CubeEdge.DownRight]: [1, 1, 1, 1, 1, 1, 1], // sizeZ
-//         [CubeEdge.BackTop]: [1, 1, 1, 1, 1], // sizeX
-//         [CubeEdge.BackDown]: [1, 1, 1, 1, 1], // sizeX
-//         [CubeEdge.BackLeft]: [1, 1, 1, 1, 1, 1], // sizeY
-//         [CubeEdge.BackRight]: [1, 1, 1, 1, 1, 1], // sizeY
-//       },
-//     },
-//     playerCharacter: {
-//       gridPosition: new THREE.Vector2(1, 2),
-//       direction: 0,
-//       side: CubeSide.Front,
-//     },
-//   };

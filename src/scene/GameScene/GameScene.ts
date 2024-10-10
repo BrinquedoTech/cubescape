@@ -1,7 +1,7 @@
 import * as THREE from 'three';
 import Cube from './Cube/Cube';
 import LevelsConfig from '../Configs/LevelsConfig';
-import { ILevelConfig, ILevelEdgeConfig } from '../Interfaces/ILevelConfig';
+import { ILevelConfig, ILevelEdgeConfig, IMapConfig } from '../Interfaces/ILevelConfig';
 import PlayerCharacter from './PlayerCharacter/PlayerCharacter';
 import { RotateDirection, TurnDirection } from '../Enums/RotateDirection';
 import { KeyboardController } from './KeyboardController';
@@ -19,19 +19,21 @@ import { CubeSurfaceAxisConfig } from '../Configs/SurfaceConfig';
 import { EdgeBySideConfig, EdgesBySideArrayConfig } from '../Configs/EdgeConfig';
 import { CubeEdge } from '../Enums/CubeEdge';
 import { CubeEdgeOnSidePositionType } from '../Enums/CubeEdgeOnSide';
+import ArrayHelper from '../Helpers/ArrayHelper';
 
 export default class GameScene extends THREE.Group {
   private cube: Cube;
   private playerCharacter: PlayerCharacter;
   private keyboardController: KeyboardController;
   private levelConfig: ILevelConfig;
+  private map: IMapConfig = {};
 
   constructor() {
     super();
 
     this.init();
 
-    this.startLevel(LevelType.Level02);
+    this.startLevel(LevelType.Level01);
   }
 
   public update(dt: number): void {
@@ -47,6 +49,7 @@ export default class GameScene extends THREE.Group {
   public startLevel(levelType: LevelType): void {
     const levelConfig: ILevelConfig = this.levelConfig = LevelsConfig[levelType];
 
+    this.initMap();
     this.cube.init(levelConfig);
     this.playerCharacter.init(levelConfig);
   }
@@ -71,16 +74,12 @@ export default class GameScene extends THREE.Group {
     const cubeSide: CubeSide = this.cube.getCurrentSide();
     const cubeSurfaceAxisConfig: ICubeSurfaceAxisConfig = CubeSurfaceAxisConfig[cubeSide];
     const gridSize: number = activeAxis === 'x' ? this.levelConfig.size[cubeSurfaceAxisConfig.xAxis] : this.levelConfig.size[cubeSurfaceAxisConfig.yAxis];
-    // const gridSize: number = activeAxis === 'x' ? this.levelConfig.size[cubeSurfaceAxisConfig.xAxis] + 2 : this.levelConfig.size[cubeSurfaceAxisConfig.yAxis] + 2;
-
-    const fullMap: number[][] = this.createMapSideWithEdges(cubeSide);
 
     for (let i = startPoint + sign; i >= -1 && i < gridSize + 1; i += sign) {
       const nextCellX: number = activeAxis === 'x' ? i : playerCharacterGridPosition.x;
       const nextCellY: number = activeAxis === 'y' ? i : playerCharacterGridPosition.y;
 
-      // if (this.isCellAvailable(nextCellX, nextCellY)) {
-      if (fullMap[nextCellY + 1][nextCellX + 1] === 0) {
+      if (this.map[cubeSide][nextCellY + 1][nextCellX + 1] === 0) {
         targetGridPosition[activeAxis] = i;
       } else {
         break;
@@ -92,13 +91,19 @@ export default class GameScene extends THREE.Group {
     }
   }
 
-  private createMapSideWithEdges(cubeSide: CubeSide): number[][] {
-    const resultMap: number[][] = [];
+  private initMap(): void {
+    this.map = {};
+    
+    for (const cubeSide in CubeSide) {
+      const side: CubeSide = CubeSide[cubeSide] as CubeSide;
+      this.map[side] = this.createFullSideMap(side);
+    }
+  }
 
+  private createFullSideMap(cubeSide: CubeSide): number[][] {
     const mapSizeX: number = this.levelConfig.size[CubeSurfaceAxisConfig[cubeSide].xAxis] + 2;
     const mapSizeY: number = this.levelConfig.size[CubeSurfaceAxisConfig[cubeSide].yAxis] + 2;
     
-    const sideMap: number[][] = this.levelConfig.map.surfaces[cubeSide];
     const sideEdgesMap: ILevelEdgeConfig = {};
     const edgesInSide: CubeEdge[] = EdgesBySideArrayConfig[cubeSide];
     for (let i = 0; i < edgesInSide.length; i++) {
@@ -106,19 +111,8 @@ export default class GameScene extends THREE.Group {
       sideEdgesMap[edge] = this.levelConfig.map.edges[edge];
     }
 
-
-    for (let i = 0; i < mapSizeY; i++) {
-      resultMap[i] = new Array(mapSizeX).fill(0);
-    }
-
-    const corners: number[][] = [
-      [0, 0],
-      [0, mapSizeX - 1],
-      [mapSizeY - 1, 0],
-      [mapSizeY - 1, mapSizeX - 1]
-    ];
-
-    corners.forEach(([y, x]) => resultMap[y][x] = 1);
+    const resultMap: number[][] = ArrayHelper.create2DArray(mapSizeY, mapSizeX, 0);
+    ArrayHelper.fillCornerValues(resultMap, 1);
     
     for (const edgeType in sideEdgesMap) {
       const { positionType, direction } = EdgeBySideConfig[cubeSide][edgeType];
@@ -127,43 +121,34 @@ export default class GameScene extends THREE.Group {
       
       switch (positionType) {
         case CubeEdgeOnSidePositionType.Top:
-          for (let i = 1; i < mapSizeX - 1; i++) {
+          for (let i = 1; i < mapSizeX - 1; i++)
             resultMap[0][i] = edgeMap[i - 1];
-          }
           break;
         case CubeEdgeOnSidePositionType.Down:
-          for (let i = 1; i < mapSizeX - 1; i++) {
+          for (let i = 1; i < mapSizeX - 1; i++)
             resultMap[mapSizeY - 1][i] = edgeMap[i - 1];
-          }
           break;
         case CubeEdgeOnSidePositionType.Left:
-          for (let i = 1; i < mapSizeY - 1; i++) {
+          for (let i = 1; i < mapSizeY - 1; i++)
             resultMap[i][0] = edgeMap[i - 1];
-          }
           break;
         case CubeEdgeOnSidePositionType.Right:
-          for (let i = 1; i < mapSizeY - 1; i++) {
+          for (let i = 1; i < mapSizeY - 1; i++)
             resultMap[i][mapSizeX - 1] = edgeMap[i - 1];
-          }
           break;
       }
     }
      
-    for (let i = 0; i < mapSizeY - 2; i++) {
-      for (let j = 0; j < mapSizeX - 2; j++) {
-        resultMap[i + 1][j + 1] = sideMap[i][j];
+    const sideMap: number[][] = this.levelConfig.map.surfaces[cubeSide];
+
+    for (let i = 1; i < mapSizeY - 1; i++) {
+      for (let j = 1; j < mapSizeX - 1; j++) {
+        resultMap[i][j] = sideMap[i - 1][j - 1];
       }
     }
 
     return resultMap;
   }
-
-  // private isCellAvailable(cellX: number, cellY: number): boolean {
-  //   const currentSide: CubeSide = this.cube.getCurrentSide();
-  //   const sideMap: number[][] = this.levelConfig.map.surfaces[currentSide];
-
-  //   return sideMap[cellY][cellX] === 1 ? false : true;
-  // }
 
   private init(): void {
     this.initCube();

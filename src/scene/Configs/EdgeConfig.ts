@@ -1,6 +1,6 @@
 import * as THREE from 'three';
 import { CubeEdge } from '../Enums/CubeEdge';
-import { IEdgeAxisConfig } from '../Interfaces/ICubeConfig';
+import { IEdgeAxisConfig, IEdgeBySideConfig } from '../Interfaces/ICubeConfig';
 import { CubeSide } from '../Enums/CubeSide';
 import { CubeEdgeOnSidePositionType } from '../Enums/CubeEdgeOnSide';
 
@@ -43,7 +43,7 @@ const EdgesBySideArrayConfig: { [key in CubeSide]: CubeEdge[] } = {
   [CubeSide.Back]: [CubeEdge.BackTop, CubeEdge.BackDown, CubeEdge.BackLeft, CubeEdge.BackRight],
 }
 
-const EdgeBySideConfig = {
+const EdgeBySideConfig: IEdgeBySideConfig = {
   [CubeSide.Front]: {
     [CubeEdge.FrontTop]: { positionType: CubeEdgeOnSidePositionType.Top, direction: 1 },
     [CubeEdge.FrontDown]: { positionType: CubeEdgeOnSidePositionType.Down, direction: 1 },
@@ -51,16 +51,16 @@ const EdgeBySideConfig = {
     [CubeEdge.FrontRight]: { positionType: CubeEdgeOnSidePositionType.Right, direction: -1 },
   },
   [CubeSide.Left]: {
-    [CubeEdge.FrontLeft]: { positionType: CubeEdgeOnSidePositionType.Right, direction: 1 },
+    [CubeEdge.FrontLeft]: { positionType: CubeEdgeOnSidePositionType.Right, direction: -1 },
     [CubeEdge.TopLeft]: { positionType: CubeEdgeOnSidePositionType.Top, direction: 1 },
     [CubeEdge.DownLeft]: { positionType: CubeEdgeOnSidePositionType.Down, direction: 1 },
-    [CubeEdge.BackLeft]: { positionType: CubeEdgeOnSidePositionType.Left, direction: 1 },
+    [CubeEdge.BackLeft]: { positionType: CubeEdgeOnSidePositionType.Left, direction: -1 },
   },
   [CubeSide.Right]: {
-    [CubeEdge.FrontRight]: { positionType: CubeEdgeOnSidePositionType.Left, direction: 1 },
-    [CubeEdge.TopRight]: { positionType: CubeEdgeOnSidePositionType.Top, direction: 1 },
-    [CubeEdge.DownRight]: { positionType: CubeEdgeOnSidePositionType.Down, direction: 1 },
-    [CubeEdge.BackRight]: { positionType: CubeEdgeOnSidePositionType.Right, direction: 1 },
+    [CubeEdge.FrontRight]: { positionType: CubeEdgeOnSidePositionType.Left, direction: -1 },
+    [CubeEdge.TopRight]: { positionType: CubeEdgeOnSidePositionType.Top, direction: -1 },
+    [CubeEdge.DownRight]: { positionType: CubeEdgeOnSidePositionType.Down, direction: -1 },
+    [CubeEdge.BackRight]: { positionType: CubeEdgeOnSidePositionType.Right, direction: -1 },
   },
   [CubeSide.Top]: {
     [CubeEdge.FrontTop]: { positionType: CubeEdgeOnSidePositionType.Down, direction: 1 },
@@ -70,15 +70,15 @@ const EdgeBySideConfig = {
   },
   [CubeSide.Bottom]: {
     [CubeEdge.FrontDown]: { positionType: CubeEdgeOnSidePositionType.Top, direction: 1 },
-    [CubeEdge.DownLeft]: { positionType: CubeEdgeOnSidePositionType.Left, direction: 1 },
-    [CubeEdge.DownRight]: { positionType: CubeEdgeOnSidePositionType.Right, direction: 1 },
+    [CubeEdge.DownLeft]: { positionType: CubeEdgeOnSidePositionType.Left, direction: -1 },
+    [CubeEdge.DownRight]: { positionType: CubeEdgeOnSidePositionType.Right, direction: -1 },
     [CubeEdge.BackDown]: { positionType: CubeEdgeOnSidePositionType.Down, direction: 1 },
   },
   [CubeSide.Back]: {
-    [CubeEdge.BackTop]: { positionType: CubeEdgeOnSidePositionType.Top, direction: 1 },
-    [CubeEdge.BackDown]: { positionType: CubeEdgeOnSidePositionType.Down, direction: 1 },
-    [CubeEdge.BackLeft]: { positionType: CubeEdgeOnSidePositionType.Right, direction: 1 },
-    [CubeEdge.BackRight]: { positionType: CubeEdgeOnSidePositionType.Left, direction: 1 },
+    [CubeEdge.BackTop]: { positionType: CubeEdgeOnSidePositionType.Top, direction: -1 },
+    [CubeEdge.BackDown]: { positionType: CubeEdgeOnSidePositionType.Down, direction: -1 },
+    [CubeEdge.BackLeft]: { positionType: CubeEdgeOnSidePositionType.Right, direction: -1 },
+    [CubeEdge.BackRight]: { positionType: CubeEdgeOnSidePositionType.Left, direction: -1 },
   },
 }
 

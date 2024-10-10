@@ -21,3 +21,7 @@ export interface ILevelMapConfig {
 export interface ILevelEdgeConfig {
   [key: string]: number[];
 }
+
+export type IMapConfig = {
+  [key in CubeSide]?: number[][];
+}

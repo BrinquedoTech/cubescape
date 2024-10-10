@@ -2,6 +2,7 @@ import * as THREE from 'three';
 import { CubeEdge } from "../Enums/CubeEdge";
 import { CubeRotationDirection } from "../Enums/CubeRotationDirection";
 import { CubeSide } from "../Enums/CubeSide";
+import { CubeEdgeOnSidePositionType } from '../Enums/CubeEdgeOnSide';
 
 export interface IEdgeAxisConfig {
   edge: CubeEdge;
@@ -28,5 +29,14 @@ export interface ICharacterSurfaceConfig {
 export type ILocalEdgeDirections = {
   [key in CubeSide]: {
     [key in CubeRotationDirection]: THREE.Vector3;
+  };
+}
+
+export type IEdgeBySideConfig = {
+  [key in CubeSide]: {
+    [key in CubeEdge]?: {
+      positionType: CubeEdgeOnSidePositionType;
+      direction: number;
+    };
   };
 }
