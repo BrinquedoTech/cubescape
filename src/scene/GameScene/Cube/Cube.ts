@@ -11,12 +11,19 @@ import { CubeSide } from '../../Enums/CubeSide';
 import { CubeRotationDirection } from '../../Enums/CubeRotationDirection';
 import { CubeState } from '../../Enums/CubeState';
 import CubeDebug from './CubeDebug';
+import mitt, { Emitter } from 'mitt';
+
+type Events = {
+  endRotating: string;
+};
 
 export default class Cube extends THREE.Group {
   private levelConfig: ILevelConfig;
   private cubeRotationController: CubeRotationController;
   private cubeDebug: CubeDebug;
   private state: CubeState = CubeState.Idle;
+
+  public emitter: Emitter<Events> = mitt<Events>();
 
   constructor() {
     super();
@@ -56,6 +63,7 @@ export default class Cube extends THREE.Group {
 
     this.cubeRotationController.emitter.on('endRotating', () => {
       this.state = CubeState.Idle;
+      this.emitter.emit('endRotating');
     });
   }
 

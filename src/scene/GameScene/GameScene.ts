@@ -27,6 +27,8 @@ export default class GameScene extends THREE.Group {
   private keyboardController: KeyboardController;
   private levelConfig: ILevelConfig;
   private map: IMapConfig = {};
+  private nextCubeRotationDirection: RotateDirection;
+  private waitingForCubeRotation: boolean = false;
 
   constructor() {
     super();
@@ -64,10 +66,10 @@ export default class GameScene extends THREE.Group {
 
   private moveCharacter(moveDirection: MoveDirection): void {
     const currentRotationDirection: CubeRotationDirection = this.cube.getCurrentRotationDirection();
-    const movingDirection: MoveDirection = MovementDirectionByCubeRotationConfig[moveDirection][currentRotationDirection].direction;
+    const newMovingDirection: MoveDirection = MovementDirectionByCubeRotationConfig[moveDirection][currentRotationDirection].direction;
     const playerCharacterGridPosition: THREE.Vector2 = this.playerCharacter.getGridPosition();
-    const activeAxis: string = MovementDirectionConfig[movingDirection].activeAxis;
-    const sign: number = MovementDirectionConfig[movingDirection].vector[activeAxis];
+    const activeAxis: string = MovementDirectionConfig[newMovingDirection].activeAxis;
+    const sign: number = MovementDirectionConfig[newMovingDirection].vector[activeAxis];
     const startPoint: number = playerCharacterGridPosition[activeAxis];
     const targetGridPosition: THREE.Vector2 = new THREE.Vector2(playerCharacterGridPosition.x, playerCharacterGridPosition.y);
 
@@ -85,10 +87,23 @@ export default class GameScene extends THREE.Group {
         break;
       }
     }
-
+    
     if (!GridHelper.isGridCellsEqual(playerCharacterGridPosition, targetGridPosition)) {
       this.playerCharacter.moveToGridCell(targetGridPosition.x, targetGridPosition.y);
+
+      if (this.isCellOnEdge(targetGridPosition.x, targetGridPosition.y)) {
+        this.waitingForCubeRotation = true;
+        this.nextCubeRotationDirection = MovementDirectionByCubeRotationConfig[newMovingDirection][currentRotationDirection].cubeRotationDirection;
+      }
     }
+  }
+
+  private isCellOnEdge(cellX: number, cellY: number): boolean {
+    const cubeSide: CubeSide = this.cube.getCurrentSide();
+    const mapSizeX: number = this.map[cubeSide][0].length;
+    const mapSizeY: number = this.map[cubeSide].length;
+
+    return cellX === -1 || cellY === -1 || cellX + 1 === mapSizeX - 1 || cellY + 1 === mapSizeY - 1;
   }
 
   private initMap(): void {
@@ -154,6 +169,7 @@ export default class GameScene extends THREE.Group {
     this.initCube();
     this.initPlayerCharacter();
     this.initKeyboardController();
+    this.initSignals();
   }
 
   private initCube(): void {
@@ -179,6 +195,27 @@ export default class GameScene extends THREE.Group {
 
     if (this.cube.getState() === CubeState.Idle && this.playerCharacter.getState() === PlayerCharacterState.Idle) {
       this.moveCharacter(moveDirection);
+    }
+  }
+
+  private initSignals(): void {
+    this.playerCharacter.emitter.on('onMovingEnd', () => this.onPlayerCharacterMovingEnd());
+    this.cube.emitter.on('endRotating', () => this.onCubeRotatingEnd());
+  }
+
+  private onPlayerCharacterMovingEnd(): void {
+    if (this.waitingForCubeRotation) {
+      this.rotateCube(this.nextCubeRotationDirection);
+    }
+  }
+
+  private onCubeRotatingEnd(): void {
+    if (this.waitingForCubeRotation) {
+      this.waitingForCubeRotation = false;
+      
+      const cubeSide: CubeSide = this.cube.getCurrentSide();
+      this.playerCharacter.setActiveSurface(cubeSide);
+      this.playerCharacter.updatePositionOnRealPosition();
     }
   }
 }
