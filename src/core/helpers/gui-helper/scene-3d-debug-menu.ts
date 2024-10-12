@@ -1,4 +1,4 @@
-import DEBUG_CONFIG from "../../../scene/Configs/Main/DebugConfig";
+import DebugConfig from "../../../scene/Configs/Main/DebugConfig";
 import RendererStats from 'three-webgl-stats';
 import Stats from 'three/addons/libs/stats.module.js';
 import GUIHelper from "./gui-helper";
@@ -38,23 +38,23 @@ export default class Scene3DDebugMenu {
   }
 
   preUpdate() {
-    if (DEBUG_CONFIG.fpsMeter) {
+    if (DebugConfig.fpsMeter) {
       this.fpsStats.begin();
     }
   }
 
   postUpdate() {
-    if (DEBUG_CONFIG.fpsMeter) {
+    if (DebugConfig.fpsMeter) {
       this.fpsStats.end();
     }
   }
 
   update() {
-    if (DEBUG_CONFIG.orbitControls) {
+    if (DebugConfig.orbitControls) {
       this.orbitControls.update();
     }
 
-    if (DEBUG_CONFIG.rendererStats) {
+    if (DebugConfig.rendererStats) {
       this.rendererStats.update(this.renderer);
     }
   }
@@ -62,15 +62,15 @@ export default class Scene3DDebugMenu {
   showAfterAssetsLoad() {
     this._isAssetsLoaded = true;
 
-    if (DEBUG_CONFIG.fpsMeter) {
+    if (DebugConfig.fpsMeter) {
       this.fpsStats.dom.style.visibility = 'visible';
     }
 
-    if (DEBUG_CONFIG.rendererStats) {
+    if (DebugConfig.rendererStats) {
       this.rendererStats.domElement.style.visibility = 'visible';
     }
 
-    if (DEBUG_CONFIG.orbitControls) {
+    if (DebugConfig.orbitControls) {
       this.orbitControls.enabled = true;
     }
 
@@ -90,7 +90,7 @@ export default class Scene3DDebugMenu {
   }
 
   _initRendererStats() {
-    if (DEBUG_CONFIG.rendererStats) {
+    if (DebugConfig.rendererStats) {
       const rendererStats = this.rendererStats = new RendererStats();
 
       rendererStats.domElement.style.position = 'absolute';
@@ -105,7 +105,7 @@ export default class Scene3DDebugMenu {
   }
 
   _initFPSMeter() {
-    if (DEBUG_CONFIG.fpsMeter) {
+    if (DebugConfig.fpsMeter) {
       const stats = this.fpsStats = new Stats();
       stats.showPanel(0);
       document.body.appendChild(stats.dom);
@@ -136,7 +136,7 @@ export default class Scene3DDebugMenu {
   }
 
   onFpsMeterClick() {
-    if (DEBUG_CONFIG.fpsMeter) {
+    if (DebugConfig.fpsMeter) {
       if (!this.fpsStats) {
         this._initFPSMeter();
       }
@@ -147,7 +147,7 @@ export default class Scene3DDebugMenu {
   }
 
   onRendererStatsClick(rendererStatsState) {
-    if (DEBUG_CONFIG.rendererStats) {
+    if (DebugConfig.rendererStats) {
       if (rendererStatsState) {
         if (!this.rendererStats) {
           this._initRendererStats();

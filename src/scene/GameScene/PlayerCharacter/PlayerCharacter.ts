@@ -1,12 +1,12 @@
 import * as THREE from 'three';
-import { ILevelConfig, ILevelMapConfig } from '../../Interfaces/ILevelConfig';
+import { ILevelConfig } from '../../Interfaces/ILevelConfig';
 import { CubeSide } from '../../Enums/CubeSide';
 import GameplayConfig from '../../Configs/Main/GameplayConfig';
-import { CharacterSurfaceConfig, CubeSurfaceAxisConfig } from '../../Configs/SurfaceConfig';
+import { CubeSurfaceAxisConfig } from '../../Configs/SurfaceConfig';
 import { PlayerCharacterState } from '../../Enums/PlayerCharacterState';
 import TWEEN from 'three/addons/libs/tween.module.js';
 import GridHelper from '../../Helpers/GridHelper';
-import { ICubeSurfaceAxisConfig } from '../../Interfaces/ICubeConfig';
+import { ICubePosition, ICubeSurfaceAxisConfig } from '../../Interfaces/ICubeConfig';
 import mitt, { Emitter } from 'mitt';
 import { CellType } from '../../Enums/CellType';
 
@@ -85,20 +85,9 @@ export default class PlayerCharacter extends THREE.Group {
   }
 
   public setPosition(cubeSide: CubeSide, x: number, y: number): void {
-    const cubeSurfaceAxisConfig: ICubeSurfaceAxisConfig = CubeSurfaceAxisConfig[cubeSide];
-    const distance: number = (this.levelConfig.size[cubeSurfaceAxisConfig.zAxis] + 1) * 0.5 * GameplayConfig.grid.size;
+    const newPosition: THREE.Vector3 = GridHelper.getPositionByGridAndSide(this.levelConfig.size, cubeSide, x, y, false);
 
-    const surfaceConfig = CharacterSurfaceConfig[cubeSide](x, y);
-
-    const startOffsetX: number = (this.levelConfig.size[cubeSurfaceAxisConfig.xAxis] - 1) * 0.5 * GameplayConfig.grid.size;
-    const startOffsetY: number = (this.levelConfig.size[cubeSurfaceAxisConfig.yAxis] - 1) * 0.5 * GameplayConfig.grid.size;
-    const startOffsetZ: number = surfaceConfig.x === null ? startOffsetX : startOffsetY;
-
-    const newX: number = surfaceConfig.x !== null ? (surfaceConfig.x - startOffsetX) * surfaceConfig.xFactor : distance * surfaceConfig.xFactor;
-    const newY: number = surfaceConfig.y !== null ? (surfaceConfig.y - startOffsetY) * surfaceConfig.yFactor : distance * surfaceConfig.yFactor;
-    const newZ: number = surfaceConfig.z !== null ? (surfaceConfig.z - startOffsetZ) * surfaceConfig.zFactor : distance * surfaceConfig.zFactor;
-
-    this.position.set(newX, newY, newZ);
+    this.position.set(newPosition.x, newPosition.y, newPosition.z);
     this.surfacePosition.set(x, y);
 
     const gridPosition: THREE.Vector2 = GridHelper.calculateGridPositionByCoordinates(x, y);
@@ -106,20 +95,9 @@ export default class PlayerCharacter extends THREE.Group {
   }
 
   public setGridPosition(cubeSide: CubeSide, gridX: number, gridY: number): void {
-    const cubeSurfaceAxisConfig: ICubeSurfaceAxisConfig = CubeSurfaceAxisConfig[cubeSide];
-    const distance: number = (this.levelConfig.size[cubeSurfaceAxisConfig.zAxis] + 1) * 0.5 * GameplayConfig.grid.size;
+    const newPosition: THREE.Vector3 = GridHelper.getPositionByGridAndSide(this.levelConfig.size, cubeSide, gridX, gridY);
 
-    const surfaceConfig = CharacterSurfaceConfig[cubeSide](gridX, gridY);
-
-    const startOffsetX: number = (this.levelConfig.size[cubeSurfaceAxisConfig.xAxis] - 1) * 0.5 * GameplayConfig.grid.size;
-    const startOffsetY: number = (this.levelConfig.size[cubeSurfaceAxisConfig.yAxis] - 1) * 0.5 * GameplayConfig.grid.size;
-    const startOffsetZ: number = surfaceConfig.x === null ? startOffsetX : startOffsetY;
-
-    const newX: number = surfaceConfig.x !== null ? (surfaceConfig.x * GameplayConfig.grid.size - startOffsetX) * surfaceConfig.xFactor : distance * surfaceConfig.xFactor;
-    const newY: number = surfaceConfig.y !== null ? (surfaceConfig.y * GameplayConfig.grid.size - startOffsetY) * surfaceConfig.yFactor : distance * surfaceConfig.yFactor;
-    const newZ: number = surfaceConfig.z !== null ? (surfaceConfig.z * GameplayConfig.grid.size - startOffsetZ) * surfaceConfig.zFactor : distance * surfaceConfig.zFactor;
-
-    this.position.set(newX, newY, newZ);
+    this.position.set(newPosition.x, newPosition.y, newPosition.z);
     this.gridPosition.set(gridX, gridY);
     this.surfacePosition.set(gridX * GameplayConfig.grid.size, gridY * GameplayConfig.grid.size);
   }
@@ -150,21 +128,12 @@ export default class PlayerCharacter extends THREE.Group {
   }
 
   private setStartPosition(): void {
-    const allSidesMap: ILevelMapConfig = this.levelConfig.map.surfaces;
+    const itemPositions: ICubePosition[] = GridHelper.getItemPositions(this.levelConfig.map.surfaces, CellType.Start);
 
-    for (let side in allSidesMap) {
-      const currentSide: CubeSide = side as CubeSide;
-      const sideMap: number[][] = allSidesMap[currentSide];
-      
-      for (let y: number = 0; y < sideMap.length; y++) {
-        for (let x: number = 0; x < sideMap[y].length; x++) {
-          if (sideMap[y][x] === CellType.Start) {
-            this.setActiveSurface(currentSide);
-            this.setGridPosition(this.activeSurface, x, y);
-            break;
-          }
-        }
-      }
+    if (itemPositions.length > 0) {
+      const startPosition: ICubePosition = itemPositions[0];
+      this.setActiveSurface(startPosition.side);
+      this.setGridPositionOnActiveSurface(startPosition.gridPosition.x, startPosition.gridPosition.y);
     }
   }
 
@@ -184,7 +153,7 @@ export default class PlayerCharacter extends THREE.Group {
   }
 
   private initView(): void {
-    const geometry = new THREE.SphereGeometry(0.7, 32, 32);
+    const geometry = new THREE.SphereGeometry(0.5, 32, 32);
     const material = new THREE.MeshStandardMaterial({ color: 0x00ff00 });
     const view = new THREE.Mesh(geometry, material);
     this.add(view);

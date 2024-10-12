@@ -1,8 +1,8 @@
 
-const DEBUG_CONFIG = {
+const DebugConfig = {
   fpsMeter: true,
   rendererStats: true,
   orbitControls: true,
 };
 
-export default DEBUG_CONFIG;
+export default DebugConfig;

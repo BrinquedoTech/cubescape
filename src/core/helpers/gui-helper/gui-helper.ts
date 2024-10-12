@@ -1,5 +1,5 @@
 import { Pane } from 'tweakpane';
-import DEBUG_CONFIG from '../../../scene/Configs/Main/DebugConfig';
+import DebugConfig from '../../../scene/Configs/Main/DebugConfig';
 
 export default class GUIHelper {
   static instance: GUIHelper;
@@ -58,7 +58,7 @@ export default class GUIHelper {
   }
 
   showAfterAssetsLoad() {
-    if (!(<any>DEBUG_CONFIG).withoutUIMode) {
+    if (!(<any>DebugConfig).withoutUIMode) {
       this.gui.hidden = false;
     }
   }

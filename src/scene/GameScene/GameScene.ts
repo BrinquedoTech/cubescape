@@ -21,15 +21,18 @@ import { CubeEdge } from '../Enums/CubeEdge';
 import { CubeEdgeOnSidePositionType } from '../Enums/CubeEdgeOnSide';
 import ArrayHelper from '../Helpers/ArrayHelper';
 import { CellType } from '../Enums/CellType';
+import EndLevelObject from './EndLevelObject/EndLevelObject';
 
 export default class GameScene extends THREE.Group {
   private cube: Cube;
   private playerCharacter: PlayerCharacter;
+  private endGameObject: EndLevelObject;
   private keyboardController: KeyboardController;
   private levelConfig: ILevelConfig;
   private map: IMapConfig = {};
   private nextCubeRotationDirection: RotateDirection;
   private waitingForCubeRotation: boolean = false;
+  private waitingForEndLevel: boolean = false;
 
   constructor() {
     super();
@@ -55,6 +58,7 @@ export default class GameScene extends THREE.Group {
     this.initMap();
     this.cube.init(levelConfig);
     this.playerCharacter.init(levelConfig);
+    this.endGameObject.initPosition(levelConfig);
   }
 
   public rotateCube(rotateDirection: RotateDirection): void {
@@ -70,6 +74,7 @@ export default class GameScene extends THREE.Group {
     const newMovingDirection: MoveDirection = MovementDirectionByCubeRotationConfig[moveDirection][currentRotationDirection].direction;
     const playerCharacterGridPosition: THREE.Vector2 = this.playerCharacter.getGridPosition();
     const activeAxis: string = MovementDirectionConfig[newMovingDirection].activeAxis;
+    const inactiveAxis: string = activeAxis === 'x' ? 'y' : 'x';
     const sign: number = MovementDirectionConfig[newMovingDirection].vector[activeAxis];
     const startPoint: number = playerCharacterGridPosition[activeAxis];
     const targetGridPosition: THREE.Vector2 = new THREE.Vector2(playerCharacterGridPosition.x, playerCharacterGridPosition.y);
@@ -90,14 +95,24 @@ export default class GameScene extends THREE.Group {
       }
     }
 
-    for (let i = startPoint + sign; i >= -1 && i < gridSize + 1; i += sign) {
-      const nextCellX: number = activeAxis === 'x' ? i : playerCharacterGridPosition.x;
-      const nextCellY: number = activeAxis === 'y' ? i : playerCharacterGridPosition.y;
+    const nextCellPosition: THREE.Vector2 = new THREE.Vector2();
 
-      if (this.map[cubeSide][nextCellY + 1][nextCellX + 1] === CellType.Empty) {
-        targetGridPosition[activeAxis] = i;
-      } else {
+    for (let i = startPoint + sign; i >= -1 && i < gridSize + 1; i += sign) {
+      nextCellPosition[activeAxis] = i;
+      nextCellPosition[inactiveAxis] = playerCharacterGridPosition[inactiveAxis];
+
+      if (this.map[cubeSide][nextCellPosition.y + 1][nextCellPosition.x + 1] === CellType.Wall) {
         break;
+      }
+
+      if (this.map[cubeSide][nextCellPosition.y + 1][nextCellPosition.x + 1] === CellType.Finish) {
+        targetGridPosition[activeAxis] = i;
+        this.waitingForEndLevel = true;
+        break;
+      }
+
+      if (this.map[cubeSide][nextCellPosition.y + 1][nextCellPosition.x + 1] === CellType.Empty) {
+        targetGridPosition[activeAxis] = i;
       }
     }
     
@@ -171,7 +186,7 @@ export default class GameScene extends THREE.Group {
 
     for (let i = 1; i < mapSizeY - 1; i++) {
       for (let j = 1; j < mapSizeX - 1; j++) {
-        if (sideMap[i - 1][j - 1] === CellType.Wall) {
+        if (sideMap[i - 1][j - 1] === CellType.Wall || sideMap[i - 1][j - 1] === CellType.Finish) {
           resultMap[i][j] = sideMap[i - 1][j - 1];
         }
       }
@@ -183,6 +198,7 @@ export default class GameScene extends THREE.Group {
   private init(): void {
     this.initCube();
     this.initPlayerCharacter();
+    this.initEndLevelObject();
     this.initKeyboardController();
     this.initSignals();
   }
@@ -195,6 +211,11 @@ export default class GameScene extends THREE.Group {
   private initPlayerCharacter(): void {
     const playerCharacter = this.playerCharacter = new PlayerCharacter();
     this.cube.add(playerCharacter);
+  }
+
+  private initEndLevelObject(): void {
+    const endGameObject = this.endGameObject = new EndLevelObject();
+    this.cube.add(endGameObject);
   }
 
   private initKeyboardController(): void {
@@ -221,6 +242,11 @@ export default class GameScene extends THREE.Group {
   private onPlayerCharacterMovingEnd(): void {
     if (this.waitingForCubeRotation) {
       this.rotateCube(this.nextCubeRotationDirection);
+    }
+
+    if (this.waitingForEndLevel) {
+      this.waitingForEndLevel = false;
+      console.log('End level');
     }
   }
 

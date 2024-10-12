@@ -1,6 +1,7 @@
 import * as THREE from 'three';
 import { CubeSide } from "../Enums/CubeSide";
 import { CubeRotationDirection } from '../Enums/CubeRotationDirection';
+import { CubeEdge } from '../Enums/CubeEdge';
 
 export interface ILevelConfig {
   size: THREE.Vector3;
@@ -14,12 +15,12 @@ export interface ILevelConfig {
   };
 }
 
-export interface ILevelMapConfig {
-  [key: string]: number[][];
+export type ILevelMapConfig = {
+  [key in CubeSide]: number[][];
 }
 
-export interface ILevelEdgeConfig {
-  [key: string]: number[];
+export type ILevelEdgeConfig = {
+  [key in CubeEdge]?: number[];
 }
 
 export type IMapConfig = {
