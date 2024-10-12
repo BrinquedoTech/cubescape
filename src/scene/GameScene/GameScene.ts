@@ -77,6 +77,18 @@ export default class GameScene extends THREE.Group {
     const cubeSurfaceAxisConfig: ICubeSurfaceAxisConfig = CubeSurfaceAxisConfig[cubeSide];
     const gridSize: number = activeAxis === 'x' ? this.levelConfig.size[cubeSurfaceAxisConfig.xAxis] : this.levelConfig.size[cubeSurfaceAxisConfig.yAxis];
 
+    if (this.isCellOnEdge(playerCharacterGridPosition.x, playerCharacterGridPosition.y)) {
+      for (let i = startPoint + sign; i >= startPoint - 1 && i < startPoint + sign + 1; i += sign) {
+        if (i === -2 || i === gridSize + 1) {
+          this.waitingForCubeRotation = true;
+          this.nextCubeRotationDirection = MovementDirectionByCubeRotationConfig[newMovingDirection][currentRotationDirection].cubeRotationDirection;
+          this.rotateCube(this.nextCubeRotationDirection);
+
+          return;
+        }
+      }
+    }
+
     for (let i = startPoint + sign; i >= -1 && i < gridSize + 1; i += sign) {
       const nextCellX: number = activeAxis === 'x' ? i : playerCharacterGridPosition.x;
       const nextCellY: number = activeAxis === 'y' ? i : playerCharacterGridPosition.y;
@@ -212,6 +224,7 @@ export default class GameScene extends THREE.Group {
   private onCubeRotatingEnd(): void {
     if (this.waitingForCubeRotation) {
       this.waitingForCubeRotation = false;
+      this.nextCubeRotationDirection = null;
       
       const cubeSide: CubeSide = this.cube.getCurrentSide();
       this.playerCharacter.setActiveSurface(cubeSide);
