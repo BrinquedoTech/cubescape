@@ -1,15 +1,19 @@
 import * as THREE from 'three';
 import { CubeSide } from "../Enums/CubeSide";
+import { CubeRotationDirection } from '../Enums/CubeRotationDirection';
 
 export interface ILevelConfig {
   size: THREE.Vector3;
+  startSide?: {
+    side?: CubeSide;
+    rotationDirection?: CubeRotationDirection;
+  },
   map: {
     surfaces: ILevelMapConfig;
     edges: ILevelEdgeConfig;
   };
   playerCharacter: {
     gridPosition: THREE.Vector2;
-    direction: number;
     side: CubeSide;
   };
 }

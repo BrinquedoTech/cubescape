@@ -6,6 +6,7 @@ import { CubeSide } from '../../Enums/CubeSide';
 import { LocalEdgeDirections, SideVectorConfig } from '../../Configs/SurfaceConfig';
 import { CubeRotationDirection } from '../../Enums/CubeRotationDirection';
 import mitt, { Emitter } from 'mitt';
+import { RotationBySideConfig, TurnBySideConfig } from '../../Configs/StartSideConfig';
 
 type Events = {
   endRotating: string;
@@ -57,10 +58,7 @@ export default class CubeRotationController {
       this.lastEasedAngle = targetAngle;
 
       if (this.rotationProgress >= 1) {
-        this.resetProgress();
-        this.snapRotation();
-        this.calculateCurrentSide();
-        this.calculateCurrentRotationDirection();
+        this.onEndRotating();
         this.emitter.emit('endRotating');
       }
     }
@@ -75,6 +73,15 @@ export default class CubeRotationController {
     this.rotationDirection = rotateDirection;
   }
 
+  public instantRotateToDirection(rotateDirection: RotateDirection): void {
+    this.rotationDirection = rotateDirection;
+
+    this.applyRotationByDirection(this.rotationAngle);
+    this.object.updateMatrixWorld();
+    
+    this.onEndRotating();
+  }
+
   public turn(turnDirection: TurnDirection): void {
     if (this.isRotating) {
       return;
@@ -84,12 +91,41 @@ export default class CubeRotationController {
     this.turnDirection = turnDirection;
   }
 
+  public instantTurn(turnDirection: TurnDirection): void {
+    this.turnDirection = turnDirection;
+
+    this.applyTurnByDirection(this.rotationAngle);
+    this.object.updateMatrixWorld();
+    
+    this.onEndRotating();
+  }
+
   public getCurrentSide(): CubeSide { 
     return this.currentSide;
   }
 
   public getCurrentRotationDirection(): CubeRotationDirection {
     return this.currentRotationDirection;
+  }
+
+  public setInitRotation(side: CubeSide, rotationDirection: CubeRotationDirection): void {
+    const rotationDirections = RotationBySideConfig[side];
+    const turnDirections = TurnBySideConfig[rotationDirection];
+
+    for (let i = 0; i < rotationDirections.length; i++) {
+      this.instantRotateToDirection(rotationDirections[i]);
+    }
+
+    for (let i = 0; i < turnDirections.length; i++) {
+      this.instantTurn(turnDirections[i]);
+    }
+  }
+
+  private onEndRotating(): void {
+    this.resetProgress();
+    this.snapRotation();
+    this.calculateCurrentSide();
+    this.calculateCurrentRotationDirection();
   }
 
   private resetProgress(): void {

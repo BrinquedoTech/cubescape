@@ -40,3 +40,8 @@ export type IEdgeBySideConfig = {
     };
   };
 }
+
+export interface IDefaultStartSideConfig {
+  side: CubeSide;
+  rotationDirection: CubeRotationDirection;
+}

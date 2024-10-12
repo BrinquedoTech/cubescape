@@ -78,4 +78,10 @@ const LocalEdgeDirections: ILocalEdgeDirections = {
   },
 }
 
-export { CubeSurfaceAxisConfig, CharacterSurfaceConfig, SideVectorConfig, LocalEdgeDirections, SurfaceRotationConfig };
+export {
+  CubeSurfaceAxisConfig,
+  CharacterSurfaceConfig,
+  SideVectorConfig,
+  LocalEdgeDirections,
+  SurfaceRotationConfig,
+};

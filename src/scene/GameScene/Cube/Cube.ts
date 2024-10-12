@@ -12,6 +12,7 @@ import { CubeRotationDirection } from '../../Enums/CubeRotationDirection';
 import { CubeState } from '../../Enums/CubeState';
 import CubeDebug from './CubeDebug';
 import mitt, { Emitter } from 'mitt';
+import { DefaultStartSideConfig } from '../../Configs/StartSideConfig';
 
 type Events = {
   endRotating: string;
@@ -37,13 +38,13 @@ export default class Cube extends THREE.Group {
   }
 
   public rotateToDirection(rotateDirection: RotateDirection): void {
-    this.cubeRotationController.rotateToDirection(rotateDirection);
     this.state = CubeState.Rotating;
+    this.cubeRotationController.rotateToDirection(rotateDirection);
   }
 
   public turn(turnDirection: TurnDirection): void {
-    this.cubeRotationController.turn(turnDirection);
     this.state = CubeState.Rotating;
+    this.cubeRotationController.turn(turnDirection);
   }
 
   public getCurrentSide(): CubeSide {
@@ -80,8 +81,24 @@ export default class Cube extends THREE.Group {
     this.initInnerCube();
     this.initEdges();
     this.initSurfaces();
-
+    this.setStartSide();
+    
     this.cubeDebug.setLevelConfig(levelConfig);
+  }
+
+  private setStartSide(): void {
+    const defaultSide: CubeSide = DefaultStartSideConfig.side;
+    const defaultRotationDirection: CubeRotationDirection = DefaultStartSideConfig.rotationDirection;
+
+    let startSide: CubeSide = defaultSide;
+    let startCubeRotationDirection: CubeRotationDirection = defaultRotationDirection;
+
+    if (this.levelConfig.startSide) {
+      startSide = this.levelConfig.startSide.side ?? defaultSide;
+      startCubeRotationDirection = this.levelConfig.startSide.rotationDirection ?? defaultRotationDirection;
+    }
+
+    this.cubeRotationController.setInitRotation(startSide, startCubeRotationDirection);
   }
 
   private removeCube(): void {

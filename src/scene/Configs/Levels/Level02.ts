@@ -2,9 +2,14 @@ import * as THREE from 'three';
 import { CubeEdge } from "../../Enums/CubeEdge";
 import { CubeSide } from "../../Enums/CubeSide";
 import { ILevelConfig } from "../../Interfaces/ILevelConfig";
+import { CubeRotationDirection } from '../../Enums/CubeRotationDirection';
 
 const Level02: ILevelConfig = {
   size: new THREE.Vector3(5, 6, 7),
+  startSide: {
+    side: CubeSide.Front,
+    rotationDirection: CubeRotationDirection.Top,
+  },
   map: {
     surfaces: {
       [CubeSide.Front]: [
@@ -81,7 +86,6 @@ const Level02: ILevelConfig = {
   },
   playerCharacter: {
     gridPosition: new THREE.Vector2(1, 2),
-    direction: 0,
     side: CubeSide.Front,
   },
 };

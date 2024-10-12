@@ -78,8 +78,7 @@ const Level01: ILevelConfig = {
     },
   },
   playerCharacter: {
-    gridPosition: new THREE.Vector2(0, 0),
-    direction: 0,
+    gridPosition: new THREE.Vector2(3, 0),
     side: CubeSide.Front,
   },
 };
