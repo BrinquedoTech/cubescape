@@ -1,7 +1,7 @@
 import * as THREE from 'three';
 import { RotateDirection, TurnDirection } from "../../Enums/RotateDirection";
 import TWEEN from 'three/addons/libs/tween.module.js';
-import GameplayConfig from '../../Configs/GameplayConfig';
+import GameplayConfig from '../../Configs/Main/GameplayConfig';
 import { CubeSide } from '../../Enums/CubeSide';
 import { LocalEdgeDirections, SideVectorConfig } from '../../Configs/SurfaceConfig';
 import { CubeRotationDirection } from '../../Enums/CubeRotationDirection';
@@ -33,7 +33,7 @@ export default class CubeRotationController {
     this.turnDirection = null;
     this.isRotating = false;
     this.rotationProgress = 0;
-    this.rotationSpeed = GameplayConfig.cubeRotationSpeed;
+    this.rotationSpeed = GameplayConfig.cube.rotationSpeed;
     this.lastEasedAngle = 0;
     this.rotationAngle = Math.PI * 0.5;
   }

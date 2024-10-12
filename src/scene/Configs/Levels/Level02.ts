@@ -4,6 +4,11 @@ import { CubeSide } from "../../Enums/CubeSide";
 import { ILevelConfig } from "../../Interfaces/ILevelConfig";
 import { CubeRotationDirection } from '../../Enums/CubeRotationDirection';
 
+// Empty = 0,
+// Wall = 1,
+// Start = 2,
+// Finish = 3,
+
 const Level02: ILevelConfig = {
   size: new THREE.Vector3(5, 6, 7),
   startSide: {
@@ -16,7 +21,7 @@ const Level02: ILevelConfig = {
         // sizeX x sizeY
         [0, 0, 0, 0, 0],
         [0, 0, 0, 0, 0],
-        [0, 0, 0, 0, 0],
+        [0, 0, 2, 0, 0],
         [0, 0, 0, 0, 0],
         [0, 0, 0, 0, 0],
         [0, 0, 0, 0, 0],
@@ -83,10 +88,6 @@ const Level02: ILevelConfig = {
       [CubeEdge.BackLeft]: [0, 1, 1, 1, 1, 1], // sizeY
       [CubeEdge.BackRight]: [1, 1, 1, 1, 1, 0], // sizeY
     },
-  },
-  playerCharacter: {
-    gridPosition: new THREE.Vector2(1, 2),
-    side: CubeSide.Front,
   },
 };
 

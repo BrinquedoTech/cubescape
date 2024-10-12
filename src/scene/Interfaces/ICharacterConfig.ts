@@ -13,10 +13,6 @@ export type IMovementDirectionByCubeRotationConfig = {
     };
 };
 
-export interface IPlayerCharacterConfig {
-  speedCoefficient: number;
-}
-
 export type IMovementDirectionConfig = {
   vector: THREE.Vector2;
   activeAxis: string;

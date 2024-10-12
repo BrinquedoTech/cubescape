@@ -20,6 +20,7 @@ import { EdgeBySideConfig, EdgesBySideArrayConfig } from '../Configs/EdgeConfig'
 import { CubeEdge } from '../Enums/CubeEdge';
 import { CubeEdgeOnSidePositionType } from '../Enums/CubeEdgeOnSide';
 import ArrayHelper from '../Helpers/ArrayHelper';
+import { CellType } from '../Enums/CellType';
 
 export default class GameScene extends THREE.Group {
   private cube: Cube;
@@ -93,7 +94,7 @@ export default class GameScene extends THREE.Group {
       const nextCellX: number = activeAxis === 'x' ? i : playerCharacterGridPosition.x;
       const nextCellY: number = activeAxis === 'y' ? i : playerCharacterGridPosition.y;
 
-      if (this.map[cubeSide][nextCellY + 1][nextCellX + 1] === 0) {
+      if (this.map[cubeSide][nextCellY + 1][nextCellX + 1] === CellType.Empty) {
         targetGridPosition[activeAxis] = i;
       } else {
         break;
@@ -138,8 +139,8 @@ export default class GameScene extends THREE.Group {
       sideEdgesMap[edge] = this.levelConfig.map.edges[edge];
     }
 
-    const resultMap: number[][] = ArrayHelper.create2DArray(mapSizeY, mapSizeX, 0);
-    ArrayHelper.fillCornerValues(resultMap, 1);
+    const resultMap: number[][] = ArrayHelper.create2DArray(mapSizeY, mapSizeX, CellType.Empty);
+    ArrayHelper.fillCornerValues(resultMap, CellType.Wall);
     
     for (const edgeType in sideEdgesMap) {
       const { positionType, direction } = EdgeBySideConfig[cubeSide][edgeType];
@@ -170,7 +171,9 @@ export default class GameScene extends THREE.Group {
 
     for (let i = 1; i < mapSizeY - 1; i++) {
       for (let j = 1; j < mapSizeX - 1; j++) {
-        resultMap[i][j] = sideMap[i - 1][j - 1];
+        if (sideMap[i - 1][j - 1] === CellType.Wall) {
+          resultMap[i][j] = sideMap[i - 1][j - 1];
+        }
       }
     }
 

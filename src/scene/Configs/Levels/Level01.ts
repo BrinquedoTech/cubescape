@@ -3,6 +3,11 @@ import { CubeEdge } from "../../Enums/CubeEdge";
 import { CubeSide } from "../../Enums/CubeSide";
 import { ILevelConfig } from "../../Interfaces/ILevelConfig";
 
+// Empty = 0,
+// Wall = 1,
+// Start = 2,
+// Finish = 3,
+
 const Level01: ILevelConfig = {
   size: new THREE.Vector3(7, 7, 7),
   map: {
@@ -10,7 +15,7 @@ const Level01: ILevelConfig = {
       [CubeSide.Front]: [
         [0, 0, 0, 0, 0, 0, 0],
         [0, 0, 0, 0, 0, 0, 0],
-        [0, 1, 1, 1, 0, 0, 0],
+        [0, 1, 1, 1, 0, 0, 2],
         [0, 0, 0, 0, 0, 0, 0],
         [0, 0, 1, 0, 0, 0, 0],
         [0, 0, 1, 0, 0, 0, 0],
@@ -76,10 +81,6 @@ const Level01: ILevelConfig = {
       [CubeEdge.BackLeft]: [1, 1, 1, 1, 1, 1, 1],
       [CubeEdge.BackRight]: [0, 1, 1, 1, 1, 1, 1],
     },
-  },
-  playerCharacter: {
-    gridPosition: new THREE.Vector2(3, 0),
-    side: CubeSide.Front,
   },
 };
 

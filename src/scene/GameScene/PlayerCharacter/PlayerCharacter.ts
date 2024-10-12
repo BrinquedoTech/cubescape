@@ -1,14 +1,14 @@
 import * as THREE from 'three';
-import { ILevelConfig } from '../../Interfaces/ILevelConfig';
+import { ILevelConfig, ILevelMapConfig } from '../../Interfaces/ILevelConfig';
 import { CubeSide } from '../../Enums/CubeSide';
-import GameplayConfig from '../../Configs/GameplayConfig';
+import GameplayConfig from '../../Configs/Main/GameplayConfig';
 import { CharacterSurfaceConfig, CubeSurfaceAxisConfig } from '../../Configs/SurfaceConfig';
 import { PlayerCharacterState } from '../../Enums/PlayerCharacterState';
 import TWEEN from 'three/addons/libs/tween.module.js';
 import GridHelper from '../../Helpers/GridHelper';
-import { PlayerCharacterConfig } from '../../Configs/PlayerCharacterConfig';
 import { ICubeSurfaceAxisConfig } from '../../Interfaces/ICubeConfig';
 import mitt, { Emitter } from 'mitt';
+import { CellType } from '../../Enums/CellType';
 
 type Events = {
   onMovingEnd: string;
@@ -59,9 +59,7 @@ export default class PlayerCharacter extends THREE.Group {
   public init(levelConfig: ILevelConfig): void {
     this.levelConfig = levelConfig;
 
-    const gridPosition: THREE.Vector2 = levelConfig.playerCharacter.gridPosition;
-    this.setActiveSurface(levelConfig.playerCharacter.side);
-    this.setGridPosition(this.activeSurface, gridPosition.x, gridPosition.y);
+    this.setStartPosition();
   }
 
   public setActiveSurface(surface: CubeSide): void {
@@ -78,22 +76,22 @@ export default class PlayerCharacter extends THREE.Group {
 
   public moveToGridCell(gridX: number, gridY: number): void {
     this.state = PlayerCharacterState.Moving;
-    this.targetMovingPosition.set(gridX * GameplayConfig.gridSize, gridY * GameplayConfig.gridSize);
+    this.targetMovingPosition.set(gridX * GameplayConfig.grid.size, gridY * GameplayConfig.grid.size);
     this.startMovingPosition.set(this.surfacePosition.x, this.surfacePosition.y);
     this.targetMovingGridPosition.set(gridX, gridY);
 
     const distance: number = GridHelper.calculateGridLineDistance(this.gridPosition.x, this.gridPosition.y, gridX, gridY);
-    this.movingDuration = distance * PlayerCharacterConfig.speedCoefficient;
+    this.movingDuration = distance * (1 / GameplayConfig.playerCharacter.speed);
   }
 
   public setPosition(cubeSide: CubeSide, x: number, y: number): void {
     const cubeSurfaceAxisConfig: ICubeSurfaceAxisConfig = CubeSurfaceAxisConfig[cubeSide];
-    const distance: number = (this.levelConfig.size[cubeSurfaceAxisConfig.zAxis] + 1) * 0.5 * GameplayConfig.gridSize;
+    const distance: number = (this.levelConfig.size[cubeSurfaceAxisConfig.zAxis] + 1) * 0.5 * GameplayConfig.grid.size;
 
     const surfaceConfig = CharacterSurfaceConfig[cubeSide](x, y);
 
-    const startOffsetX: number = (this.levelConfig.size[cubeSurfaceAxisConfig.xAxis] - 1) * 0.5 * GameplayConfig.gridSize;
-    const startOffsetY: number = (this.levelConfig.size[cubeSurfaceAxisConfig.yAxis] - 1) * 0.5 * GameplayConfig.gridSize;
+    const startOffsetX: number = (this.levelConfig.size[cubeSurfaceAxisConfig.xAxis] - 1) * 0.5 * GameplayConfig.grid.size;
+    const startOffsetY: number = (this.levelConfig.size[cubeSurfaceAxisConfig.yAxis] - 1) * 0.5 * GameplayConfig.grid.size;
     const startOffsetZ: number = surfaceConfig.x === null ? startOffsetX : startOffsetY;
 
     const newX: number = surfaceConfig.x !== null ? (surfaceConfig.x - startOffsetX) * surfaceConfig.xFactor : distance * surfaceConfig.xFactor;
@@ -109,21 +107,21 @@ export default class PlayerCharacter extends THREE.Group {
 
   public setGridPosition(cubeSide: CubeSide, gridX: number, gridY: number): void {
     const cubeSurfaceAxisConfig: ICubeSurfaceAxisConfig = CubeSurfaceAxisConfig[cubeSide];
-    const distance: number = (this.levelConfig.size[cubeSurfaceAxisConfig.zAxis] + 1) * 0.5 * GameplayConfig.gridSize;
+    const distance: number = (this.levelConfig.size[cubeSurfaceAxisConfig.zAxis] + 1) * 0.5 * GameplayConfig.grid.size;
 
     const surfaceConfig = CharacterSurfaceConfig[cubeSide](gridX, gridY);
 
-    const startOffsetX: number = (this.levelConfig.size[cubeSurfaceAxisConfig.xAxis] - 1) * 0.5 * GameplayConfig.gridSize;
-    const startOffsetY: number = (this.levelConfig.size[cubeSurfaceAxisConfig.yAxis] - 1) * 0.5 * GameplayConfig.gridSize;
+    const startOffsetX: number = (this.levelConfig.size[cubeSurfaceAxisConfig.xAxis] - 1) * 0.5 * GameplayConfig.grid.size;
+    const startOffsetY: number = (this.levelConfig.size[cubeSurfaceAxisConfig.yAxis] - 1) * 0.5 * GameplayConfig.grid.size;
     const startOffsetZ: number = surfaceConfig.x === null ? startOffsetX : startOffsetY;
 
-    const newX: number = surfaceConfig.x !== null ? (surfaceConfig.x * GameplayConfig.gridSize - startOffsetX) * surfaceConfig.xFactor : distance * surfaceConfig.xFactor;
-    const newY: number = surfaceConfig.y !== null ? (surfaceConfig.y * GameplayConfig.gridSize - startOffsetY) * surfaceConfig.yFactor : distance * surfaceConfig.yFactor;
-    const newZ: number = surfaceConfig.z !== null ? (surfaceConfig.z * GameplayConfig.gridSize - startOffsetZ) * surfaceConfig.zFactor : distance * surfaceConfig.zFactor;
+    const newX: number = surfaceConfig.x !== null ? (surfaceConfig.x * GameplayConfig.grid.size - startOffsetX) * surfaceConfig.xFactor : distance * surfaceConfig.xFactor;
+    const newY: number = surfaceConfig.y !== null ? (surfaceConfig.y * GameplayConfig.grid.size - startOffsetY) * surfaceConfig.yFactor : distance * surfaceConfig.yFactor;
+    const newZ: number = surfaceConfig.z !== null ? (surfaceConfig.z * GameplayConfig.grid.size - startOffsetZ) * surfaceConfig.zFactor : distance * surfaceConfig.zFactor;
 
     this.position.set(newX, newY, newZ);
     this.gridPosition.set(gridX, gridY);
-    this.surfacePosition.set(gridX * GameplayConfig.gridSize, gridY * GameplayConfig.gridSize);
+    this.surfacePosition.set(gridX * GameplayConfig.grid.size, gridY * GameplayConfig.grid.size);
   }
 
   public updatePositionOnRealPosition(): void {
@@ -151,17 +149,36 @@ export default class PlayerCharacter extends THREE.Group {
     return this.gridPosition;
   }
 
+  private setStartPosition(): void {
+    const allSidesMap: ILevelMapConfig = this.levelConfig.map.surfaces;
+
+    for (let side in allSidesMap) {
+      const currentSide: CubeSide = side as CubeSide;
+      const sideMap: number[][] = allSidesMap[currentSide];
+      
+      for (let y: number = 0; y < sideMap.length; y++) {
+        for (let x: number = 0; x < sideMap[y].length; x++) {
+          if (sideMap[y][x] === CellType.Start) {
+            this.setActiveSurface(currentSide);
+            this.setGridPosition(this.activeSurface, x, y);
+            break;
+          }
+        }
+      }
+    }
+  }
+
   private getGridPositionFromRealPosition(): THREE.Vector2 {
     const cubeSurfaceAxisConfig: ICubeSurfaceAxisConfig = CubeSurfaceAxisConfig[this.activeSurface];
 
     const xSurface: number = this.position[cubeSurfaceAxisConfig.xAxis];
     const ySurface: number = this.position[cubeSurfaceAxisConfig.yAxis];
 
-    const startOffsetX: number = (this.levelConfig.size[cubeSurfaceAxisConfig.xAxis] - 1) * 0.5 * GameplayConfig.gridSize;
-    const startOffsetY: number = (this.levelConfig.size[cubeSurfaceAxisConfig.yAxis] - 1) * 0.5 * GameplayConfig.gridSize;
+    const startOffsetX: number = (this.levelConfig.size[cubeSurfaceAxisConfig.xAxis] - 1) * 0.5;
+    const startOffsetY: number = (this.levelConfig.size[cubeSurfaceAxisConfig.yAxis] - 1) * 0.5;
 
-    const gridX: number = xSurface / GameplayConfig.gridSize * cubeSurfaceAxisConfig.xFactor + startOffsetX;
-    const gridY: number = ySurface / GameplayConfig.gridSize * cubeSurfaceAxisConfig.yFactor + startOffsetY;
+    const gridX: number = xSurface / GameplayConfig.grid.size * cubeSurfaceAxisConfig.xFactor + startOffsetX;
+    const gridY: number = ySurface / GameplayConfig.grid.size * cubeSurfaceAxisConfig.yFactor + startOffsetY;
 
     return new THREE.Vector2(gridX, gridY);
   }
@@ -172,6 +189,6 @@ export default class PlayerCharacter extends THREE.Group {
     const view = new THREE.Mesh(geometry, material);
     this.add(view);
 
-    view.scale.set(GameplayConfig.gridScale, GameplayConfig.gridScale, GameplayConfig.gridScale);
+    view.scale.set(GameplayConfig.grid.scale, GameplayConfig.grid.scale, GameplayConfig.grid.scale);
   }
 }

@@ -1,5 +1,5 @@
 import * as THREE from 'three';
-import GameplayConfig from '../Configs/GameplayConfig';
+import GameplayConfig from '../Configs/Main/GameplayConfig';
 
 export default class GridHelper {
   constructor() {
@@ -15,8 +15,8 @@ export default class GridHelper {
   }
 
   public static calculateGridPositionByCoordinates(x: number, y: number): THREE.Vector2 {
-    const gridX: number = Math.round(x / GameplayConfig.gridSize);
-    const gridY: number = Math.round(y / GameplayConfig.gridSize);
+    const gridX: number = Math.round(x / GameplayConfig.grid.size);
+    const gridY: number = Math.round(y / GameplayConfig.grid.size);
 
     return new THREE.Vector2(gridX, gridY);
   }

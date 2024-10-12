@@ -7,14 +7,10 @@ export interface ILevelConfig {
   startSide?: {
     side?: CubeSide;
     rotationDirection?: CubeRotationDirection;
-  },
+  };
   map: {
     surfaces: ILevelMapConfig;
     edges: ILevelEdgeConfig;
-  };
-  playerCharacter: {
-    gridPosition: THREE.Vector2;
-    side: CubeSide;
   };
 }
 
