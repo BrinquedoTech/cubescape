@@ -3,7 +3,7 @@ import { RotateDirection, TurnDirection } from "../../Enums/RotateDirection";
 import TWEEN from 'three/addons/libs/tween.module.js';
 import GameplayConfig from '../../Configs/Main/GameplayConfig';
 import { CubeSide } from '../../Enums/CubeSide';
-import { LocalEdgeDirections, SideVectorConfig } from '../../Configs/SurfaceConfig';
+import { LocalEdgeDirections, SideVectorConfig } from '../../Configs/SideConfig';
 import { CubeRotationDirection } from '../../Enums/CubeRotationDirection';
 import mitt, { Emitter } from 'mitt';
 import { RotationBySideConfig, TurnBySideConfig } from '../../Configs/StartSideConfig';

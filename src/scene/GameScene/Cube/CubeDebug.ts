@@ -3,7 +3,7 @@ import { Text } from 'troika-three-text';
 import { ILevelConfig } from '../../Interfaces/ILevelConfig';
 import GameplayConfig from '../../Configs/Main/GameplayConfig';
 import { CubeSide } from '../../Enums/CubeSide';
-import { SurfaceRotationConfig, SideVectorConfig, CubeSurfaceAxisConfig } from '../../Configs/SurfaceConfig';
+import { SideRotationConfig, SideVectorConfig, CubeSideAxisConfig } from '../../Configs/SideConfig';
 import { CubeRotationDirection } from '../../Enums/CubeRotationDirection';
 import { CubeEdgeName, CubeEdgeNameVectorsConfig, CubeSideName, GridRotationConfig } from '../../Configs/VisualDebugConfig';
 
@@ -43,13 +43,13 @@ export default class CubeDebug extends THREE.Group {
     for (const side in CubeSide) {
       const cubeSide: CubeSide = CubeSide[side];
       const rotation: THREE.Vector3 = GridRotationConfig[cubeSide];
-      const sizeForSide: number = size[CubeSurfaceAxisConfig[cubeSide].zAxis];
+      const sizeForSide: number = size[CubeSideAxisConfig[cubeSide].zAxis];
       const position: THREE.Vector3 = SideVectorConfig[cubeSide].clone().multiplyScalar(sizeForSide * 0.5 + GameplayConfig.grid.size + this.textOffset);
 
-      const sizeA: number = size[CubeSurfaceAxisConfig[cubeSide].xAxis];
-      const sizeB: number = size[CubeSurfaceAxisConfig[cubeSide].yAxis];
-      const segmentsX: number = this.levelConfig.size[CubeSurfaceAxisConfig[cubeSide].xAxis];
-      const segmentsY: number = this.levelConfig.size[CubeSurfaceAxisConfig[cubeSide].yAxis];
+      const sizeA: number = size[CubeSideAxisConfig[cubeSide].xAxis];
+      const sizeB: number = size[CubeSideAxisConfig[cubeSide].yAxis];
+      const segmentsX: number = this.levelConfig.size[CubeSideAxisConfig[cubeSide].xAxis];
+      const segmentsY: number = this.levelConfig.size[CubeSideAxisConfig[cubeSide].yAxis];
       const grid = this.createGrid(sizeA, sizeB, segmentsX, segmentsY);
       this.add(grid);
 
@@ -111,8 +111,8 @@ export default class CubeDebug extends THREE.Group {
 
     for (const side in CubeSide) {
       const cubeSide: CubeSide = CubeSide[side];
-      const rotation: THREE.Vector3 = SurfaceRotationConfig[cubeSide];
-      const sizeForSide: number = size[CubeSurfaceAxisConfig[cubeSide].zAxis];
+      const rotation: THREE.Vector3 = SideRotationConfig[cubeSide];
+      const sizeForSide: number = size[CubeSideAxisConfig[cubeSide].zAxis];
       const position: THREE.Vector3 = SideVectorConfig[cubeSide].clone().multiplyScalar(sizeForSide * 0.5 + GameplayConfig.grid.size + this.textOffset);
 
       const cubeSideText: Text = this.createText(CubeSideName[cubeSide], 0.6);
@@ -136,21 +136,21 @@ export default class CubeDebug extends THREE.Group {
 
     for (const side in CubeSide) {
       const cubeSide: CubeSide = CubeSide[side];
-      const rotation: THREE.Vector3 = SurfaceRotationConfig[cubeSide];
-      const sizeForSide: number = size[CubeSurfaceAxisConfig[cubeSide].zAxis];
+      const rotation: THREE.Vector3 = SideRotationConfig[cubeSide];
+      const sizeForSide: number = size[CubeSideAxisConfig[cubeSide].zAxis];
       const position: THREE.Vector3 = SideVectorConfig[cubeSide].clone().multiplyScalar(sizeForSide * 0.5 + GameplayConfig.grid.size + this.textOffset);
-      const surfaceGroup = new THREE.Group();
-      this.add(surfaceGroup);
-      surfaceGroup.position.copy(position);
-      surfaceGroup.rotation.set(rotation.x, rotation.y, rotation.z);
+      const sideGroup = new THREE.Group();
+      this.add(sideGroup);
+      sideGroup.position.copy(position);
+      sideGroup.rotation.set(rotation.x, rotation.y, rotation.z);
 
       for (const edge in CubeRotationDirection) {
         const cubeRotationDirection: CubeRotationDirection = CubeRotationDirection[edge];
         const cubeSideText: Text = this.createText(CubeEdgeName[cubeRotationDirection], 0.3);
-        surfaceGroup.add(cubeSideText);
+        sideGroup.add(cubeSideText);
 
         const isTopOrBottom: boolean = cubeRotationDirection === CubeRotationDirection.Top || cubeRotationDirection === CubeRotationDirection.Bottom;
-        const offsetAxis: string = isTopOrBottom ? CubeSurfaceAxisConfig[cubeSide].yAxis : CubeSurfaceAxisConfig[cubeSide].xAxis;
+        const offsetAxis: string = isTopOrBottom ? CubeSideAxisConfig[cubeSide].yAxis : CubeSideAxisConfig[cubeSide].xAxis;
         const textSideOffset: number = size[offsetAxis];
         const edgePosition = CubeEdgeNameVectorsConfig[cubeRotationDirection].position.clone().multiplyScalar(textSideOffset * 0.5 + GameplayConfig.grid.size * 0.2);
         cubeSideText.position.copy(edgePosition);

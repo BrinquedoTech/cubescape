@@ -14,8 +14,8 @@ import { CubeState } from '../Enums/CubeState';
 import { PlayerCharacterState } from '../Enums/PlayerCharacterState';
 import GridHelper from '../Helpers/GridHelper';
 import { LevelType } from '../Enums/LevelType';
-import { ICubeSurfaceAxisConfig } from '../Interfaces/ICubeConfig';
-import { CubeSurfaceAxisConfig } from '../Configs/SurfaceConfig';
+import { ICubeSideAxisConfig } from '../Interfaces/ICubeConfig';
+import { CubeSideAxisConfig } from '../Configs/SideConfig';
 import { EdgeBySideConfig, EdgesBySideArrayConfig } from '../Configs/EdgeConfig';
 import { CubeEdge } from '../Enums/CubeEdge';
 import { CubeEdgeOnSidePositionType } from '../Enums/CubeEdgeOnSide';
@@ -58,7 +58,7 @@ export default class GameScene extends THREE.Group {
     this.initMap();
     this.cube.init(levelConfig);
     this.playerCharacter.init(levelConfig);
-    this.endGameObject.initPosition(levelConfig);
+    this.endGameObject.init(levelConfig);
   }
 
   public rotateCube(rotateDirection: RotateDirection): void {
@@ -80,8 +80,8 @@ export default class GameScene extends THREE.Group {
     const targetGridPosition: THREE.Vector2 = new THREE.Vector2(playerCharacterGridPosition.x, playerCharacterGridPosition.y);
 
     const cubeSide: CubeSide = this.cube.getCurrentSide();
-    const cubeSurfaceAxisConfig: ICubeSurfaceAxisConfig = CubeSurfaceAxisConfig[cubeSide];
-    const gridSize: number = activeAxis === 'x' ? this.levelConfig.size[cubeSurfaceAxisConfig.xAxis] : this.levelConfig.size[cubeSurfaceAxisConfig.yAxis];
+    const cubeSideAxisConfig: ICubeSideAxisConfig = CubeSideAxisConfig[cubeSide];
+    const gridSize: number = activeAxis === 'x' ? this.levelConfig.size[cubeSideAxisConfig.xAxis] : this.levelConfig.size[cubeSideAxisConfig.yAxis];
 
     if (this.isCellOnEdge(playerCharacterGridPosition.x, playerCharacterGridPosition.y)) {
       for (let i = startPoint + sign; i >= startPoint - 1 && i < startPoint + sign + 1; i += sign) {
@@ -100,22 +100,24 @@ export default class GameScene extends THREE.Group {
     for (let i = startPoint + sign; i >= -1 && i < gridSize + 1; i += sign) {
       nextCellPosition[activeAxis] = i;
       nextCellPosition[inactiveAxis] = playerCharacterGridPosition[inactiveAxis];
+      const nextCellType: CellType = this.map[cubeSide][nextCellPosition.y + 1][nextCellPosition.x + 1];
 
-      if (this.map[cubeSide][nextCellPosition.y + 1][nextCellPosition.x + 1] === CellType.Wall) {
-        break;
+      switch (nextCellType) {
+        case CellType.Finish:
+          targetGridPosition[activeAxis] = i;
+          this.waitingForEndLevel = true;
+          break;
+
+        case CellType.Empty:
+          targetGridPosition[activeAxis] = i;
+          continue;
       }
 
-      if (this.map[cubeSide][nextCellPosition.y + 1][nextCellPosition.x + 1] === CellType.Finish) {
-        targetGridPosition[activeAxis] = i;
-        this.waitingForEndLevel = true;
+      if (nextCellType === CellType.Wall || nextCellType === CellType.Finish) {
         break;
-      }
-
-      if (this.map[cubeSide][nextCellPosition.y + 1][nextCellPosition.x + 1] === CellType.Empty) {
-        targetGridPosition[activeAxis] = i;
       }
     }
-    
+
     if (!GridHelper.isGridCellsEqual(playerCharacterGridPosition, targetGridPosition)) {
       this.playerCharacter.moveToGridCell(targetGridPosition.x, targetGridPosition.y);
 
@@ -136,7 +138,7 @@ export default class GameScene extends THREE.Group {
 
   private initMap(): void {
     this.map = {};
-    
+
     for (const cubeSide in CubeSide) {
       const side: CubeSide = CubeSide[cubeSide] as CubeSide;
       this.map[side] = this.createFullSideMap(side);
@@ -144,9 +146,9 @@ export default class GameScene extends THREE.Group {
   }
 
   private createFullSideMap(cubeSide: CubeSide): number[][] {
-    const mapSizeX: number = this.levelConfig.size[CubeSurfaceAxisConfig[cubeSide].xAxis] + 2;
-    const mapSizeY: number = this.levelConfig.size[CubeSurfaceAxisConfig[cubeSide].yAxis] + 2;
-    
+    const mapSizeX: number = this.levelConfig.size[CubeSideAxisConfig[cubeSide].xAxis] + 2;
+    const mapSizeY: number = this.levelConfig.size[CubeSideAxisConfig[cubeSide].yAxis] + 2;
+
     const sideEdgesMap: ILevelEdgeConfig = {};
     const edgesInSide: CubeEdge[] = EdgesBySideArrayConfig[cubeSide];
     for (let i = 0; i < edgesInSide.length; i++) {
@@ -156,12 +158,12 @@ export default class GameScene extends THREE.Group {
 
     const resultMap: number[][] = ArrayHelper.create2DArray(mapSizeY, mapSizeX, CellType.Empty);
     ArrayHelper.fillCornerValues(resultMap, CellType.Wall);
-    
+
     for (const edgeType in sideEdgesMap) {
       const { positionType, direction } = EdgeBySideConfig[cubeSide][edgeType];
       let edgeMap: number[] = [...sideEdgesMap[edgeType]];
       edgeMap = direction === 1 ? edgeMap : edgeMap.reverse();
-      
+
       switch (positionType) {
         case CubeEdgeOnSidePositionType.Top:
           for (let i = 1; i < mapSizeX - 1; i++)
@@ -181,8 +183,8 @@ export default class GameScene extends THREE.Group {
           break;
       }
     }
-     
-    const sideMap: number[][] = this.levelConfig.map.surfaces[cubeSide];
+
+    const sideMap: number[][] = this.levelConfig.map.sides[cubeSide];
 
     for (let i = 1; i < mapSizeY - 1; i++) {
       for (let j = 1; j < mapSizeX - 1; j++) {
@@ -254,9 +256,9 @@ export default class GameScene extends THREE.Group {
     if (this.waitingForCubeRotation) {
       this.waitingForCubeRotation = false;
       this.nextCubeRotationDirection = null;
-      
+
       const cubeSide: CubeSide = this.cube.getCurrentSide();
-      this.playerCharacter.setActiveSurface(cubeSide);
+      this.playerCharacter.setActiveSide(cubeSide);
       this.playerCharacter.updatePositionOnRealPosition();
     }
   }

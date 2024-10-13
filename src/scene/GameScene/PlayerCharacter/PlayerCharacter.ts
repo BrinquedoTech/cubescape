@@ -2,11 +2,11 @@ import * as THREE from 'three';
 import { ILevelConfig } from '../../Interfaces/ILevelConfig';
 import { CubeSide } from '../../Enums/CubeSide';
 import GameplayConfig from '../../Configs/Main/GameplayConfig';
-import { CubeSurfaceAxisConfig } from '../../Configs/SurfaceConfig';
+import { CubeSideAxisConfig } from '../../Configs/SideConfig';
 import { PlayerCharacterState } from '../../Enums/PlayerCharacterState';
 import TWEEN from 'three/addons/libs/tween.module.js';
 import GridHelper from '../../Helpers/GridHelper';
-import { ICubePosition, ICubeSurfaceAxisConfig } from '../../Interfaces/ICubeConfig';
+import { ICubePosition, ICubeSideAxisConfig } from '../../Interfaces/ICubeConfig';
 import mitt, { Emitter } from 'mitt';
 import { CellType } from '../../Enums/CellType';
 
@@ -17,9 +17,9 @@ type Events = {
 export default class PlayerCharacter extends THREE.Group {
   // private view: THREE.Mesh;
   private levelConfig: ILevelConfig;
-  private activeSurface: CubeSide;
+  private activeSide: CubeSide;
   private gridPosition: THREE.Vector2 = new THREE.Vector2();
-  private surfacePosition: THREE.Vector2 = new THREE.Vector2();
+  private sidePosition: THREE.Vector2 = new THREE.Vector2();
   private state: PlayerCharacterState = PlayerCharacterState.Idle;
 
   private startMovingPosition: THREE.Vector2 = new THREE.Vector2();
@@ -48,7 +48,7 @@ export default class PlayerCharacter extends THREE.Group {
       const targetX: number = this.startMovingPosition.x + (this.targetMovingPosition.x - this.startMovingPosition.x) * easeT;
       const targetY: number = this.startMovingPosition.y + (this.targetMovingPosition.y - this.startMovingPosition.y) * easeT;
 
-      this.setPositionOnActiveSurface(targetX, targetY);
+      this.setPositionOnActiveSide(targetX, targetY);
 
       if (t >= 1) {
         this.stopMoving();
@@ -62,22 +62,22 @@ export default class PlayerCharacter extends THREE.Group {
     this.setStartPosition();
   }
 
-  public setActiveSurface(surface: CubeSide): void {
-    this.activeSurface = surface;
+  public setActiveSide(side: CubeSide): void {
+    this.activeSide = side;
   }
 
-  public setPositionOnActiveSurface(x: number, y: number): void {
-    this.setPosition(this.activeSurface, x, y);
+  public setPositionOnActiveSide(x: number, y: number): void {
+    this.setPosition(this.activeSide, x, y);
   }
 
-  public setGridPositionOnActiveSurface(gridX: number, gridY: number): void {
-    this.setGridPosition(this.activeSurface, gridX, gridY);
+  public setGridPositionOnActiveSide(gridX: number, gridY: number): void {
+    this.setGridPosition(this.activeSide, gridX, gridY);
   }
 
   public moveToGridCell(gridX: number, gridY: number): void {
     this.state = PlayerCharacterState.Moving;
     this.targetMovingPosition.set(gridX * GameplayConfig.grid.size, gridY * GameplayConfig.grid.size);
-    this.startMovingPosition.set(this.surfacePosition.x, this.surfacePosition.y);
+    this.startMovingPosition.set(this.sidePosition.x, this.sidePosition.y);
     this.targetMovingGridPosition.set(gridX, gridY);
 
     const distance: number = GridHelper.calculateGridLineDistance(this.gridPosition.x, this.gridPosition.y, gridX, gridY);
@@ -88,7 +88,7 @@ export default class PlayerCharacter extends THREE.Group {
     const newPosition: THREE.Vector3 = GridHelper.getPositionByGridAndSide(this.levelConfig.size, cubeSide, x, y, false);
 
     this.position.set(newPosition.x, newPosition.y, newPosition.z);
-    this.surfacePosition.set(x, y);
+    this.sidePosition.set(x, y);
 
     const gridPosition: THREE.Vector2 = GridHelper.calculateGridPositionByCoordinates(x, y);
     this.gridPosition.set(gridPosition.x, gridPosition.y);
@@ -99,18 +99,18 @@ export default class PlayerCharacter extends THREE.Group {
 
     this.position.set(newPosition.x, newPosition.y, newPosition.z);
     this.gridPosition.set(gridX, gridY);
-    this.surfacePosition.set(gridX * GameplayConfig.grid.size, gridY * GameplayConfig.grid.size);
+    this.sidePosition.set(gridX * GameplayConfig.grid.size, gridY * GameplayConfig.grid.size);
   }
 
   public updatePositionOnRealPosition(): void {
     const gridPosition: THREE.Vector2 = this.getGridPositionFromRealPosition();
-    this.setGridPositionOnActiveSurface(gridPosition.x, gridPosition.y);
+    this.setGridPositionOnActiveSide(gridPosition.x, gridPosition.y);
   }
 
   public stopMoving(): void {
     this.state = PlayerCharacterState.Idle;
     this.movingElapsedTime = 0;
-    this.setGridPositionOnActiveSurface(this.targetMovingGridPosition.x, this.targetMovingGridPosition.y);
+    this.setGridPositionOnActiveSide(this.targetMovingGridPosition.x, this.targetMovingGridPosition.y);
 
     this.emitter.emit('onMovingEnd');
   }
@@ -128,26 +128,26 @@ export default class PlayerCharacter extends THREE.Group {
   }
 
   private setStartPosition(): void {
-    const itemPositions: ICubePosition[] = GridHelper.getItemPositions(this.levelConfig.map.surfaces, CellType.Start);
+    const itemPositions: ICubePosition[] = GridHelper.getItemPositions(this.levelConfig.map.sides, CellType.Start);
 
     if (itemPositions.length > 0) {
       const startPosition: ICubePosition = itemPositions[0];
-      this.setActiveSurface(startPosition.side);
-      this.setGridPositionOnActiveSurface(startPosition.gridPosition.x, startPosition.gridPosition.y);
+      this.setActiveSide(startPosition.side);
+      this.setGridPositionOnActiveSide(startPosition.gridPosition.x, startPosition.gridPosition.y);
     }
   }
 
   private getGridPositionFromRealPosition(): THREE.Vector2 {
-    const cubeSurfaceAxisConfig: ICubeSurfaceAxisConfig = CubeSurfaceAxisConfig[this.activeSurface];
+    const cubeSideAxisConfig: ICubeSideAxisConfig = CubeSideAxisConfig[this.activeSide];
 
-    const xSurface: number = this.position[cubeSurfaceAxisConfig.xAxis];
-    const ySurface: number = this.position[cubeSurfaceAxisConfig.yAxis];
+    const sideX: number = this.position[cubeSideAxisConfig.xAxis];
+    const sideY: number = this.position[cubeSideAxisConfig.yAxis];
 
-    const startOffsetX: number = (this.levelConfig.size[cubeSurfaceAxisConfig.xAxis] - 1) * 0.5;
-    const startOffsetY: number = (this.levelConfig.size[cubeSurfaceAxisConfig.yAxis] - 1) * 0.5;
+    const startOffsetX: number = (this.levelConfig.size[cubeSideAxisConfig.xAxis] - 1) * 0.5;
+    const startOffsetY: number = (this.levelConfig.size[cubeSideAxisConfig.yAxis] - 1) * 0.5;
 
-    const gridX: number = xSurface / GameplayConfig.grid.size * cubeSurfaceAxisConfig.xFactor + startOffsetX;
-    const gridY: number = ySurface / GameplayConfig.grid.size * cubeSurfaceAxisConfig.yFactor + startOffsetY;
+    const gridX: number = sideX / GameplayConfig.grid.size * cubeSideAxisConfig.xFactor + startOffsetX;
+    const gridY: number = sideY / GameplayConfig.grid.size * cubeSideAxisConfig.yFactor + startOffsetY;
 
     return new THREE.Vector2(gridX, gridY);
   }

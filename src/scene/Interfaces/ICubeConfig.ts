@@ -9,7 +9,7 @@ export interface IEdgeAxisConfig {
   axis: string;
 }
 
-export interface ICubeSurfaceAxisConfig {
+export interface ICubeSideAxisConfig {
   xAxis: string;
   yAxis: string;
   zAxis: string;
@@ -17,7 +17,7 @@ export interface ICubeSurfaceAxisConfig {
   yFactor: number;
 }
 
-export interface ICharacterSurfaceConfig {
+export interface ICharacterSideConfig {
   xFactor: number;
   yFactor: number;
   zFactor: number;

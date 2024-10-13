@@ -3,8 +3,8 @@ import { ILevelConfig } from '../../Interfaces/ILevelConfig';
 import GameplayConfig from '../../Configs/Main/GameplayConfig';
 import VertexConfig from '../../Configs/VertexConfig';
 import { EdgeAxisConfig, EdgeDistanceConfig } from '../../Configs/EdgeConfig';
-import { CubeSurfaceAxisConfig, SideVectorConfig } from '../../Configs/SurfaceConfig';
-import { IEdgeAxisConfig, ICubeSurfaceAxisConfig } from '../../Interfaces/ICubeConfig';
+import { CubeSideAxisConfig, SideVectorConfig } from '../../Configs/SideConfig';
+import { IEdgeAxisConfig, ICubeSideAxisConfig } from '../../Interfaces/ICubeConfig';
 import { RotateDirection, TurnDirection } from '../../Enums/RotateDirection';
 import CubeRotationController from './CubeRotationController';
 import { CubeSide } from '../../Enums/CubeSide';
@@ -80,7 +80,7 @@ export default class Cube extends THREE.Group {
 
     this.initInnerCube();
     this.initEdges();
-    this.initSurfaces();
+    this.initSides();
     this.setStartSide();
     
     this.cubeDebug.setLevelConfig(levelConfig);
@@ -176,34 +176,34 @@ export default class Cube extends THREE.Group {
     }
   }
 
-  private initSurfaces(): void {
+  private initSides(): void {
     const geometry = new THREE.BoxGeometry(GameplayConfig.grid.size, GameplayConfig.grid.size, GameplayConfig.grid.size);
     const material = new THREE.MeshStandardMaterial({ color: 0xffff00 });
 
     for (const side in CubeSide) {
       const cubeSide: CubeSide = CubeSide[side];
-      const cubeSurfaceAxisConfig: ICubeSurfaceAxisConfig = CubeSurfaceAxisConfig[cubeSide];
-      const sizeX: number = this.levelConfig.size[cubeSurfaceAxisConfig.xAxis];
-      const sizeY: number = this.levelConfig.size[cubeSurfaceAxisConfig.yAxis];
+      const cubeSideAxisConfig: ICubeSideAxisConfig = CubeSideAxisConfig[cubeSide];
+      const sizeX: number = this.levelConfig.size[cubeSideAxisConfig.xAxis];
+      const sizeY: number = this.levelConfig.size[cubeSideAxisConfig.yAxis];
 
       for (let i = 0; i < sizeY; i++) {
         for (let j = 0; j < sizeX; j++) {
-          if (this.levelConfig.map.surfaces[cubeSide][i][j] === 1) {
-            const surfaceCell = new THREE.Mesh(geometry, material);
-            this.add(surfaceCell);
+          if (this.levelConfig.map.sides[cubeSide][i][j] === 1) {
+            const sideCell = new THREE.Mesh(geometry, material);
+            this.add(sideCell);
 
-            const distance: number = (this.levelConfig.size[cubeSurfaceAxisConfig.zAxis] + 1) * 0.5 * GameplayConfig.grid.size;
-            const offsetX: number = (this.levelConfig.size[cubeSurfaceAxisConfig.xAxis] - 1) * 0.5 * GameplayConfig.grid.size;
-            const offsetY: number = (this.levelConfig.size[cubeSurfaceAxisConfig.yAxis] - 1) * 0.5 * GameplayConfig.grid.size;
+            const distance: number = (this.levelConfig.size[cubeSideAxisConfig.zAxis] + 1) * 0.5 * GameplayConfig.grid.size;
+            const offsetX: number = (this.levelConfig.size[cubeSideAxisConfig.xAxis] - 1) * 0.5 * GameplayConfig.grid.size;
+            const offsetY: number = (this.levelConfig.size[cubeSideAxisConfig.yAxis] - 1) * 0.5 * GameplayConfig.grid.size;
 
-            surfaceCell.position.x = SideVectorConfig[cubeSide].x * distance;
-            surfaceCell.position.y = SideVectorConfig[cubeSide].y * distance;
-            surfaceCell.position.z = SideVectorConfig[cubeSide].z * distance;
+            sideCell.position.x = SideVectorConfig[cubeSide].x * distance;
+            sideCell.position.y = SideVectorConfig[cubeSide].y * distance;
+            sideCell.position.z = SideVectorConfig[cubeSide].z * distance;
 
-            surfaceCell.position[cubeSurfaceAxisConfig.xAxis] += j * GameplayConfig.grid.size * cubeSurfaceAxisConfig.xFactor - offsetX * cubeSurfaceAxisConfig.xFactor;
-            surfaceCell.position[cubeSurfaceAxisConfig.yAxis] += i * GameplayConfig.grid.size * cubeSurfaceAxisConfig.yFactor - offsetY * cubeSurfaceAxisConfig.yFactor;
+            sideCell.position[cubeSideAxisConfig.xAxis] += j * GameplayConfig.grid.size * cubeSideAxisConfig.xFactor - offsetX * cubeSideAxisConfig.xFactor;
+            sideCell.position[cubeSideAxisConfig.yAxis] += i * GameplayConfig.grid.size * cubeSideAxisConfig.yFactor - offsetY * cubeSideAxisConfig.yFactor;
 
-            surfaceCell.scale.set(GameplayConfig.grid.scale, GameplayConfig.grid.scale, GameplayConfig.grid.scale);
+            sideCell.scale.set(GameplayConfig.grid.scale, GameplayConfig.grid.scale, GameplayConfig.grid.scale);
           }
         }
       }

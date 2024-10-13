@@ -10,7 +10,7 @@ export interface ILevelConfig {
     rotationDirection?: CubeRotationDirection;
   };
   map: {
-    surfaces: ILevelMapConfig;
+    sides: ILevelMapConfig;
     edges: ILevelEdgeConfig;
   };
 }

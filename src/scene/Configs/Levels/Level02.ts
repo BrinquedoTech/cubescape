@@ -16,7 +16,7 @@ const Level02: ILevelConfig = {
     rotationDirection: CubeRotationDirection.Top,
   },
   map: {
-    surfaces: {
+    sides: {
       [CubeSide.Front]: [
         // sizeX x sizeY
         [0, 0, 0, 0, 0],

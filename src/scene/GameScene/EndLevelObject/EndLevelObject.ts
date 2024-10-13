@@ -12,12 +12,12 @@ export default class EndLevelObject extends THREE.Group {
   constructor() {
     super();
 
-    this.init();
+    this.initView();
   }
 
-  public initPosition(levelConfig: ILevelConfig): void {
+  public init(levelConfig: ILevelConfig): void {
     this.levelConfig = levelConfig;
-    const itemPositions: ICubePosition[] = GridHelper.getItemPositions(levelConfig.map.surfaces, CellType.Finish);
+    const itemPositions: ICubePosition[] = GridHelper.getItemPositions(levelConfig.map.sides, CellType.Finish);
 
     if (itemPositions.length > 0) {
       const startPosition: ICubePosition = itemPositions[0];
@@ -30,7 +30,7 @@ export default class EndLevelObject extends THREE.Group {
     this.position.set(newPosition.x, newPosition.y, newPosition.z);
   }
 
-  private init(): void {
+  private initView(): void {
     const geometry = new THREE.BoxGeometry(0.9, 0.9, 0.9);
     const material = new THREE.MeshBasicMaterial({
       color: 0x0000aa,

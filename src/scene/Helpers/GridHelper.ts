@@ -1,7 +1,7 @@
 import * as THREE from 'three';
 import GameplayConfig from '../Configs/Main/GameplayConfig';
-import { ICubePosition, ICubeSurfaceAxisConfig } from '../Interfaces/ICubeConfig';
-import { CharacterSurfaceConfig, CubeSurfaceAxisConfig } from '../Configs/SurfaceConfig';
+import { ICubePosition, ICubeSideAxisConfig } from '../Interfaces/ICubeConfig';
+import { CharacterSideConfig, CubeSideAxisConfig } from '../Configs/SideConfig';
 import { CubeSide } from '../Enums/CubeSide';
 import { ILevelMapConfig } from '../Interfaces/ILevelConfig';
 import { CellType } from '../Enums/CellType';
@@ -27,20 +27,20 @@ export default class GridHelper {
   }
 
   public static getPositionByGridAndSide(levelSize: THREE.Vector3, cubeSide: CubeSide, x: number, y: number, returnGrid: boolean = true): THREE.Vector3 {
-    const cubeSurfaceAxisConfig: ICubeSurfaceAxisConfig = CubeSurfaceAxisConfig[cubeSide];
-    const distance: number = (levelSize[cubeSurfaceAxisConfig.zAxis] + 1) * 0.5 * GameplayConfig.grid.size;
+    const cubeSideAxisConfig: ICubeSideAxisConfig = CubeSideAxisConfig[cubeSide];
+    const distance: number = (levelSize[cubeSideAxisConfig.zAxis] + 1) * 0.5 * GameplayConfig.grid.size;
 
-    const surfaceConfig = CharacterSurfaceConfig[cubeSide](x, y);
+    const sideConfig = CharacterSideConfig[cubeSide](x, y);
 
-    const startOffsetX: number = (levelSize[cubeSurfaceAxisConfig.xAxis] - 1) * 0.5 * GameplayConfig.grid.size;
-    const startOffsetY: number = (levelSize[cubeSurfaceAxisConfig.yAxis] - 1) * 0.5 * GameplayConfig.grid.size;
-    const startOffsetZ: number = surfaceConfig.x === null ? startOffsetX : startOffsetY;
+    const startOffsetX: number = (levelSize[cubeSideAxisConfig.xAxis] - 1) * 0.5 * GameplayConfig.grid.size;
+    const startOffsetY: number = (levelSize[cubeSideAxisConfig.yAxis] - 1) * 0.5 * GameplayConfig.grid.size;
+    const startOffsetZ: number = sideConfig.x === null ? startOffsetX : startOffsetY;
 
     const gridCoeff: number = returnGrid ? GameplayConfig.grid.size : 1;
 
-    const newX: number = surfaceConfig.x !== null ? (surfaceConfig.x * gridCoeff - startOffsetX) * surfaceConfig.xFactor : distance * surfaceConfig.xFactor;
-    const newY: number = surfaceConfig.y !== null ? (surfaceConfig.y * gridCoeff - startOffsetY) * surfaceConfig.yFactor : distance * surfaceConfig.yFactor;
-    const newZ: number = surfaceConfig.z !== null ? (surfaceConfig.z * gridCoeff - startOffsetZ) * surfaceConfig.zFactor : distance * surfaceConfig.zFactor;
+    const newX: number = sideConfig.x !== null ? (sideConfig.x * gridCoeff - startOffsetX) * sideConfig.xFactor : distance * sideConfig.xFactor;
+    const newY: number = sideConfig.y !== null ? (sideConfig.y * gridCoeff - startOffsetY) * sideConfig.yFactor : distance * sideConfig.yFactor;
+    const newZ: number = sideConfig.z !== null ? (sideConfig.z * gridCoeff - startOffsetZ) * sideConfig.zFactor : distance * sideConfig.zFactor;
 
     return new THREE.Vector3(newX, newY, newZ);
   }

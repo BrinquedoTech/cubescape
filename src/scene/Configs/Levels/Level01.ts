@@ -11,11 +11,11 @@ import { ILevelConfig } from "../../Interfaces/ILevelConfig";
 const Level01: ILevelConfig = {
   size: new THREE.Vector3(7, 7, 7),
   map: {
-    surfaces: {
+    sides: {
       [CubeSide.Front]: [
+        [0, 0, 0, 0, 0, 3, 0],
         [0, 0, 0, 0, 0, 0, 0],
-        [0, 0, 0, 0, 0, 0, 0],
-        [0, 1, 1, 1, 3, 0, 2],
+        [0, 1, 1, 1, 0, 0, 2],
         [0, 0, 0, 0, 0, 0, 0],
         [0, 0, 1, 0, 0, 0, 0],
         [0, 0, 1, 0, 0, 0, 0],
