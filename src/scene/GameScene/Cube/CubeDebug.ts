@@ -6,11 +6,16 @@ import { CubeSide } from '../../Enums/CubeSide';
 import { SideRotationConfig, SideVectorConfig, CubeSideAxisConfig } from '../../Configs/SideConfig';
 import { CubeRotationDirection } from '../../Enums/CubeRotationDirection';
 import { CubeEdgeName, CubeEdgeNameVectorsConfig, CubeSideName, GridRotationConfig } from '../../Configs/VisualDebugConfig';
+import ThreeJSHelper from '../../Helpers/ThreeJSHelper';
 
 export default class CubeDebug extends THREE.Group {
   private levelConfig: ILevelConfig;
-  private grids: THREE.LineSegments[] = [];
   private textOffset: number = 0.01;
+
+  private grids: THREE.LineSegments[] = [];
+  private cubeSideTexts: Text[] = [];
+  private cubeEdgeTexts: Text[][] = [];
+  private cubeEdgeNameSideGroup: THREE.Group[] = [];
 
   constructor() {
     super();
@@ -20,12 +25,25 @@ export default class CubeDebug extends THREE.Group {
   public setLevelConfig(levelConfig: ILevelConfig): void {
     this.levelConfig = levelConfig;
 
-    this.removeAll();
     this.init();
   }
 
-  private removeAll(): void {
+  public removeDebug(): void {
+    ThreeJSHelper.killObjects(this.grids, this);
+    ThreeJSHelper.killObjects(this.cubeSideTexts, this);
 
+    this.cubeEdgeTexts.forEach((cubeEdgeTexts: Text[]) => {
+      ThreeJSHelper.killObjects(cubeEdgeTexts);
+    });
+
+    this.cubeEdgeNameSideGroup.forEach((cubeEdgeNameSideGroup: THREE.Group) => {
+      this.remove(cubeEdgeNameSideGroup);
+    });
+
+    this.grids = [];
+    this.cubeSideTexts = [];
+    this.cubeEdgeTexts = [];
+    this.cubeEdgeNameSideGroup = [];
   }
 
   private init(): void {
@@ -124,6 +142,8 @@ export default class CubeDebug extends THREE.Group {
       const offsetUp = new THREE.Vector3(0, textSideOffset * 0.5 + GameplayConfig.grid.size * 0.7, 0);
       const upPosition: THREE.Vector3 = offsetUp.clone().applyEuler(cubeSideText.rotation);
       cubeSideText.position.add(upPosition);
+
+      this.cubeSideTexts.push(cubeSideText);
     }
   }
 
@@ -139,15 +159,19 @@ export default class CubeDebug extends THREE.Group {
       const rotation: THREE.Vector3 = SideRotationConfig[cubeSide];
       const sizeForSide: number = size[CubeSideAxisConfig[cubeSide].zAxis];
       const position: THREE.Vector3 = SideVectorConfig[cubeSide].clone().multiplyScalar(sizeForSide * 0.5 + GameplayConfig.grid.size + this.textOffset);
-      const sideGroup = new THREE.Group();
-      this.add(sideGroup);
-      sideGroup.position.copy(position);
-      sideGroup.rotation.set(rotation.x, rotation.y, rotation.z);
+      const cubeEdgeNameSideGroup = new THREE.Group();
+      this.add(cubeEdgeNameSideGroup);
+      this.cubeEdgeNameSideGroup.push(cubeEdgeNameSideGroup);
+
+      cubeEdgeNameSideGroup.position.copy(position);
+      cubeEdgeNameSideGroup.rotation.set(rotation.x, rotation.y, rotation.z);
+
+      this.cubeEdgeTexts.push([]);
 
       for (const edge in CubeRotationDirection) {
         const cubeRotationDirection: CubeRotationDirection = CubeRotationDirection[edge];
         const cubeSideText: Text = this.createText(CubeEdgeName[cubeRotationDirection], 0.3);
-        sideGroup.add(cubeSideText);
+        cubeEdgeNameSideGroup.add(cubeSideText);
 
         const isTopOrBottom: boolean = cubeRotationDirection === CubeRotationDirection.Top || cubeRotationDirection === CubeRotationDirection.Bottom;
         const offsetAxis: string = isTopOrBottom ? CubeSideAxisConfig[cubeSide].yAxis : CubeSideAxisConfig[cubeSide].xAxis;
@@ -157,6 +181,8 @@ export default class CubeDebug extends THREE.Group {
 
         const edgeRotation = CubeEdgeNameVectorsConfig[cubeRotationDirection].rotation;
         cubeSideText.rotation.set(edgeRotation.x, edgeRotation.y, edgeRotation.z);
+
+        this.cubeEdgeTexts[this.cubeEdgeTexts.length - 1].push(cubeSideText);
       }
     }
   }

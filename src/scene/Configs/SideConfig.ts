@@ -78,10 +78,20 @@ const LocalEdgeDirections: ILocalEdgeDirections = {
   },
 }
 
+const ObjectsRotationBySideConfig: { [key in CubeSide]: THREE.Euler } = {
+  [CubeSide.Front]: new THREE.Euler(0, 0, 0),
+  [CubeSide.Back]: new THREE.Euler(0, Math.PI, 0),
+  [CubeSide.Left]: new THREE.Euler(0, -Math.PI / 2, 0),
+  [CubeSide.Right]: new THREE.Euler(0, Math.PI / 2, 0),
+  [CubeSide.Top]: new THREE.Euler(-Math.PI / 2, 0, 0),
+  [CubeSide.Bottom]: new THREE.Euler(Math.PI / 2, 0, 0),
+}
+
 export {
   CubeSideAxisConfig,
   CharacterSideConfig,
   SideVectorConfig,
   LocalEdgeDirections,
   SideRotationConfig,
+  ObjectsRotationBySideConfig,
 };

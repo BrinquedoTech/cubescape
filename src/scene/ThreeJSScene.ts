@@ -46,5 +46,7 @@ export default class ThreeJSScene extends THREE.Group {
   private init(): void {
     this.gameScene = new GameScene();
     this.add(this.gameScene);
+
+    this.gameScene.startGame();
   }
 }

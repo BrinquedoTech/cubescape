@@ -5,6 +5,7 @@ import { ILevelConfig } from '../../Interfaces/ILevelConfig';
 import { ICubePosition } from '../../Interfaces/ICubeConfig';
 import { CellType } from '../../Enums/CellType';
 import { Text } from 'troika-three-text';
+import { ObjectsRotationBySideConfig, SideVectorConfig } from '../../Configs/SideConfig';
 
 export default class EndLevelObject extends THREE.Group {
   private levelConfig: ILevelConfig;
@@ -13,6 +14,7 @@ export default class EndLevelObject extends THREE.Group {
     super();
 
     this.initView();
+    this.hide();
   }
 
   public init(levelConfig: ILevelConfig): void {
@@ -22,12 +24,29 @@ export default class EndLevelObject extends THREE.Group {
     if (itemPositions.length > 0) {
       const startPosition: ICubePosition = itemPositions[0];
       this.setPosition(startPosition.side, startPosition.gridPosition.x, startPosition.gridPosition.y);
+      this.setRotation(startPosition.side);
+      this.show();
+    } else {
+      console.warn('Finish position not found');
     }
+  }
+
+  public show(): void {
+    this.visible = true;
+  }
+
+  public hide(): void {
+    this.visible = false;
   }
 
   private setPosition(cubeSide: CubeSide, gridX: number, gridY: number): void {
     const newPosition: THREE.Vector3 = GridHelper.getPositionByGridAndSide(this.levelConfig.size, cubeSide, gridX, gridY);
     this.position.set(newPosition.x, newPosition.y, newPosition.z);
+  }
+
+  private setRotation(cubeSide: CubeSide): void {
+    const rotation: THREE.Euler = ObjectsRotationBySideConfig[cubeSide];
+    this.rotation.set(rotation.x, rotation.y, rotation.z);
   }
 
   private initView(): void {

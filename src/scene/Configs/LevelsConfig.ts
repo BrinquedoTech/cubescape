@@ -8,4 +8,9 @@ const LevelsConfig: { [key in LevelType]?: ILevelConfig } = {
   [LevelType.Level02]: Level02,
 }
 
-export default LevelsConfig;
+const LevelsQueue: LevelType[] = [
+  LevelType.Level01,
+  LevelType.Level02,
+]
+
+export { LevelsConfig, LevelsQueue };

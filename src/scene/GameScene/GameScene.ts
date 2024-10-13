@@ -1,6 +1,6 @@
 import * as THREE from 'three';
 import Cube from './Cube/Cube';
-import LevelsConfig from '../Configs/LevelsConfig';
+import { LevelsConfig, LevelsQueue } from '../Configs/LevelsConfig';
 import { ILevelConfig, ILevelEdgeConfig, IMapConfig } from '../Interfaces/ILevelConfig';
 import PlayerCharacter from './PlayerCharacter/PlayerCharacter';
 import { RotateDirection, TurnDirection } from '../Enums/RotateDirection';
@@ -33,13 +33,12 @@ export default class GameScene extends THREE.Group {
   private nextCubeRotationDirection: RotateDirection;
   private waitingForCubeRotation: boolean = false;
   private waitingForEndLevel: boolean = false;
+  private levelIndex: number = 0;
 
   constructor() {
     super();
 
     this.init();
-
-    this.startLevel(LevelType.Level01);
   }
 
   public update(dt: number): void {
@@ -50,6 +49,11 @@ export default class GameScene extends THREE.Group {
     if (this.playerCharacter) {
       this.playerCharacter.update(dt);
     }
+  }
+
+  public startGame(): void {
+    const currentLevelType: LevelType = LevelsQueue[this.levelIndex];
+    this.startLevel(currentLevelType);
   }
 
   public startLevel(levelType: LevelType): void {
@@ -231,7 +235,7 @@ export default class GameScene extends THREE.Group {
   private onButtonPress(buttonType: ButtonType): void {
     const moveDirection: MoveDirection = MovementDirectionByButtonConfig[buttonType];
 
-    if (this.cube.getState() === CubeState.Idle && this.playerCharacter.getState() === PlayerCharacterState.Idle) {
+    if (this.cube.getState() === CubeState.Idle && this.playerCharacter.getState() === PlayerCharacterState.Idle && this.playerCharacter.isActivated()) {
       this.moveCharacter(moveDirection);
     }
   }
@@ -248,7 +252,7 @@ export default class GameScene extends THREE.Group {
 
     if (this.waitingForEndLevel) {
       this.waitingForEndLevel = false;
-      console.log('End level');
+      this.onLevelEnd();
     }
   }
 
@@ -260,6 +264,29 @@ export default class GameScene extends THREE.Group {
       const cubeSide: CubeSide = this.cube.getCurrentSide();
       this.playerCharacter.setActiveSide(cubeSide);
       this.playerCharacter.updatePositionOnRealPosition();
+    }
+  }
+
+  private onLevelEnd(): void {
+    this.removeLevel();
+    this.startNextLevel();
+  }
+
+  private removeLevel(): void {
+    this.playerCharacter.reset();
+    this.playerCharacter.hide();
+    this.endGameObject.hide();
+    this.cube.reset();
+    this.cube.removeCube();
+    this.cube.hide();
+  }
+
+  private startNextLevel(): void {
+    this.levelIndex++;
+
+    if (this.levelIndex < LevelsQueue.length) {
+      const currentLevelType: LevelType = LevelsQueue[this.levelIndex];
+      this.startLevel(currentLevelType);
     }
   }
 }

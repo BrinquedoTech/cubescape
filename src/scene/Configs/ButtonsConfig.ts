@@ -1,6 +1,6 @@
 import { ButtonType } from "../Enums/ButtonType";
 
-const ButtonConfig = {
+const ButtonConfig: { [key in ButtonType]: { keyCode: string[] } } = {
   [ButtonType.Left]: {
     keyCode: ['ArrowLeft', 'KeyA'],
   },

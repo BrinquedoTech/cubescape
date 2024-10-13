@@ -36,6 +36,7 @@ export default class PlayerCharacter extends THREE.Group {
     super();
 
     this.initView();
+    this.hide();
   }
 
   public update(dt: number) {
@@ -60,6 +61,7 @@ export default class PlayerCharacter extends THREE.Group {
     this.levelConfig = levelConfig;
 
     this.setStartPosition();
+    this.show();
   }
 
   public setActiveSide(side: CubeSide): void {
@@ -110,9 +112,27 @@ export default class PlayerCharacter extends THREE.Group {
   public stopMoving(): void {
     this.state = PlayerCharacterState.Idle;
     this.movingElapsedTime = 0;
+    this.startMovingPosition.set(0, 0);
+    this.targetMovingPosition.set(0, 0);
     this.setGridPositionOnActiveSide(this.targetMovingGridPosition.x, this.targetMovingGridPosition.y);
 
     this.emitter.emit('onMovingEnd');
+  }
+
+  public reset(): void {
+    this.isActive = false;
+    this.state = PlayerCharacterState.Idle;
+    this.movingElapsedTime = 0;
+    this.gridPosition = new THREE.Vector2();
+    this.sidePosition = new THREE.Vector2();
+  }
+
+  public show(): void {
+    this.visible = true;
+  }
+
+  public hide(): void {
+    this.visible = false;
   }
 
   public isActivated(): boolean {
@@ -131,9 +151,13 @@ export default class PlayerCharacter extends THREE.Group {
     const itemPositions: ICubePosition[] = GridHelper.getItemPositions(this.levelConfig.map.sides, CellType.Start);
 
     if (itemPositions.length > 0) {
+      this.isActive = true;
       const startPosition: ICubePosition = itemPositions[0];
       this.setActiveSide(startPosition.side);
       this.setGridPositionOnActiveSide(startPosition.gridPosition.x, startPosition.gridPosition.y);
+    } else {
+      this.isActive = false;
+      console.warn('Start position not found');
     }
   }
 

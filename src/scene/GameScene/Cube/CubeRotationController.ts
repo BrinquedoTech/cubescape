@@ -64,6 +64,17 @@ export default class CubeRotationController {
     }
   }
 
+  public reset(): void {
+    this.rotationDirection = null;
+    this.turnDirection = null;
+    this.isRotating = false;
+    this.rotationProgress = 0;
+    this.lastEasedAngle = 0;
+    this.currentSide = CubeSide.Front;
+    this.currentRotationDirection = CubeRotationDirection.Top;
+    this.object.rotation.set(0, 0, 0);
+  }
+
   public rotateToDirection(rotateDirection: RotateDirection): void {
     if (this.isRotating) {
       return;

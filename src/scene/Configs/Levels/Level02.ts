@@ -19,7 +19,7 @@ const Level02: ILevelConfig = {
     sides: {
       [CubeSide.Front]: [
         // sizeX x sizeY
-        [0, 0, 0, 0, 0],
+        [0, 0, 0, 0, 3],
         [0, 0, 0, 0, 0],
         [0, 0, 2, 0, 0],
         [0, 0, 0, 0, 0],
