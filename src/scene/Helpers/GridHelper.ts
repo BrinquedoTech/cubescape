@@ -50,7 +50,7 @@ export default class GridHelper {
 
     for (let side in map) {
       const currentSide: CubeSide = side as CubeSide;
-      const sideMap: number[][] = map[currentSide];
+      const sideMap: string[][] = map[currentSide];
       
       for (let gridY: number = 0; gridY < sideMap.length; gridY++) {
         for (let gridX: number = 0; gridX < sideMap[gridY].length; gridX++) {
