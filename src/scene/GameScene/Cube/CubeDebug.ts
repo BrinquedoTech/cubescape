@@ -69,7 +69,7 @@ export default class CubeDebug extends THREE.Group {
       const segmentsX: number = this.levelConfig.size[CubeSideAxisConfig[cubeSide].xAxis];
       const segmentsY: number = this.levelConfig.size[CubeSideAxisConfig[cubeSide].yAxis];
       const grid = this.createGrid(sizeA, sizeB, segmentsX, segmentsY);
-      this.add(grid);
+      // this.add(grid);
 
       grid.rotation.set(rotation.x, rotation.y, rotation.z);
       grid.position.set(position.x, position.y, position.z);
@@ -134,7 +134,7 @@ export default class CubeDebug extends THREE.Group {
       const position: THREE.Vector3 = SideVectorConfig[cubeSide].clone().multiplyScalar(sizeForSide * 0.5 + GameplayConfig.grid.size + this.textOffset);
 
       const cubeSideText: Text = this.createText(CubeSideName[cubeSide], 0.6);
-      this.add(cubeSideText);
+      // this.add(cubeSideText);
       cubeSideText.position.set(position.x, position.y, position.z);
       cubeSideText.rotation.set(rotation.x, rotation.y, rotation.z);
 
@@ -160,7 +160,7 @@ export default class CubeDebug extends THREE.Group {
       const sizeForSide: number = size[CubeSideAxisConfig[cubeSide].zAxis];
       const position: THREE.Vector3 = SideVectorConfig[cubeSide].clone().multiplyScalar(sizeForSide * 0.5 + GameplayConfig.grid.size + this.textOffset);
       const cubeEdgeNameSideGroup = new THREE.Group();
-      this.add(cubeEdgeNameSideGroup);
+      // this.add(cubeEdgeNameSideGroup);
       this.cubeEdgeNameSideGroup.push(cubeEdgeNameSideGroup);
 
       cubeEdgeNameSideGroup.position.copy(position);

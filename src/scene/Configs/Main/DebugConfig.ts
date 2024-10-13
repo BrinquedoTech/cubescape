@@ -2,7 +2,7 @@
 const DebugConfig = {
   fpsMeter: true,
   rendererStats: true,
-  orbitControls: true,
+  orbitControls: false,
 };
 
 export default DebugConfig;

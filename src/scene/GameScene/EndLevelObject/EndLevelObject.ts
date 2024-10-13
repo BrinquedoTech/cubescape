@@ -5,10 +5,13 @@ import { ILevelConfig } from '../../Interfaces/ILevelConfig';
 import { ICubePosition } from '../../Interfaces/ICubeConfig';
 import { CellType } from '../../Enums/CellType';
 import { Text } from 'troika-three-text';
-import { ObjectsRotationBySideConfig } from '../../Configs/SideConfig';
+import { ObjectsRotationBySideConfig, SideVectorConfig } from '../../Configs/SideConfig';
+import { CubeEdgeNameVectorsConfig } from '../../Configs/VisualDebugConfig';
+import { CubeRotationDirection } from '../../Enums/CubeRotationDirection';
 
 export default class EndLevelObject extends THREE.Group {
   private levelConfig: ILevelConfig;
+  private cubeSide: CubeSide;
 
   constructor() {
     super();
@@ -23,8 +26,10 @@ export default class EndLevelObject extends THREE.Group {
 
     if (itemPositions.length > 0) {
       const startPosition: ICubePosition = itemPositions[0];
-      this.setPosition(startPosition.side, startPosition.gridPosition.x, startPosition.gridPosition.y);
-      this.setRotation(startPosition.side);
+      this.cubeSide = startPosition.side;
+      this.setPosition(startPosition.gridPosition.x, startPosition.gridPosition.y);
+      this.setSideRotation();
+      this.setOnSideUpRotation(CubeRotationDirection.Right);
       this.show();
     } else {
       console.warn('Finish position not found');
@@ -39,14 +44,20 @@ export default class EndLevelObject extends THREE.Group {
     this.visible = false;
   }
 
-  private setPosition(cubeSide: CubeSide, gridX: number, gridY: number): void {
-    const newPosition: THREE.Vector3 = GridHelper.getPositionByGridAndSide(this.levelConfig.size, cubeSide, gridX, gridY);
+  private setPosition(gridX: number, gridY: number): void {
+    const newPosition: THREE.Vector3 = GridHelper.getPositionByGridAndSide(this.levelConfig.size, this.cubeSide, gridX, gridY);
     this.position.set(newPosition.x, newPosition.y, newPosition.z);
   }
 
-  private setRotation(cubeSide: CubeSide): void {
-    const rotation: THREE.Euler = ObjectsRotationBySideConfig[cubeSide];
+  private setSideRotation(): void {
+    const rotation: THREE.Euler = ObjectsRotationBySideConfig[this.cubeSide];
     this.rotation.set(rotation.x, rotation.y, rotation.z);
+  }
+
+  private setOnSideUpRotation(rotation: CubeRotationDirection): void {
+    const vectorAround: THREE.Vector3 = SideVectorConfig[this.cubeSide];
+    const rotationAngle: number = CubeEdgeNameVectorsConfig[rotation].rotation.z;
+    this.rotateOnWorldAxis(vectorAround, rotationAngle);
   }
 
   private initView(): void {
