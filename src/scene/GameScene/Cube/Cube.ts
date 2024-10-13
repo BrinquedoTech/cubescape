@@ -14,6 +14,7 @@ import CubeDebug from './CubeDebug';
 import mitt, { Emitter } from 'mitt';
 import { DefaultStartSideConfig } from '../../Configs/StartSideConfig';
 import ThreeJSHelper from '../../Helpers/ThreeJSHelper';
+import { CellType } from '../../Enums/CellType';
 
 type Events = {
   endRotating: string;
@@ -198,7 +199,7 @@ export default class Cube extends THREE.Group {
       const edgeSize: number = this.levelConfig.size[edgeAxisConfig.axis];
       
       for (let j = 0; j < edgeSize; j++) {
-        if (this.levelConfig.map.edges[edgeAxisConfig.edge][j] === 1) {
+        if (this.levelConfig.map.edges[edgeAxisConfig.edge][j] === CellType.Wall) {
           const edgeCell = new THREE.Mesh(geometry, material);
           this.add(edgeCell);
 
@@ -231,7 +232,7 @@ export default class Cube extends THREE.Group {
       for (let i = 0; i < sizeY; i++) {
         this.sideCells[cubeSide][i] = [];
         for (let j = 0; j < sizeX; j++) {
-          if (this.levelConfig.map.sides[cubeSide][i][j] === 1) {
+          if (this.levelConfig.map.sides[cubeSide][i][j] === CellType.Wall) {
             const sideCell = new THREE.Mesh(geometry, material);
             this.add(sideCell);
 

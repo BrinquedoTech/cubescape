@@ -16,11 +16,11 @@ export interface ILevelConfig {
 }
 
 export type ILevelMapConfig = {
-  [key in CubeSide]: number[][];
+  [key in CubeSide]: string[][];
 }
 
 export type ILevelEdgeConfig = {
-  [key in CubeEdge]?: number[];
+  [key in CubeEdge]?: string[];
 }
 
 export type IMapConfig = {
