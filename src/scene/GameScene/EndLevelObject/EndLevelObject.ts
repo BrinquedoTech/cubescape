@@ -5,7 +5,7 @@ import { ILevelConfig } from '../../Interfaces/ILevelConfig';
 import { ICubePosition } from '../../Interfaces/ICubeConfig';
 import { CellType } from '../../Enums/CellType';
 import { Text } from 'troika-three-text';
-import { ObjectsRotationBySideConfig, SideVectorConfig } from '../../Configs/SideConfig';
+import { ObjectsRotationBySideConfig } from '../../Configs/SideConfig';
 
 export default class EndLevelObject extends THREE.Group {
   private levelConfig: ILevelConfig;
