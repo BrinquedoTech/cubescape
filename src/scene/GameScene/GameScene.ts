@@ -104,7 +104,7 @@ export default class GameScene extends THREE.Group {
     for (let i = startPoint + sign; i >= -1 && i < gridSize + 1; i += sign) {
       nextCellPosition[activeAxis] = i;
       nextCellPosition[inactiveAxis] = playerCharacterGridPosition[inactiveAxis];
-      const nextCellType: CellType = this.map[cubeSide][nextCellPosition.y + 1][nextCellPosition.x + 1];
+      const nextCellType: CellType = this.map[cubeSide][nextCellPosition.y + 1][nextCellPosition.x + 1] as CellType;
 
       switch (nextCellType) {
         case CellType.Finish:
@@ -149,7 +149,7 @@ export default class GameScene extends THREE.Group {
     }
   }
 
-  private createFullSideMap(cubeSide: CubeSide): number[][] {
+  private createFullSideMap(cubeSide: CubeSide): CellType[][] {
     const mapSizeX: number = this.levelConfig.size[CubeSideAxisConfig[cubeSide].xAxis] + 2;
     const mapSizeY: number = this.levelConfig.size[CubeSideAxisConfig[cubeSide].yAxis] + 2;
 
@@ -160,12 +160,12 @@ export default class GameScene extends THREE.Group {
       sideEdgesMap[edge] = this.levelConfig.map.edges[edge];
     }
 
-    const resultMap: number[][] = ArrayHelper.create2DArray(mapSizeY, mapSizeX, CellType.Empty);
+    const resultMap: CellType[][] = ArrayHelper.create2DArray(mapSizeY, mapSizeX, CellType.Empty);
     ArrayHelper.fillCornerValues(resultMap, CellType.Wall);
 
     for (const edgeType in sideEdgesMap) {
       const { positionType, direction } = EdgeBySideConfig[cubeSide][edgeType];
-      let edgeMap: number[] = [...sideEdgesMap[edgeType]];
+      let edgeMap: CellType[] = [...sideEdgesMap[edgeType]];
       edgeMap = direction === 1 ? edgeMap : edgeMap.reverse();
 
       switch (positionType) {
@@ -188,7 +188,7 @@ export default class GameScene extends THREE.Group {
       }
     }
 
-    const sideMap: number[][] = this.levelConfig.map.sides[cubeSide];
+    const sideMap: CellType[][] = this.levelConfig.map.sides[cubeSide] as CellType[][];
 
     for (let i = 1; i < mapSizeY - 1; i++) {
       for (let j = 1; j < mapSizeX - 1; j++) {

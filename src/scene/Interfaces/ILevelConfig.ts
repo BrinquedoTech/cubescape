@@ -24,5 +24,5 @@ export type ILevelEdgeConfig = {
 }
 
 export type IMapConfig = {
-  [key in CubeSide]?: number[][];
+  [key in CubeSide]?: string[][];
 }
