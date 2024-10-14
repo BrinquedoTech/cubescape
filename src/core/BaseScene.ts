@@ -6,6 +6,7 @@ import SCENE_CONFIG from './configs/scene-config';
 import Loader from './loader';
 import Scene3DDebugMenu from './helpers/gui-helper/scene-3d-debug-menu';
 import LoadingOverlay from './loading-overlay';
+import { ILibrariesData } from '../scene/Interfaces/ILibrariesData';
 
 export default class BaseScene {
   private scene: any;
@@ -37,13 +38,13 @@ export default class BaseScene {
   }
 
   createGameScene() {
-    const data = {
+    const librariesData: ILibrariesData = {
       scene: this.scene,
       camera: this.camera,
       pixiApp: this.pixiApp,
     };
 
-    this.mainScene = new MainScene(data);
+    this.mainScene = new MainScene(librariesData);
 
     this._initMainSceneSignals();
   }

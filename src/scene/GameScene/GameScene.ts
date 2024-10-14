@@ -19,6 +19,7 @@ import { CubeSideAxisConfig } from '../Configs/SideConfig';
 import { CellType } from '../Enums/CellType';
 import EndLevelObject from './EndLevelObject/EndLevelObject';
 import MapController from './MapController';
+import { CameraController } from './CameraController';
 
 export default class GameScene extends THREE.Group {
   private cube: Cube;
@@ -26,6 +27,9 @@ export default class GameScene extends THREE.Group {
   private endGameObject: EndLevelObject;
   private keyboardController: KeyboardController;
   private mapController: MapController;
+  private cameraController: CameraController;
+
+  private camera: THREE.PerspectiveCamera;
 
   private levelConfig: ILevelConfig;
   private levelIndex: number = 0;
@@ -34,20 +38,18 @@ export default class GameScene extends THREE.Group {
   private waitingForEndLevel: boolean = false;
   private nextMoveDirection: MoveDirection = null;
 
-  constructor() {
+  constructor(camera: THREE.PerspectiveCamera) {
     super();
+
+    this.camera = camera;
 
     this.init();
   }
 
   public update(dt: number): void {
-    if (this.cube) {
-      this.cube.update(dt);
-    }
-
-    if (this.playerCharacter) {
-      this.playerCharacter.update(dt);
-    }
+    this.cube.update(dt);
+    this.playerCharacter.update(dt);
+    this.cameraController.update(dt);
   }
 
   public startGame(): void {
@@ -143,7 +145,10 @@ export default class GameScene extends THREE.Group {
     this.initPlayerCharacter();
     this.initEndLevelObject();
     this.initMapController();
+
+    this.initCameraController();
     this.initKeyboardController();
+
     this.initSignals();
   }
 
@@ -164,6 +169,11 @@ export default class GameScene extends THREE.Group {
 
   private initMapController(): void {
     this.mapController = new MapController();
+  }
+
+  private initCameraController(): void {
+    this.cameraController = new CameraController(this.camera);
+    this.cameraController.setPlayerCharacter(this.playerCharacter);
   }
 
   private initKeyboardController(): void {

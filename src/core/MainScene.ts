@@ -1,15 +1,17 @@
+import * as THREE from 'three';
 import { RotateDirection, TurnDirection } from "../scene/Enums/RotateDirection";
+import { ILibrariesData } from "../scene/Interfaces/ILibrariesData";
 import ThreeJSScene from "../scene/ThreeJSScene";
 import UI from "../UI/UI";
 
 export default class MainScene {
-  private data: any;
-  private scene: any;
-  // private camera: any;
+  private data: ILibrariesData;
+  private scene: THREE.Scene;
+  // private camera: THREE.PerspectiveCamera;
   private scene3D: ThreeJSScene;
   private ui: UI;
 
-  constructor(data: any) {
+  constructor(data: ILibrariesData) {
     this.data = data;
     this.scene = data.scene;
     // this.camera = data.camera;
@@ -27,7 +29,7 @@ export default class MainScene {
   }
 
   _init() {
-    this.scene3D = new ThreeJSScene();
+    this.scene3D = new ThreeJSScene(this.data);
     this._initUI();
 
     this._initSignals();

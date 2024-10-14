@@ -1,19 +1,20 @@
 import * as THREE from 'three';
 import GameScene from './GameScene/GameScene';
 import { RotateDirection, TurnDirection } from './Enums/RotateDirection';
+import { ILibrariesData } from './Interfaces/ILibrariesData';
 
 export default class ThreeJSScene extends THREE.Group {
   // private data: any;
   // private scene: any;
-  // private camera: any;
+  private camera: THREE.PerspectiveCamera;
   private gameScene: GameScene;
 
-  constructor() {
+  constructor(data: ILibrariesData) {
     super();
 
     // this.data = data,
     // this.scene = data.scene,
-    // this.camera = data.camera,
+    this.camera = data.camera,
 
     this.init();
   }
@@ -44,7 +45,7 @@ export default class ThreeJSScene extends THREE.Group {
   }
 
   private init(): void {
-    this.gameScene = new GameScene();
+    this.gameScene = new GameScene(this.camera);
     this.add(this.gameScene);
 
     this.gameScene.startGame();

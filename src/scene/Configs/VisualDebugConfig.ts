@@ -46,5 +46,19 @@ const GridRotationConfig: { [key in CubeSide]: THREE.Vector3 } = {
   [CubeSide.Bottom]: new THREE.Vector3(Math.PI * 0.5, 0, 0),
 };
 
-export { CubeSideName, CubeEdgeName, CubeEdgeNameVectorsConfig, GridRotationConfig };
+const TextAxisOnCubeSide: { [key in CubeSide]: string } = {
+  [CubeSide.Front]: 'y',
+  [CubeSide.Back]: 'y',
+  [CubeSide.Left]: 'y',
+  [CubeSide.Right]: 'y',
+  [CubeSide.Top]: 'z',
+  [CubeSide.Bottom]: 'z',
+};
 
+export {
+  CubeSideName,
+  CubeEdgeName,
+  CubeEdgeNameVectorsConfig,
+  GridRotationConfig,
+  TextAxisOnCubeSide,
+};
