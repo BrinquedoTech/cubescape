@@ -46,7 +46,11 @@ export interface IDefaultStartSideConfig {
   rotationDirection: CubeRotationDirection;
 }
 
-export interface ICubePosition{
+export interface ICubePosition {
   side: CubeSide;
   gridPosition: THREE.Vector2;
+}
+
+export interface ICubePositionWithID extends ICubePosition {
+  id: number;
 }

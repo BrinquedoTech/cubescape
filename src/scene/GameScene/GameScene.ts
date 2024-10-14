@@ -20,6 +20,7 @@ import { CellType } from '../Enums/CellType';
 import EndLevelObject from './EndLevelObject/EndLevelObject';
 import MapController from './MapController';
 import { CameraController } from './CameraController';
+import EnemiesController from './Enemies/EnemiesController';
 
 export default class GameScene extends THREE.Group {
   private cube: Cube;
@@ -28,6 +29,7 @@ export default class GameScene extends THREE.Group {
   private keyboardController: KeyboardController;
   private mapController: MapController;
   private cameraController: CameraController;
+  private enemiesController: EnemiesController;
 
   private camera: THREE.PerspectiveCamera;
 
@@ -64,6 +66,7 @@ export default class GameScene extends THREE.Group {
     this.cube.init(levelConfig);
     this.playerCharacter.init(levelConfig);
     this.endGameObject.init(levelConfig);
+    this.enemiesController.init(levelConfig);
   }
 
   public rotateCube(rotateDirection: RotateDirection): void {
@@ -145,6 +148,7 @@ export default class GameScene extends THREE.Group {
     this.initPlayerCharacter();
     this.initEndLevelObject();
     this.initMapController();
+    this.initEnemiesController();
 
     this.initCameraController();
     this.initKeyboardController();
@@ -169,6 +173,11 @@ export default class GameScene extends THREE.Group {
 
   private initMapController(): void {
     this.mapController = new MapController();
+  }
+
+  private initEnemiesController(): void {
+    const enemiesController = this.enemiesController = new EnemiesController();
+    this.cube.add(enemiesController);
   }
 
   private initCameraController(): void {

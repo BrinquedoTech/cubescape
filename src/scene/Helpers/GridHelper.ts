@@ -1,6 +1,6 @@
 import * as THREE from 'three';
 import GameplayConfig from '../Configs/Main/GameplayConfig';
-import { ICubePosition, ICubeSideAxisConfig } from '../Interfaces/ICubeConfig';
+import { ICubePosition, ICubePositionWithID, ICubeSideAxisConfig } from '../Interfaces/ICubeConfig';
 import { CharacterSideConfig, CubeSideAxisConfig } from '../Configs/SideConfig';
 import { CubeSide } from '../Enums/CubeSide';
 import { ILevelMapConfig } from '../Interfaces/ILevelConfig';
@@ -51,7 +51,7 @@ export default class GridHelper {
     for (let side in map) {
       const currentSide: CubeSide = side as CubeSide;
       const sideMap: string[][] = map[currentSide];
-      
+
       for (let gridY: number = 0; gridY < sideMap.length; gridY++) {
         for (let gridX: number = 0; gridX < sideMap[gridY].length; gridX++) {
           if (sideMap[gridY][gridX] === cellType) {
@@ -59,6 +59,34 @@ export default class GridHelper {
               side: currentSide,
               gridPosition: new THREE.Vector2(gridX, gridY),
             });
+          }
+        }
+      }
+    }
+
+    return itemPositions;
+  }
+
+  public static getItemWithIDPositions(map: ILevelMapConfig, cellType: CellType): ICubePositionWithID[] {
+    const itemPositions: ICubePositionWithID[] = [];
+
+    for (let side in map) {
+      const currentSide: CubeSide = side as CubeSide;
+      const sideMap: string[][] = map[currentSide];
+
+      for (let gridY: number = 0; gridY < sideMap.length; gridY++) {
+        for (let gridX: number = 0; gridX < sideMap[gridY].length; gridX++) {
+          const cellValue = sideMap[gridY][gridX];
+          if (cellValue.startsWith(cellType)) {
+            const idString: string = cellValue.replace(cellType, '');
+            const id: number = parseInt(idString, 10);
+            if (!isNaN(id)) {
+              itemPositions.push({
+                side: currentSide,
+                gridPosition: new THREE.Vector2(gridX, gridY),
+                id: id,
+              });
+            }
           }
         }
       }
