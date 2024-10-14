@@ -11,7 +11,7 @@ export class CameraController extends THREE.Group {
     this.camera = camera;
   }
 
-  public update(dt: number): void {
+  public update(): void {
     if (this.playerCharacter.isActivated()) {
       const targetPosition = new THREE.Vector3();
       this.playerCharacter.getWorldPosition(targetPosition);
@@ -19,7 +19,7 @@ export class CameraController extends THREE.Group {
       this.camera.getWorldDirection(currentLookAt);
       currentLookAt.add(this.camera.position);
 
-      const interpolatedLookAt = currentLookAt.lerp(targetPosition, 0.0005);
+      // const interpolatedLookAt = currentLookAt.lerp(targetPosition, 0.0005);
 
       // this.camera.lookAt(interpolatedLookAt);
     }

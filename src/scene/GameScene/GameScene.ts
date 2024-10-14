@@ -51,7 +51,7 @@ export default class GameScene extends THREE.Group {
   public update(dt: number): void {
     this.cube.update(dt);
     this.playerCharacter.update(dt);
-    this.cameraController.update(dt);
+    this.cameraController.update();
   }
 
   public startGame(): void {
