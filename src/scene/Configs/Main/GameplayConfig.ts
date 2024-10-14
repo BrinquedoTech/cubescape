@@ -6,10 +6,10 @@ const GameplayConfig: IGameplayConfig = {
     scale: 1,
   },
   cube: {
-    rotationSpeed: 2,
+    rotationSpeed: 2.5,
   },
   playerCharacter: {
-    speed: 10,
+    speed: 25,
   },
 }
 

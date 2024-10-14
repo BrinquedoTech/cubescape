@@ -30,10 +30,11 @@ export default class GameScene extends THREE.Group {
   private keyboardController: KeyboardController;
   private levelConfig: ILevelConfig;
   private map: IMapConfig = {};
-  private nextCubeRotationDirection: RotateDirection;
+  private levelIndex: number = 0;
+  private nextCubeRotationDirection: RotateDirection = null;
   private waitingForCubeRotation: boolean = false;
   private waitingForEndLevel: boolean = false;
-  private levelIndex: number = 0;
+  private nextMoveDirection: MoveDirection = null;
 
   constructor() {
     super();
@@ -233,9 +234,17 @@ export default class GameScene extends THREE.Group {
   }
 
   private onButtonPress(buttonType: ButtonType): void {
+    if (!this.playerCharacter.isActivated()) {
+      return;
+    }
+
     const moveDirection: MoveDirection = MovementDirectionByButtonConfig[buttonType];
 
-    if (this.cube.getState() === CubeState.Idle && this.playerCharacter.getState() === PlayerCharacterState.Idle && this.playerCharacter.isActivated()) {
+    if ((this.cube.getState() === CubeState.Rotating || this.playerCharacter.getState() === PlayerCharacterState.Moving) && this.nextMoveDirection === null) {
+      this.nextMoveDirection = moveDirection;
+    }
+
+    if (this.cube.getState() === CubeState.Idle && this.playerCharacter.getState() === PlayerCharacterState.Idle) {
       this.moveCharacter(moveDirection);
     }
   }
@@ -246,13 +255,19 @@ export default class GameScene extends THREE.Group {
   }
 
   private onPlayerCharacterMovingEnd(): void {
+    if (this.waitingForEndLevel) {
+      this.waitingForEndLevel = false;
+      this.onLevelEnd();
+      return;
+    }
+
     if (this.waitingForCubeRotation) {
       this.rotateCube(this.nextCubeRotationDirection);
     }
 
-    if (this.waitingForEndLevel) {
-      this.waitingForEndLevel = false;
-      this.onLevelEnd();
+    if (this.nextMoveDirection && !this.waitingForCubeRotation) {
+      this.moveCharacter(this.nextMoveDirection);
+      this.nextMoveDirection = null;
     }
   }
 
@@ -264,12 +279,25 @@ export default class GameScene extends THREE.Group {
       const cubeSide: CubeSide = this.cube.getCurrentSide();
       this.playerCharacter.setActiveSide(cubeSide);
       this.playerCharacter.updatePositionOnRealPosition();
+
+      if (this.nextMoveDirection) {
+        this.moveCharacter(this.nextMoveDirection);
+        this.nextMoveDirection = null;
+      }
     }
   }
 
   private onLevelEnd(): void {
+    this.reset();
     this.removeLevel();
     this.startNextLevel();
+  }
+
+  private reset(): void {
+    this.waitingForCubeRotation = false;
+    this.waitingForEndLevel = false;
+    this.nextMoveDirection = null;
+    this.nextCubeRotationDirection = null;
   }
 
   private removeLevel(): void {

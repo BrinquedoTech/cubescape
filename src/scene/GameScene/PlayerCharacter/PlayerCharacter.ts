@@ -44,7 +44,7 @@ export default class PlayerCharacter extends THREE.Group {
       this.movingElapsedTime += dt;
 
       const t: number = Math.min(this.movingElapsedTime / this.movingDuration, 1);
-      const easeT: number = TWEEN.Easing.Quintic.Out(t);
+      const easeT: number = TWEEN.Easing.Sinusoidal.Out(t);
 
       const targetX: number = this.startMovingPosition.x + (this.targetMovingPosition.x - this.startMovingPosition.x) * easeT;
       const targetY: number = this.startMovingPosition.y + (this.targetMovingPosition.y - this.startMovingPosition.y) * easeT;
