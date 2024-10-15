@@ -87,6 +87,7 @@ const Level05: ILevelConfig = {
   enemies: {
     [EnemyType.Spike]: [
       { id: 1, directions: [Direction.Left] },
+      // { id: 2, directions: [Direction.Left] },
     ],
   }
 };

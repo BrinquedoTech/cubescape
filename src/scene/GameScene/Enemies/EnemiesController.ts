@@ -7,10 +7,9 @@ import { ICubePosition, ICubePositionWithID } from '../../Interfaces/ICubeConfig
 import GridHelper from '../../Helpers/GridHelper';
 import { CellType } from '../../Enums/CellType';
 
-type EnemyClass = new (config: EnemyConfigMap[EnemyType]) => THREE.Object3D;
-
 export default class EnemiesController extends THREE.Group {
   private levelConfig: ILevelConfig;
+  private enemies = {};
 
   constructor() {
     super();
@@ -37,6 +36,8 @@ export default class EnemiesController extends THREE.Group {
       const cellType: CellType = EnemyCellType[enemyType];
       const enemyPositions: ICubePositionWithID[] = GridHelper.getItemWithIDPositions(this.levelConfig.map.sides, cellType);
 
+      const enemyConfigs: EnemyConfigMap[EnemyType][] = [];
+
       for (let j = 0; j < enemies.length; j++) {
         const enemyConfig: EnemyConfigMap[EnemyType] = enemies[j];
         const enemyPosition: ICubePosition = enemyPositions.filter((position: ICubePositionWithID) => position.id === enemyConfig.id)[0];
@@ -45,14 +46,28 @@ export default class EnemiesController extends THREE.Group {
           enemyConfig.side = enemyPosition.side;
           enemyConfig.position = enemyPosition.gridPosition;
   
-          const enemyClass: EnemyClass = EnemiesClassName[enemyType];
-          const enemy: THREE.Object3D = new enemyClass(enemyConfig);
-          this.add(enemy);
+          enemyConfigs.push(enemyConfig);
         } else {
           console.warn(`Enemy ${enemyType} with id ${enemyConfig.id} not found`);
         }
       }
+
+      const enemyClass = EnemiesClassName[enemyType];
+      const enemy = new enemyClass(enemyConfigs);
+      this.add(enemy);
+      enemy.init(this.levelConfig);
+
+      this.enemies[enemyType] = enemy;
     }
   }
 
+  public removeEnemies(): void {
+    for (const enemyType in this.enemies) {
+      const enemy = this.enemies[enemyType];
+      enemy.kill();
+      this.remove(enemy);
+    }
+
+    this.enemies = {};
+  }
 }

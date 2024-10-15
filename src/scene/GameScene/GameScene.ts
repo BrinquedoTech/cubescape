@@ -266,6 +266,7 @@ export default class GameScene extends THREE.Group {
     this.playerCharacter.reset();
     this.cube.reset();
     this.cube.removeCube();
+    this.enemiesController.removeEnemies();
   }
 
   private hideLevel(): void {

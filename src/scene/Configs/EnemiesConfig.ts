@@ -1,9 +1,9 @@
 import { CellType } from '../Enums/CellType';
 import { EnemyType } from '../Enums/EnemyType';
-import Spike from '../GameScene/Enemies/EnemyByType/Spike';
+import Spikes from '../GameScene/Enemies/EnemyByType/Spikes';
 
 const EnemiesClassName = {
-  [EnemyType.Spike]: Spike,
+  [EnemyType.Spike]: Spikes,
 }
 
 const EnemyCellType: { [key in EnemyType]: CellType } = {
