@@ -24,6 +24,10 @@ export default class EnemiesController extends THREE.Group {
   }
 
   public createEnemies(): void {
+    if (!this.levelConfig.enemies) {
+      return;
+    }
+    
     const enemiesTypes: string[] = Object.keys(this.levelConfig.enemies);
 
     for (let i = 0; i < enemiesTypes.length; i++) {

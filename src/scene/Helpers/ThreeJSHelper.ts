@@ -32,4 +32,18 @@ export default class ThreeJSHelper {
       this.disposeObject(objects);
     }
   }
+
+  public static disposeInstancedMesh(instancedMesh: THREE.InstancedMesh): void {
+    instancedMesh.geometry.dispose();
+    const material = instancedMesh.material as THREE.Material;
+    material.dispose();
+  }
+
+  public static killInstancedMesh(instancedMesh: THREE.InstancedMesh, parent?: THREE.Object3D): void {
+    if (parent) {
+      parent.remove(instancedMesh);
+    }
+
+    this.disposeInstancedMesh(instancedMesh);
+  }
 }

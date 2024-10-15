@@ -15,6 +15,7 @@ import mitt, { Emitter } from 'mitt';
 import { DefaultStartSideConfig } from '../../Configs/StartSideConfig';
 import ThreeJSHelper from '../../Helpers/ThreeJSHelper';
 import { CellType } from '../../Enums/CellType';
+import InstancesHelper from '../../Helpers/InstancesHelper';
 
 type Events = {
   endRotating: string;
@@ -27,9 +28,9 @@ export default class Cube extends THREE.Group {
   private state: CubeState = CubeState.Idle;
 
   private innerCube: THREE.Mesh;
-  private cornerCells: THREE.Mesh[] = [];
-  private edgeCells: THREE.Mesh[] = [];
-  private sideCells: { [key in CubeSide]?: THREE.Mesh[][] } = {};
+  private cornerCellsInstanced: THREE.InstancedMesh;
+  private edgeCellsInstanced: THREE.InstancedMesh;
+  private sideCellsInstanced: THREE.InstancedMesh;
 
   public emitter: Emitter<Events> = mitt<Events>();
 
@@ -94,21 +95,15 @@ export default class Cube extends THREE.Group {
   }
 
   public removeCube(): void {
+    ThreeJSHelper.killInstancedMesh(this.cornerCellsInstanced, this);
+    ThreeJSHelper.killInstancedMesh(this.edgeCellsInstanced, this);
+    ThreeJSHelper.killInstancedMesh(this.sideCellsInstanced, this);
     ThreeJSHelper.killObjects(this.innerCube, this);
-    ThreeJSHelper.killObjects(this.cornerCells, this);
-    ThreeJSHelper.killObjects(this.edgeCells, this);
 
-    for (const side in CubeSide) {
-      const cubeSide: CubeSide = CubeSide[side];
-      this.sideCells[cubeSide].forEach((row) => {
-        ThreeJSHelper.killObjects(row, this);
-      });
-    }
-
+    this.cornerCellsInstanced = null;
+    this.edgeCellsInstanced = null;
+    this.sideCellsInstanced = null;
     this.innerCube = null;
-    this.cornerCells = [];
-    this.edgeCells = [];
-    this.sideCells = {};
 
     this.cubeDebug.removeDebug();
   }
@@ -170,18 +165,21 @@ export default class Cube extends THREE.Group {
       (this.levelConfig.size.z + 1) * 0.5 * GameplayConfig.grid.size,
     );
 
+    const cornerCells: THREE.Object3D[] = [];
+    
     for (let i = 0; i < CornerCellsConfig.length; i++) {
-      const cornerCell = new THREE.Mesh(geometry, material);
-      this.add(cornerCell);
-
+      const cornerCell = new THREE.Object3D();
       cornerCell.position.x = CornerCellsConfig[i].x * distance.x;
       cornerCell.position.y = CornerCellsConfig[i].y * distance.y;
       cornerCell.position.z = CornerCellsConfig[i].z * distance.z;
 
       cornerCell.scale.set(GameplayConfig.grid.scale, GameplayConfig.grid.scale, GameplayConfig.grid.scale);
 
-      this.cornerCells.push(cornerCell);
+      cornerCells.push(cornerCell);
     }
+
+    const cornerCellsInstanced = this.cornerCellsInstanced = InstancesHelper.createStaticInstancedMesh(cornerCells, material, geometry);
+    this.add(cornerCellsInstanced);
   }
 
   private initEdgeCells(): void {
@@ -194,14 +192,15 @@ export default class Cube extends THREE.Group {
       (this.levelConfig.size.z + 1) * 0.5 * GameplayConfig.grid.size,
     );
 
+    const edgeCells: THREE.Object3D[] = [];
+
     for (let i = 0; i < EdgeAxisConfig.length; i++) {
       const edgeAxisConfig: IEdgeAxisConfig = EdgeAxisConfig[i];
       const edgeSize: number = this.levelConfig.size[edgeAxisConfig.axis];
       
       for (let j = 0; j < edgeSize; j++) {
         if (this.levelConfig.map.edges[edgeAxisConfig.edge][j] === CellType.Wall) {
-          const edgeCell = new THREE.Mesh(geometry, material);
-          this.add(edgeCell);
+          const edgeCell = new THREE.Object3D();
 
           edgeCell.position.x = EdgeDistanceConfig[i].x * distance.x;
           edgeCell.position.y = EdgeDistanceConfig[i].y * distance.y;
@@ -211,15 +210,20 @@ export default class Cube extends THREE.Group {
 
           edgeCell.scale.set(GameplayConfig.grid.scale, GameplayConfig.grid.scale, GameplayConfig.grid.scale);
 
-          this.edgeCells.push(edgeCell);
+          edgeCells.push(edgeCell);
         }
       }
     }
+
+    const edgeCellsInstanced = this.edgeCellsInstanced = InstancesHelper.createStaticInstancedMesh(edgeCells, material, geometry);
+    this.add(edgeCellsInstanced);
   }
 
   private initSides(): void {
     const geometry = new THREE.BoxGeometry(GameplayConfig.grid.size, GameplayConfig.grid.size, GameplayConfig.grid.size);
     const material = new THREE.MeshStandardMaterial({ color: 0xffff00 });
+
+    const sideCells: THREE.Object3D[] = [];
 
     for (const side in CubeSide) {
       const cubeSide: CubeSide = CubeSide[side];
@@ -227,14 +231,10 @@ export default class Cube extends THREE.Group {
       const sizeX: number = this.levelConfig.size[cubeSideAxisConfig.xAxis];
       const sizeY: number = this.levelConfig.size[cubeSideAxisConfig.yAxis];
 
-      this.sideCells[cubeSide] = [];
-
       for (let i = 0; i < sizeY; i++) {
-        this.sideCells[cubeSide][i] = [];
         for (let j = 0; j < sizeX; j++) {
           if (this.levelConfig.map.sides[cubeSide][i][j] === CellType.Wall) {
-            const sideCell = new THREE.Mesh(geometry, material);
-            this.add(sideCell);
+            const sideCell = new THREE.Object3D();
 
             const distance: number = (this.levelConfig.size[cubeSideAxisConfig.zAxis] + 1) * 0.5 * GameplayConfig.grid.size;
             const offsetX: number = (this.levelConfig.size[cubeSideAxisConfig.xAxis] - 1) * 0.5 * GameplayConfig.grid.size;
@@ -249,10 +249,13 @@ export default class Cube extends THREE.Group {
 
             sideCell.scale.set(GameplayConfig.grid.scale, GameplayConfig.grid.scale, GameplayConfig.grid.scale);
 
-            this.sideCells[cubeSide][i].push(sideCell);
+            sideCells.push(sideCell);
           }
         }
       }
     }
+
+    const sideCellsInstanced = this.sideCellsInstanced = InstancesHelper.createStaticInstancedMesh(sideCells, material, geometry);
+    this.add(sideCellsInstanced);
   }
 }
