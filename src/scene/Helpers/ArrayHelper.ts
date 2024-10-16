@@ -26,4 +26,18 @@ export default class ArrayHelper {
     
     corners(array[0].length, array.length).forEach(([y, x]) => array[y][x] = value);
   }
+
+  public static isArraysHasSameValues(array1: any[], array2: any[]): boolean {
+    if (array1.length !== array2.length) {
+      return false;
+    }
+
+    for (let i = 0; i < array1.length; i++) {
+      if (array2.indexOf(array1[i]) === -1) {
+        return false;
+      }
+    }
+
+    return true;
+  }
 }

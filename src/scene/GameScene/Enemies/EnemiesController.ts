@@ -2,9 +2,9 @@ import * as THREE from 'three';
 import { ILevelConfig } from '../../Interfaces/ILevelConfig';
 import { EnemyType } from '../../Enums/EnemyType';
 import { EnemyConfigMap } from '../../Interfaces/IEnemyConfig';
-import { EnemiesClassName, EnemyCellType } from '../../Configs/EnemiesConfig';
+import { EnemiesClassName, EnemyCellType } from '../../Configs/Enemies/EnemiesGeneralConfig';
 import { ICubePosition, ICubePositionWithID } from '../../Interfaces/ICubeConfig';
-import GridHelper from '../../Helpers/GridHelper';
+import CubeHelper from '../../Helpers/CubeHelper';
 import { CellType } from '../../Enums/CellType';
 
 export default class EnemiesController extends THREE.Group {
@@ -34,7 +34,7 @@ export default class EnemiesController extends THREE.Group {
       const enemies: EnemyConfigMap[EnemyType][] = this.levelConfig.enemies[enemyType] as EnemyConfigMap[EnemyType][];
 
       const cellType: CellType = EnemyCellType[enemyType];
-      const enemyPositions: ICubePositionWithID[] = GridHelper.getItemWithIDPositions(this.levelConfig.map.sides, cellType);
+      const enemyPositions: ICubePositionWithID[] = CubeHelper.getItemWithIDPositions(this.levelConfig.map.sides, cellType);
 
       const enemyConfigs: EnemyConfigMap[EnemyType][] = [];
 

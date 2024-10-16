@@ -18,7 +18,7 @@ const CubeEdgeName: { [key in CubeRotationDirection]: string } = {
   [CubeRotationDirection.Left]: 'Left',
 };
 
-const CubeEdgeNameVectorsConfig: { [key in CubeRotationDirection]: { position: THREE.Vector3, rotation: THREE.Vector3 }} = {
+const CubeEdgeNameVectorsConfig: { [key in CubeRotationDirection]: { position: THREE.Vector3, rotation: THREE.Vector3 } } = {
   [CubeRotationDirection.Top]: {
     position: new THREE.Vector3(0, 1, 0),
     rotation: new THREE.Vector3(0, 0, 0),

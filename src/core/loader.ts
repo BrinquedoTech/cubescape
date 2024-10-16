@@ -7,7 +7,11 @@ const textures = [
 ];
 
 const models = [
-
+  'spikes_01.glb',
+  'spikes_02.glb',
+  'spikes_03.glb',
+  'spikes_04.glb',
+  'spikes_05.glb',
 ];
 
 const pixiAssets = [

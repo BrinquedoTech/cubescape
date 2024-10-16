@@ -1,12 +1,13 @@
 import * as THREE from 'three';
 import GameplayConfig from '../Configs/Main/GameplayConfig';
 import { ICubePosition, ICubePositionWithID, ICubeSideAxisConfig } from '../Interfaces/ICubeConfig';
-import { CharacterSideConfig, CubeSideAxisConfig } from '../Configs/SideConfig';
+import { CellDirectionConfig, CharacterSideConfig, CubeSideAxisConfig, ObjectsRotationBySideConfig, SideVectorConfig } from '../Configs/SideConfig';
 import { CubeSide } from '../Enums/CubeSide';
 import { ILevelMapConfig } from '../Interfaces/ILevelConfig';
 import { CellType } from '../Enums/CellType';
+import { Direction } from '../Enums/Direction';
 
-export default class GridHelper {
+export default class CubeHelper {
   constructor() {
 
   }
@@ -93,5 +94,21 @@ export default class GridHelper {
     }
 
     return itemPositions;
+  }
+
+  public static setSideRotation(object: THREE.Object3D, side: CubeSide): void {
+    const rotation: THREE.Euler = ObjectsRotationBySideConfig[side];
+    object.rotation.set(rotation.x, rotation.y, rotation.z);
+  }
+
+  public static setRotationByDirection(object: THREE.Object3D, side: CubeSide, direction: Direction): void {
+    const vectorAround: THREE.Vector3 = SideVectorConfig[side];
+    const rotationAngle: number = CellDirectionConfig[direction].rotation.z;
+    object.rotateOnWorldAxis(vectorAround, rotationAngle);
+  }
+
+  public static setRotationByAngle(object: THREE.Object3D, side: CubeSide, angle: number): void {
+    const vectorAround: THREE.Vector3 = SideVectorConfig[side];
+    object.rotateOnWorldAxis(vectorAround, angle);
   }
 }

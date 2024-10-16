@@ -1,13 +1,11 @@
 import * as THREE from 'three';
 import { CubeSide } from '../../Enums/CubeSide';
-import GridHelper from '../../Helpers/GridHelper';
+import CubeHelper from '../../Helpers/CubeHelper';
 import { ILevelConfig } from '../../Interfaces/ILevelConfig';
 import { ICubePosition } from '../../Interfaces/ICubeConfig';
 import { CellType } from '../../Enums/CellType';
 import { Text } from 'troika-three-text';
-import { ObjectsRotationBySideConfig, SideVectorConfig } from '../../Configs/SideConfig';
-import { CubeEdgeNameVectorsConfig } from '../../Configs/VisualDebugConfig';
-import { CubeRotationDirection } from '../../Enums/CubeRotationDirection';
+import { Direction } from '../../Enums/Direction';
 
 export default class EndLevelObject extends THREE.Group {
   private levelConfig: ILevelConfig;
@@ -22,14 +20,17 @@ export default class EndLevelObject extends THREE.Group {
 
   public init(levelConfig: ILevelConfig): void {
     this.levelConfig = levelConfig;
-    const itemPositions: ICubePosition[] = GridHelper.getItemPositions(levelConfig.map.sides, CellType.Finish);
+    const itemPositions: ICubePosition[] = CubeHelper.getItemPositions(levelConfig.map.sides, CellType.Finish);
 
     if (itemPositions.length > 0) {
       const startPosition: ICubePosition = itemPositions[0];
       this.cubeSide = startPosition.side;
-      this.setPosition(startPosition.gridPosition.x, startPosition.gridPosition.y);
-      this.setSideRotation();
-      this.setOnSideUpRotation(CubeRotationDirection.Right);
+
+      const newPosition: THREE.Vector3 = CubeHelper.getPositionByGridAndSide(this.levelConfig.size, this.cubeSide, startPosition.gridPosition.x, startPosition.gridPosition.y);
+      this.position.set(newPosition.x, newPosition.y, newPosition.z);
+
+      CubeHelper.setSideRotation(this, this.cubeSide);
+      CubeHelper.setRotationByDirection(this, this.cubeSide, Direction.Right);
       this.show();
     } else {
       console.warn('Finish position not found');
@@ -42,22 +43,6 @@ export default class EndLevelObject extends THREE.Group {
 
   public hide(): void {
     this.visible = false;
-  }
-
-  private setPosition(gridX: number, gridY: number): void {
-    const newPosition: THREE.Vector3 = GridHelper.getPositionByGridAndSide(this.levelConfig.size, this.cubeSide, gridX, gridY);
-    this.position.set(newPosition.x, newPosition.y, newPosition.z);
-  }
-
-  private setSideRotation(): void {
-    const rotation: THREE.Euler = ObjectsRotationBySideConfig[this.cubeSide];
-    this.rotation.set(rotation.x, rotation.y, rotation.z);
-  }
-
-  private setOnSideUpRotation(rotation: CubeRotationDirection): void {
-    const vectorAround: THREE.Vector3 = SideVectorConfig[this.cubeSide];
-    const rotationAngle: number = CubeEdgeNameVectorsConfig[rotation].rotation.z;
-    this.rotateOnWorldAxis(vectorAround, rotationAngle);
   }
 
   private initView(): void {

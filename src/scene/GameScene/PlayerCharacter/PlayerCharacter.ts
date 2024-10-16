@@ -5,7 +5,7 @@ import GameplayConfig from '../../Configs/Main/GameplayConfig';
 import { CubeSideAxisConfig } from '../../Configs/SideConfig';
 import { PlayerCharacterState } from '../../Enums/PlayerCharacterState';
 import TWEEN from 'three/addons/libs/tween.module.js';
-import GridHelper from '../../Helpers/GridHelper';
+import CubeHelper from '../../Helpers/CubeHelper';
 import { ICubePosition, ICubeSideAxisConfig } from '../../Interfaces/ICubeConfig';
 import mitt, { Emitter } from 'mitt';
 import { CellType } from '../../Enums/CellType';
@@ -82,22 +82,22 @@ export default class PlayerCharacter extends THREE.Group {
     this.startMovingPosition.set(this.sidePosition.x, this.sidePosition.y);
     this.targetMovingGridPosition.set(gridX, gridY);
 
-    const distance: number = GridHelper.calculateGridLineDistance(this.gridPosition.x, this.gridPosition.y, gridX, gridY);
+    const distance: number = CubeHelper.calculateGridLineDistance(this.gridPosition.x, this.gridPosition.y, gridX, gridY);
     this.movingDuration = distance * (1 / GameplayConfig.playerCharacter.speed);
   }
 
   public setPosition(cubeSide: CubeSide, x: number, y: number): void {
-    const newPosition: THREE.Vector3 = GridHelper.getPositionByGridAndSide(this.levelConfig.size, cubeSide, x, y, false);
+    const newPosition: THREE.Vector3 = CubeHelper.getPositionByGridAndSide(this.levelConfig.size, cubeSide, x, y, false);
 
     this.position.set(newPosition.x, newPosition.y, newPosition.z);
     this.sidePosition.set(x, y);
 
-    const gridPosition: THREE.Vector2 = GridHelper.calculateGridPositionByCoordinates(x, y);
+    const gridPosition: THREE.Vector2 = CubeHelper.calculateGridPositionByCoordinates(x, y);
     this.gridPosition.set(gridPosition.x, gridPosition.y);
   }
 
   public setGridPosition(cubeSide: CubeSide, gridX: number, gridY: number): void {
-    const newPosition: THREE.Vector3 = GridHelper.getPositionByGridAndSide(this.levelConfig.size, cubeSide, gridX, gridY);
+    const newPosition: THREE.Vector3 = CubeHelper.getPositionByGridAndSide(this.levelConfig.size, cubeSide, gridX, gridY);
 
     this.position.set(newPosition.x, newPosition.y, newPosition.z);
     this.gridPosition.set(gridX, gridY);
@@ -148,7 +148,7 @@ export default class PlayerCharacter extends THREE.Group {
   }
 
   private setStartPosition(): void {
-    const itemPositions: ICubePosition[] = GridHelper.getItemPositions(this.levelConfig.map.sides, CellType.Start);
+    const itemPositions: ICubePosition[] = CubeHelper.getItemPositions(this.levelConfig.map.sides, CellType.Start);
 
     if (itemPositions.length > 0) {
       this.isActive = true;

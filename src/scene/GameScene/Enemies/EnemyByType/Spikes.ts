@@ -1,11 +1,16 @@
 import * as THREE from 'three';
 import { ISpikeConfig } from '../../../Interfaces/IEnemyConfig';
-import GridHelper from '../../../Helpers/GridHelper';
+import CubeHelper from '../../../Helpers/CubeHelper';
 import { CubeSide } from '../../../Enums/CubeSide';
 import { ILevelConfig } from '../../../Interfaces/ILevelConfig';
 import InstancesHelper from '../../../Helpers/InstancesHelper';
 import ThreeJSHelper from '../../../Helpers/ThreeJSHelper';
-import * as BufferGeometryUtils from 'three/addons/utils/BufferGeometryUtils.js';
+import { Direction } from '../../../Enums/Direction';
+import Loader from '../../../../core/loader';
+import { SpikesGeneralConfig, SpikesTypeConfig } from '../../../Configs/Enemies/SpikesConfig';
+import { SpikeType } from '../../../Enums/SpikeType';
+import { ISpikesTypesConfig, ISpikeTypeRule } from '../../../Interfaces/ISpikesConfig';
+import ArrayHelper from '../../../Helpers/ArrayHelper';
 
 export default class Spikes extends THREE.Group {
   private configs: ISpikeConfig[];
@@ -20,26 +25,39 @@ export default class Spikes extends THREE.Group {
 
   public init(levelConfig: ILevelConfig): void {
     this.levelConfig = levelConfig;
-
     const spikeObjects: THREE.Object3D[] = [];
 
-    const geometry: THREE.BufferGeometry = this.createSpikeGeometry();
     const material: THREE.MeshStandardMaterial = new THREE.MeshStandardMaterial({ color: 0xffaa00 });
+
+    const model: THREE.Mesh = Loader.assets['spikes_01'].scene.children[0];
+    const modelGeometry: THREE.BufferGeometry = model.geometry.clone();
+
+    const startRotation: THREE.Euler = SpikesGeneralConfig.modelStartRotation;
+    const matrix: THREE.Matrix4 = new THREE.Matrix4();
+    matrix.makeRotationFromEuler(startRotation);
+    modelGeometry.applyMatrix4(matrix);
 
     for (let i = 0; i < this.configs.length; i++) {
       const config: ISpikeConfig = this.configs[i];
       const sidePosition: THREE.Vector2 = config.position;
       const side: CubeSide = config.side;
+      const direction: Direction = config.directions[0];
+
+      const spikeType: SpikeType = this.getSpikeType(config.directions);
+      console.log(spikeType);
 
       const spike: THREE.Object3D = new THREE.Object3D();
 
-      const position: THREE.Vector3 = GridHelper.getPositionByGridAndSide(this.levelConfig.size, side, sidePosition.x, sidePosition.y);
+      const position: THREE.Vector3 = CubeHelper.getPositionByGridAndSide(this.levelConfig.size, side, sidePosition.x, sidePosition.y);
       spike.position.copy(position);
+
+      CubeHelper.setSideRotation(spike, side);
+      CubeHelper.setRotationByDirection(spike, side, direction);
 
       spikeObjects.push(spike);
     }
 
-    const spikesInstanced = this.spikesInstanced = InstancesHelper.createStaticInstancedMesh(spikeObjects, material, geometry);
+    const spikesInstanced = this.spikesInstanced = InstancesHelper.createStaticInstancedMesh(spikeObjects, material, modelGeometry);
     this.add(spikesInstanced);
   }
 
@@ -47,35 +65,35 @@ export default class Spikes extends THREE.Group {
     ThreeJSHelper.killInstancedMesh(this.spikesInstanced, this);
   }
 
-  private createSpikeGeometry(): THREE.BufferGeometry {
-    const width = 0.8;
-    const spikeHeight = 1 - width;
-    const spikeOffset = 0.3;
+  private getSpikeType(directions: Direction[]): SpikeType {
+    for (let type in SpikeType) {
+      const spikeType: SpikeType = SpikeType[type];
+      const spikeConfig: ISpikesTypesConfig = SpikesTypeConfig[spikeType];
+      const rule: ISpikeTypeRule = spikeConfig.rule;
 
-    const baseGeometry: THREE.BoxGeometry = new THREE.BoxGeometry(width, 1, 1);
-    baseGeometry.translate(-(1 - width) * 0.5, 0, 0);
-    const coneGeometry = new THREE.ConeGeometry(spikeHeight * 0.5, spikeHeight, 32);
+      if (rule.directionsCount === directions.length) {
+        let isMatch: boolean = true;
 
-    const object: THREE.Object3D = new THREE.Object3D();
-    const positions: THREE.Vector3[] = [
-      new THREE.Vector3(0.5 - spikeHeight * 0.5, 0, 0),
-      new THREE.Vector3(0.5 - spikeHeight * 0.5, spikeOffset, spikeOffset),
-      new THREE.Vector3(0.5 - spikeHeight * 0.5, -spikeOffset, spikeOffset),
-      new THREE.Vector3(0.5 - spikeHeight * 0.5, spikeOffset, -spikeOffset),
-      new THREE.Vector3(0.5 - spikeHeight * 0.5, -spikeOffset, -spikeOffset),
-    ];
+        if (rule.directions) {
+          let isDirectionsMatch: boolean = false;
+          for (let i = 0; i < rule.directions.length; i++) {
+            const ruleDirections: Direction[] = rule.directions[i];
 
-    const coneGeometries: THREE.BufferGeometry[] = [];
+            if (ArrayHelper.isArraysHasSameValues(ruleDirections, directions)) {
+              isDirectionsMatch = true;
+              break;
+            }
+          }
 
-    for (let i = 0; i < positions.length; i++) {
-      object.position.copy(positions[i]);
-      object.rotation.set(0, 0, -Math.PI / 2);
-      object.updateMatrix();
+          isMatch = isDirectionsMatch;
+        }
 
-      const coneGeometryClone = coneGeometry.clone().applyMatrix4(object.matrix);
-      coneGeometries.push(coneGeometryClone);
+        if (isMatch) {
+          return spikeType;
+        }
+      }
     }
 
-    return BufferGeometryUtils.mergeGeometries([baseGeometry, ...coneGeometries]);;
+    return null;
   }
 }

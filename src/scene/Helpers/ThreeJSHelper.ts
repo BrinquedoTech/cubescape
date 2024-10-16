@@ -46,4 +46,12 @@ export default class ThreeJSHelper {
 
     this.disposeInstancedMesh(instancedMesh);
   }
+
+  public static setMaterialToChildren(object: THREE.Object3D, material: THREE.Material): void {
+    object.traverse((child: THREE.Object3D) => {
+      if (child instanceof THREE.Mesh) {
+        child.material = material;
+      }
+    });
+  }
 }

@@ -12,7 +12,7 @@ import { CubeRotationDirection } from '../Enums/CubeRotationDirection';
 import { MovementDirectionByButtonConfig, MovementDirectionByCubeRotationConfig, MovementDirectionConfig } from '../Configs/PlayerCharacterConfig';
 import { CubeState } from '../Enums/CubeState';
 import { PlayerCharacterState } from '../Enums/PlayerCharacterState';
-import GridHelper from '../Helpers/GridHelper';
+import CubeHelper from '../Helpers/CubeHelper';
 import { LevelType } from '../Enums/LevelType';
 import { ICubeSideAxisConfig } from '../Interfaces/ICubeConfig';
 import { CubeSideAxisConfig } from '../Configs/SideConfig';
@@ -126,7 +126,7 @@ export default class GameScene extends THREE.Group {
       }
     }
 
-    if (!GridHelper.isGridCellsEqual(playerCharacterGridPosition, targetGridPosition)) {
+    if (!CubeHelper.isGridCellsEqual(playerCharacterGridPosition, targetGridPosition)) {
       this.playerCharacter.moveToGridCell(targetGridPosition.x, targetGridPosition.y);
 
       if (this.isCellOnEdge(targetGridPosition.x, targetGridPosition.y)) {

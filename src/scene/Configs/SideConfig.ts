@@ -2,6 +2,7 @@ import * as THREE from 'three';
 import { CubeSide } from '../Enums/CubeSide';
 import { ICharacterSideConfig, ICubeSideAxisConfig, ILocalEdgeDirections } from '../Interfaces/ICubeConfig';
 import { CubeRotationDirection } from '../Enums/CubeRotationDirection';
+import { Direction } from '../Enums/Direction';
 
 const SideRotationConfig: { [key in CubeSide]: THREE.Vector3 } = {
   [CubeSide.Front]: new THREE.Vector3(0, 0, 0),
@@ -87,6 +88,25 @@ const ObjectsRotationBySideConfig: { [key in CubeSide]: THREE.Euler } = {
   [CubeSide.Bottom]: new THREE.Euler(Math.PI / 2, 0, 0),
 }
 
+const CellDirectionConfig: { [key in Direction]: { position: THREE.Vector3, rotation: THREE.Vector3 } } = {
+  [Direction.Up]: {
+    position: new THREE.Vector3(0, 1, 0),
+    rotation: new THREE.Vector3(0, 0, 0),
+  },
+  [Direction.Down]: {
+    position: new THREE.Vector3(0, -1, 0),
+    rotation: new THREE.Vector3(0, 0, Math.PI),
+  },
+  [Direction.Right]: {
+    position: new THREE.Vector3(1, 0, 0),
+    rotation: new THREE.Vector3(0, 0, -Math.PI * 0.5),
+  },
+  [Direction.Left]: {
+    position: new THREE.Vector3(-1, 0, 0),
+    rotation: new THREE.Vector3(0, 0, Math.PI * 0.5),
+  }
+}
+
 export {
   CubeSideAxisConfig,
   CharacterSideConfig,
@@ -94,4 +114,5 @@ export {
   LocalEdgeDirections,
   SideRotationConfig,
   ObjectsRotationBySideConfig,
+  CellDirectionConfig,
 };
