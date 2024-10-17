@@ -1,4 +1,5 @@
 import * as THREE from 'three';
+import Loader from '../../core/loader';
 
 export default class ThreeJSHelper {
   constructor() {
@@ -53,5 +54,16 @@ export default class ThreeJSHelper {
         child.material = material;
       }
     });
+  }
+
+  public static getGeometryFromModel(modelName: string): THREE.BufferGeometry {
+    const model: THREE.Mesh = Loader.assets[modelName].scene.children[0];
+    return model.geometry.clone();
+  }
+
+  public static setGeometryRotation(geometry: THREE.BufferGeometry, rotation: THREE.Euler): void {
+    const matrix: THREE.Matrix4 = new THREE.Matrix4();
+    matrix.makeRotationFromEuler(rotation);
+    geometry.applyMatrix4(matrix);
   }
 }

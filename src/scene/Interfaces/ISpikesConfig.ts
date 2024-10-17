@@ -7,10 +7,16 @@ export interface ISpikesGeneralConfig {
 
 export interface ISpikesTypesConfig {
   model: string;
+  mainDirection?: ISpikeByTypeDirections[];
   rule: ISpikeTypeRule;
 }
 
 export interface ISpikeTypeRule {
   directionsCount: number;
   directions?: Direction[][];
+}
+
+export interface ISpikeByTypeDirections {
+  type: Direction[];
+  modelDirection: Direction;
 }
