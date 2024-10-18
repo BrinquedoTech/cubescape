@@ -22,6 +22,7 @@ import MapController from './MapController';
 import { CameraController } from './CameraController';
 import EnemiesController from './Enemies/EnemiesController';
 import { CellsWithBody } from '../Configs/CellsConfig';
+import { ISpikeConfig } from '../Interfaces/IEnemyConfig';
 
 export default class GameScene extends THREE.Group {
   private cube: Cube;
@@ -40,6 +41,7 @@ export default class GameScene extends THREE.Group {
   private waitingForCubeRotation: boolean = false;
   private waitingForEndLevel: boolean = false;
   private nextMoveDirection: MoveDirection = null;
+  private spikeOnTargetPosition: string = '';
 
   constructor(camera: THREE.PerspectiveCamera) {
     super();
@@ -83,28 +85,55 @@ export default class GameScene extends THREE.Group {
     const newMovingDirection: MoveDirection = MovementDirectionByCubeRotationConfig[moveDirection][currentRotationDirection].direction;
     const playerCharacterGridPosition: THREE.Vector2 = this.playerCharacter.getGridPosition();
     const activeAxis: string = MovementDirectionConfig[newMovingDirection].activeAxis;
-    const inactiveAxis: string = activeAxis === 'x' ? 'y' : 'x';
     const sign: number = MovementDirectionConfig[newMovingDirection].vector[activeAxis];
     const startPoint: number = playerCharacterGridPosition[activeAxis];
-    const targetGridPosition: THREE.Vector2 = new THREE.Vector2(playerCharacterGridPosition.x, playerCharacterGridPosition.y);
 
     const cubeSide: CubeSide = this.cube.getCurrentSide();
     const cubeSideAxisConfig: ICubeSideAxisConfig = CubeSideAxisConfig[cubeSide];
     const gridSize: number = activeAxis === 'x' ? this.levelConfig.size[cubeSideAxisConfig.xAxis] : this.levelConfig.size[cubeSideAxisConfig.yAxis];
 
+    if (this.checkOnEdgeMovingBack(startPoint, sign, gridSize)) {
+      this.waitingForCubeRotation = true;
+      this.nextCubeRotationDirection = MovementDirectionByCubeRotationConfig[newMovingDirection][currentRotationDirection].cubeRotationDirection;
+      this.rotateCube(this.nextCubeRotationDirection);
+
+      return;
+    }
+
+    const targetGridPosition: THREE.Vector2 = this.getMovingTargetGridPosition(startPoint, sign, gridSize, newMovingDirection);
+
+    if (!CubeHelper.isGridCellsEqual(playerCharacterGridPosition, targetGridPosition)) {
+      this.playerCharacter.moveToGridCell(targetGridPosition.x, targetGridPosition.y);
+
+      if (this.isCellOnEdge(targetGridPosition.x, targetGridPosition.y)) {
+        this.waitingForCubeRotation = true;
+        this.nextCubeRotationDirection = MovementDirectionByCubeRotationConfig[newMovingDirection][currentRotationDirection].cubeRotationDirection;
+      }
+    }
+  }
+
+  private checkOnEdgeMovingBack(startPoint: number, sign: number, gridSize: number): boolean {
+    const playerCharacterGridPosition: THREE.Vector2 = this.playerCharacter.getGridPosition();
+
     if (this.isCellOnEdge(playerCharacterGridPosition.x, playerCharacterGridPosition.y)) {
       for (let i = startPoint + sign; i >= startPoint - 1 && i < startPoint + sign + 1; i += sign) {
         if (i === -2 || i === gridSize + 1) {
-          this.waitingForCubeRotation = true;
-          this.nextCubeRotationDirection = MovementDirectionByCubeRotationConfig[newMovingDirection][currentRotationDirection].cubeRotationDirection;
-          this.rotateCube(this.nextCubeRotationDirection);
-
-          return;
+          return true;
         }
       }
     }
 
+    return false;
+  }
+
+  private getMovingTargetGridPosition(startPoint: number, sign: number, gridSize: number, newMovingDirection: MoveDirection): THREE.Vector2 {
+    const playerCharacterGridPosition: THREE.Vector2 = this.playerCharacter.getGridPosition();
+    const targetGridPosition: THREE.Vector2 = new THREE.Vector2(playerCharacterGridPosition.x, playerCharacterGridPosition.y);
     const nextCellPosition: THREE.Vector2 = new THREE.Vector2();
+
+    const activeAxis: string = MovementDirectionConfig[newMovingDirection].activeAxis;
+    const inactiveAxis: string = activeAxis === 'x' ? 'y' : 'x';
+    const cubeSide: CubeSide = this.cube.getCurrentSide();
 
     for (let i = startPoint + sign; i >= -1 && i < gridSize + 1; i += sign) {
       nextCellPosition[activeAxis] = i;
@@ -118,6 +147,10 @@ export default class GameScene extends THREE.Group {
           this.waitingForEndLevel = true;
           break;
 
+        case CellType.Spike:
+          this.spikeOnTargetPosition = nextCellSymbol;
+          break;
+
         case CellType.Empty:
           targetGridPosition[activeAxis] = i;
           continue;
@@ -128,14 +161,7 @@ export default class GameScene extends THREE.Group {
       }
     }
 
-    if (!CubeHelper.isGridCellsEqual(playerCharacterGridPosition, targetGridPosition)) {
-      this.playerCharacter.moveToGridCell(targetGridPosition.x, targetGridPosition.y);
-
-      if (this.isCellOnEdge(targetGridPosition.x, targetGridPosition.y)) {
-        this.waitingForCubeRotation = true;
-        this.nextCubeRotationDirection = MovementDirectionByCubeRotationConfig[newMovingDirection][currentRotationDirection].cubeRotationDirection;
-      }
-    }
+    return targetGridPosition;
   }
 
   private isCellOnEdge(cellX: number, cellY: number): boolean {
@@ -223,6 +249,19 @@ export default class GameScene extends THREE.Group {
       return;
     }
 
+    if (this.spikeOnTargetPosition) {
+      const spikeConfig: ISpikeConfig = CubeHelper.getEnemyConfigBySymbol(this.levelConfig, this.spikeOnTargetPosition) as unknown as ISpikeConfig;
+      const dangerCells: THREE.Vector2[] = CubeHelper.getDangerCellsForSpike(spikeConfig);
+      const playerCharacterGridPosition: THREE.Vector2 = this.playerCharacter.getGridPosition();
+      this.spikeOnTargetPosition = '';
+
+      if (dangerCells.some((dangerCell: THREE.Vector2) => CubeHelper.isGridCellsEqual(dangerCell, playerCharacterGridPosition))) {
+        this.onPlayerCharacterDeath();
+      
+        return;
+      }
+    }
+
     if (this.waitingForCubeRotation) {
       this.rotateCube(this.nextCubeRotationDirection);
     }
@@ -262,6 +301,7 @@ export default class GameScene extends THREE.Group {
     this.waitingForEndLevel = false;
     this.nextMoveDirection = null;
     this.nextCubeRotationDirection = null;
+    this.spikeOnTargetPosition = '';
   }
 
   private removeLevel(): void {
@@ -284,5 +324,9 @@ export default class GameScene extends THREE.Group {
       const currentLevelType: LevelType = LevelsQueue[this.levelIndex];
       this.startLevel(currentLevelType);
     }
+  }
+
+  private onPlayerCharacterDeath(): void {
+    console.log('Player character is dead');
   }
 }

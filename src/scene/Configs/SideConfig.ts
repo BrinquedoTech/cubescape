@@ -107,6 +107,13 @@ const CellDirectionConfig: { [key in Direction]: { position: THREE.Vector3, rota
   }
 }
 
+const Direction2DVectorConfig: { [key in Direction]: THREE.Vector2 } = {
+  [Direction.Up]: new THREE.Vector2(0, -1),
+  [Direction.Down]: new THREE.Vector2(0, 1),
+  [Direction.Left]: new THREE.Vector2(-1, 0),
+  [Direction.Right]: new THREE.Vector2(1, 0),
+}
+
 export {
   CubeSideAxisConfig,
   CharacterSideConfig,
@@ -115,4 +122,5 @@ export {
   SideRotationConfig,
   ObjectsRotationBySideConfig,
   CellDirectionConfig,
+  Direction2DVectorConfig,
 };

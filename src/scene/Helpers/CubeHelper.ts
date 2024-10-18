@@ -1,12 +1,14 @@
 import * as THREE from 'three';
 import GameplayConfig from '../Configs/Main/GameplayConfig';
 import { ICubePosition, ICubePositionWithID, ICubeSideAxisConfig } from '../Interfaces/ICubeConfig';
-import { CellDirectionConfig, CharacterSideConfig, CubeSideAxisConfig, ObjectsRotationBySideConfig, SideVectorConfig } from '../Configs/SideConfig';
+import { CellDirectionConfig, CharacterSideConfig, CubeSideAxisConfig, Direction2DVectorConfig, ObjectsRotationBySideConfig, SideVectorConfig } from '../Configs/SideConfig';
 import { CubeSide } from '../Enums/CubeSide';
-import { ILevelMapConfig } from '../Interfaces/ILevelConfig';
+import { ILevelConfig, ILevelMapConfig } from '../Interfaces/ILevelConfig';
 import { CellType } from '../Enums/CellType';
 import { Direction } from '../Enums/Direction';
 import { CellConfig } from '../Configs/CellsConfig';
+import { ICellTypeWithID } from '../Interfaces/ICellConfig';
+import { EnemyConfigMap, ISpikeConfig } from '../Interfaces/IEnemyConfig';
 
 export default class CubeHelper {
   constructor() {
@@ -116,9 +118,11 @@ export default class CubeHelper {
   }
 
   public static getCellTypeBySymbol(symbol: string): CellType {
+    const cellSymbolLetter: string = symbol.replace(/[0-9]/g, '');
+
     for (let cellType in CellConfig) {
       const symbols: string[] = CellConfig[cellType].symbols;
-      if (symbols.includes(symbol)) {
+      if (symbols.includes(cellSymbolLetter)) {
         return cellType as CellType;
       }
     }
@@ -128,5 +132,37 @@ export default class CubeHelper {
 
   public static getCellSymbolByType(cellType: CellType): string {
     return CellConfig[cellType].symbols[0];
+  }
+
+  public static getCellTypeAndIDBySymbol(symbol: string): ICellTypeWithID {
+    const cellType: CellType = CubeHelper.getCellTypeBySymbol(symbol);
+    const cellSymbolWithoutNumbers: string = symbol.replace(/[0-9]/g, '');
+    const id: number = parseInt(symbol.replace(cellSymbolWithoutNumbers, ''), 10);
+
+    return { cellType, id };
+  }
+
+  public static getEnemyConfigByTypeAndID(levelConfig: ILevelConfig, enemyType: CellType, id: number): EnemyConfigMap {
+    const enemiesConfigs: EnemyConfigMap[] = levelConfig.enemies[enemyType];
+    return enemiesConfigs.filter((config: EnemyConfigMap) => (<any>config).id === id)[0];
+  }
+
+  public static getEnemyConfigBySymbol(levelConfig: ILevelConfig, symbol: string): EnemyConfigMap {
+    const { cellType, id } = CubeHelper.getCellTypeAndIDBySymbol(symbol);
+    return CubeHelper.getEnemyConfigByTypeAndID(levelConfig, cellType, id);
+  }
+
+  public static getDangerCellsForSpike(spikeConfig: ISpikeConfig): THREE.Vector2[] {
+    const dangerPositions: THREE.Vector2[] = [];
+    const spikePosition: THREE.Vector2 = spikeConfig.position;
+
+    for (let i = 0; i < spikeConfig.directions.length; i++) {
+      const direction: Direction = spikeConfig.directions[i];
+      const directionPosition: THREE.Vector2 = Direction2DVectorConfig[direction];
+      const dangerPosition: THREE.Vector2 = new THREE.Vector2(spikePosition.x + directionPosition.x, spikePosition.y + directionPosition.y);
+      dangerPositions.push(dangerPosition);      
+    }
+
+    return dangerPositions;
   }
 }
