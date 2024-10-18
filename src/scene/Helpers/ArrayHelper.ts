@@ -1,12 +1,10 @@
-import { CellType } from "../Enums/CellType";
-
 export default class ArrayHelper {
   constructor() {
 
   }
 
-  public static create2DArray(rows: number, columns: number, fillValue: CellType): CellType[][] {
-    const array: CellType[][] = new Array(rows);
+  public static create2DArray(rows: number, columns: number, fillValue: string): string[][] {
+    const array: string[][] = new Array(rows);
 
     for (let i = 0; i < rows; i++) {
       array[i] = new Array(columns).fill(fillValue);
@@ -15,7 +13,7 @@ export default class ArrayHelper {
     return array;
   }
 
-  public static fillCornerValues(array: CellType[][], value: CellType): void {
+  public static fillCornerValues(array: string[][], value: string): void {
     const corners = (mapSizeX: number, mapSizeY: number) => 
       [
         [0, 0],

@@ -1,9 +1,7 @@
 export enum CellType {
-  Empty = ' ',
-  Wall = 'W',
-
-  Start = 'S',
-  Finish = 'F',
-
-  Spike = 'X',
+  Empty = 'EMPTY',
+  Wall = 'WALL',
+  Start = 'START',
+  Finish = 'FINISH',
+  Spike = 'SPIKE',
 }

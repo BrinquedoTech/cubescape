@@ -15,16 +15,16 @@ const Level05: ILevelConfig = {
   map: {
     sides: {
       [CubeSide.Front]: [
-        ['S',  ' ',  ' ',  ' ',  ' ', ' ',  ' '],
-        [' ',  'X1', ' ',  'X2', ' ', 'X3', ' '],
+        ['S',  ' ',  ' ',  ' ',  ' ', ' ',  'X1'],
+        [' ',  ' ', ' ',  ' ', ' ', ' ', ' '],
         [' ',  ' ',  ' ',  ' ',  ' ', ' ',  ' '],
-        [' ',  'X4', ' ',  'X5', ' ', ' ',  ' '],
+        [' ',  ' ', ' ',  ' ', ' ', ' ',  ' '],
         [' ',  ' ',  ' ',  ' ',  ' ', ' ',  ' '],
         [' ',  ' ',  ' ',  ' ',  ' ', ' ',  ' '],
-        [' ',  ' ',  ' ',  ' ',  ' ', ' ',  ' '],
+        ['W',  'W',  'W',  ' ',  ' ', ' ',  ' '],
       ],
       [CubeSide.Left]: [
-        [' ', ' ', ' ', 'X6', ' ', 'W', 'W'],
+        [' ', ' ', ' ', ' ', ' ', 'W', 'W'],
         [' ', ' ', ' ', ' ', ' ', ' ', ' '],
         [' ', ' ', ' ', 'W', ' ', ' ', ' '],
         ['W', 'W', ' ', 'W', 'W', ' ', ' '],
@@ -87,11 +87,7 @@ const Level05: ILevelConfig = {
   enemies: {
     [EnemyType.Spike]: [
       { id: 1, directions: [Direction.Down] },
-      { id: 2, directions: [Direction.Left, Direction.Down] },
-      { id: 3, directions: [Direction.Left, Direction.Right] },
-      { id: 4, directions: [Direction.Right, Direction.Left, Direction.Down] },
-      { id: 5, directions: [Direction.Up, Direction.Right, Direction.Down, Direction.Left] },
-      { id: 6, directions: [Direction.Down, Direction. Left] },
+
     ],
   }
 };

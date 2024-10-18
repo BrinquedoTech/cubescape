@@ -6,6 +6,7 @@ import { CubeSide } from '../Enums/CubeSide';
 import { ILevelMapConfig } from '../Interfaces/ILevelConfig';
 import { CellType } from '../Enums/CellType';
 import { Direction } from '../Enums/Direction';
+import { CellConfig } from '../Configs/CellsConfig';
 
 export default class CubeHelper {
   constructor() {
@@ -55,7 +56,7 @@ export default class CubeHelper {
 
       for (let gridY: number = 0; gridY < sideMap.length; gridY++) {
         for (let gridX: number = 0; gridX < sideMap[gridY].length; gridX++) {
-          if (sideMap[gridY][gridX] === cellType) {
+          if (CubeHelper.getCellTypeBySymbol(sideMap[gridY][gridX]) === cellType) {
             itemPositions.push({
               side: currentSide,
               gridPosition: new THREE.Vector2(gridX, gridY),
@@ -77,10 +78,12 @@ export default class CubeHelper {
 
       for (let gridY: number = 0; gridY < sideMap.length; gridY++) {
         for (let gridX: number = 0; gridX < sideMap[gridY].length; gridX++) {
-          const cellValue = sideMap[gridY][gridX];
-          if (cellValue.startsWith(cellType)) {
-            const idString: string = cellValue.replace(cellType, '');
-            const id: number = parseInt(idString, 10);
+          const cellSymbol: string = sideMap[gridY][gridX];
+          const cellSymbolWithoutNumbers: string = cellSymbol.replace(/[0-9]/g, '');
+
+          if (CubeHelper.getCellTypeBySymbol(cellSymbolWithoutNumbers) === cellType) {
+            const id: number = parseInt(cellSymbol.replace(cellSymbolWithoutNumbers, ''), 10);
+
             if (!isNaN(id)) {
               itemPositions.push({
                 side: currentSide,
@@ -110,5 +113,20 @@ export default class CubeHelper {
   public static setRotationByAngle(object: THREE.Object3D, side: CubeSide, angle: number): void {
     const vectorAround: THREE.Vector3 = SideVectorConfig[side];
     object.rotateOnWorldAxis(vectorAround, angle);
+  }
+
+  public static getCellTypeBySymbol(symbol: string): CellType {
+    for (let cellType in CellConfig) {
+      const symbols: string[] = CellConfig[cellType].symbols;
+      if (symbols.includes(symbol)) {
+        return cellType as CellType;
+      }
+    }
+
+    return null;
+  }
+
+  public static getCellSymbolByType(cellType: CellType): string {
+    return CellConfig[cellType].symbols[0];
   }
 }

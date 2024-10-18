@@ -16,6 +16,7 @@ import { DefaultStartSideConfig } from '../../Configs/StartSideConfig';
 import ThreeJSHelper from '../../Helpers/ThreeJSHelper';
 import { CellType } from '../../Enums/CellType';
 import InstancesHelper from '../../Helpers/InstancesHelper';
+import CubeHelper from '../../Helpers/CubeHelper';
 
 type Events = {
   endRotating: string;
@@ -199,7 +200,7 @@ export default class Cube extends THREE.Group {
       const edgeSize: number = this.levelConfig.size[edgeAxisConfig.axis];
       
       for (let j = 0; j < edgeSize; j++) {
-        if (this.levelConfig.map.edges[edgeAxisConfig.edge][j] === CellType.Wall) {
+        if (CubeHelper.getCellTypeBySymbol(this.levelConfig.map.edges[edgeAxisConfig.edge][j]) === CellType.Wall) {
           const edgeCell = new THREE.Object3D();
 
           edgeCell.position.x = EdgeDistanceConfig[i].x * distance.x;
@@ -233,7 +234,7 @@ export default class Cube extends THREE.Group {
 
       for (let i = 0; i < sizeY; i++) {
         for (let j = 0; j < sizeX; j++) {
-          if (this.levelConfig.map.sides[cubeSide][i][j] === CellType.Wall) {
+          if (CubeHelper.getCellTypeBySymbol(this.levelConfig.map.sides[cubeSide][i][j]) === CellType.Wall) {
             const sideCell = new THREE.Object3D();
 
             const distance: number = (this.levelConfig.size[cubeSideAxisConfig.zAxis] + 1) * 0.5 * GameplayConfig.grid.size;

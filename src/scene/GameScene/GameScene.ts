@@ -21,6 +21,7 @@ import EndLevelObject from './EndLevelObject/EndLevelObject';
 import MapController from './MapController';
 import { CameraController } from './CameraController';
 import EnemiesController from './Enemies/EnemiesController';
+import { CellsWithBody } from '../Configs/CellsConfig';
 
 export default class GameScene extends THREE.Group {
   private cube: Cube;
@@ -108,7 +109,8 @@ export default class GameScene extends THREE.Group {
     for (let i = startPoint + sign; i >= -1 && i < gridSize + 1; i += sign) {
       nextCellPosition[activeAxis] = i;
       nextCellPosition[inactiveAxis] = playerCharacterGridPosition[inactiveAxis];
-      const nextCellType: CellType = this.mapController.getCellType(cubeSide, nextCellPosition.x + 1, nextCellPosition.y + 1);
+      const nextCellSymbol: string = this.mapController.getCellSymbol(cubeSide, nextCellPosition.x + 1, nextCellPosition.y + 1);
+      const nextCellType: CellType = CubeHelper.getCellTypeBySymbol(nextCellSymbol);
 
       switch (nextCellType) {
         case CellType.Finish:
@@ -121,7 +123,7 @@ export default class GameScene extends THREE.Group {
           continue;
       }
 
-      if (nextCellType === CellType.Wall || nextCellType === CellType.Finish) {
+      if (CellsWithBody.includes(nextCellType)) {
         break;
       }
     }
