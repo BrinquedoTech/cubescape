@@ -5,13 +5,13 @@ const CellConfig = {
     symbols: [' ', '  '],
   },
   [CellType.Wall]: {
-    symbols: ['W'],
+    symbols: ['W', 'WW'],
   },
   [CellType.Start]: {
-    symbols: ['S'],
+    symbols: ['S', 'ST'],
   },
   [CellType.Finish]: {
-    symbols: ['F'],
+    symbols: ['F', 'FI'],
   },
   [CellType.Spike]: {
     symbols: ['X'],
@@ -20,8 +20,8 @@ const CellConfig = {
 
 const CellsForFinalMap: CellType[] = [
   CellType.Wall,
-  CellType.Finish,
   CellType.Spike,
+  CellType.Finish,
 ]
 
 const CellsWithBody: CellType[] = [

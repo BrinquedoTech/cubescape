@@ -38,7 +38,7 @@ export default class UI extends PIXI.Container {
 
   private initRotateButtons(): void {
     const rotateButtons = this.rotateButtons = new RotateButtons();
-    // this.addChild(rotateButtons);
+    this.addChild(rotateButtons);
 
     rotateButtons.emitter.on('rotateRight', () => this.emitter.emit('rotateRight'));
     rotateButtons.emitter.on('rotateLeft', () => this.emitter.emit('rotateLeft'));

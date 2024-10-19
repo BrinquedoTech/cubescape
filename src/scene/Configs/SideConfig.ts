@@ -114,6 +114,24 @@ const Direction2DVectorConfig: { [key in Direction]: THREE.Vector2 } = {
   [Direction.Right]: new THREE.Vector2(1, 0),
 }
 
+const NeighboringSidesConfig: { [key in CubeSide]: CubeSide[] } = {
+  [CubeSide.Front]: [CubeSide.Left, CubeSide.Right, CubeSide.Top, CubeSide.Bottom],
+  [CubeSide.Left]: [CubeSide.Front, CubeSide.Back, CubeSide.Top, CubeSide.Bottom],
+  [CubeSide.Right]: [CubeSide.Front, CubeSide.Back, CubeSide.Top, CubeSide.Bottom],
+  [CubeSide.Top]: [CubeSide.Front, CubeSide.Back, CubeSide.Left, CubeSide.Right],
+  [CubeSide.Bottom]: [CubeSide.Front, CubeSide.Back, CubeSide.Left, CubeSide.Right],
+  [CubeSide.Back]: [CubeSide.Left, CubeSide.Right, CubeSide.Top, CubeSide.Bottom],
+}
+
+const OppositeSideConfig: { [key in CubeSide]: CubeSide } = {
+  [CubeSide.Front]: CubeSide.Back,
+  [CubeSide.Back]: CubeSide.Front,
+  [CubeSide.Left]: CubeSide.Right,
+  [CubeSide.Right]: CubeSide.Left,
+  [CubeSide.Top]: CubeSide.Bottom,
+  [CubeSide.Bottom]: CubeSide.Top,
+}
+
 export {
   CubeSideAxisConfig,
   CharacterSideConfig,
@@ -123,4 +141,6 @@ export {
   ObjectsRotationBySideConfig,
   CellDirectionConfig,
   Direction2DVectorConfig,
+  NeighboringSidesConfig,
+  OppositeSideConfig,
 };

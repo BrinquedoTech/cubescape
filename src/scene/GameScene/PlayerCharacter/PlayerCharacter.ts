@@ -12,6 +12,7 @@ import { CellType } from '../../Enums/CellType';
 
 type Events = {
   onMovingEnd: string;
+  onDeathAnimationEnd: string;
 };
 
 export default class PlayerCharacter extends THREE.Group {
@@ -60,8 +61,9 @@ export default class PlayerCharacter extends THREE.Group {
   public init(levelConfig: ILevelConfig): void {
     this.levelConfig = levelConfig;
 
-    this.setStartPosition();
+    const isPositionFound: boolean = this.setStartPosition();
     this.show();
+    this.isActive = isPositionFound;
   }
 
   public setActiveSide(side: CubeSide): void {
@@ -109,6 +111,33 @@ export default class PlayerCharacter extends THREE.Group {
     this.setGridPositionOnActiveSide(gridPosition.x, gridPosition.y);
   }
 
+  public death(): void {
+    this.isActive = false;
+
+    new TWEEN.Tween(this.scale)
+      .to({ x: 0, y: 0, z: 0 }, 300)
+      .easing(TWEEN.Easing.Back.In)
+      .start()
+      .onComplete(() => {
+        this.hide();
+        this.emitter.emit('onDeathAnimationEnd');
+      });
+  }
+
+  public respawn(): void {
+    this.reset();
+    this.setStartPosition();
+    this.show();
+    
+    new TWEEN.Tween(this.scale)
+      .to({ x: 1, y: 1, z: 1 }, 300)
+      .easing(TWEEN.Easing.Back.Out)
+      .start()
+      .onComplete(() => {
+        this.isActive = true;
+      });
+  }
+
   public stopMoving(): void {
     this.state = PlayerCharacterState.Idle;
     this.movingElapsedTime = 0;
@@ -147,17 +176,17 @@ export default class PlayerCharacter extends THREE.Group {
     return this.gridPosition;
   }
 
-  private setStartPosition(): void {
+  private setStartPosition(): boolean {
     const itemPositions: ICubePosition[] = CubeHelper.getItemPositions(this.levelConfig.map.sides, CellType.Start);
 
     if (itemPositions.length > 0) {
-      this.isActive = true;
       const startPosition: ICubePosition = itemPositions[0];
       this.setActiveSide(startPosition.side);
       this.setGridPositionOnActiveSide(startPosition.gridPosition.x, startPosition.gridPosition.y);
+      return true;
     } else {
-      this.isActive = false;
       console.warn('Start position not found');
+      return false;
     }
   }
 

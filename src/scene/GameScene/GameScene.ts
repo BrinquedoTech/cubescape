@@ -239,7 +239,9 @@ export default class GameScene extends THREE.Group {
 
   private initSignals(): void {
     this.playerCharacter.emitter.on('onMovingEnd', () => this.onPlayerCharacterMovingEnd());
+    this.playerCharacter.emitter.on('onDeathAnimationEnd', () => this.resetLevelOnDeath());
     this.cube.emitter.on('endRotating', () => this.onCubeRotatingEnd());
+    this.cube.emitter.on('endRotatingOnRespawn', () => this.respawnPlayerCharacter());
   }
 
   private onPlayerCharacterMovingEnd(): void {
@@ -256,7 +258,7 @@ export default class GameScene extends THREE.Group {
       this.spikeOnTargetPosition = '';
 
       if (dangerCells.some((dangerCell: THREE.Vector2) => CubeHelper.isGridCellsEqual(dangerCell, playerCharacterGridPosition))) {
-        this.onPlayerCharacterDeath();
+        this.playerCharacter.death();
       
         return;
       }
@@ -326,7 +328,12 @@ export default class GameScene extends THREE.Group {
     }
   }
 
-  private onPlayerCharacterDeath(): void {
-    console.log('Player character is dead');
+  private resetLevelOnDeath(): void {
+    this.reset();
+    this.cube.rotateToStartSide();
+  }
+
+  private respawnPlayerCharacter(): void {
+    this.playerCharacter.respawn();
   }
 }

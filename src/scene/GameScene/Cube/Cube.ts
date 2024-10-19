@@ -20,6 +20,7 @@ import CubeHelper from '../../Helpers/CubeHelper';
 
 type Events = {
   endRotating: string;
+  endRotatingOnRespawn: string;
 };
 
 export default class Cube extends THREE.Group {
@@ -55,6 +56,11 @@ export default class Cube extends THREE.Group {
   public turn(turnDirection: TurnDirection): void {
     this.state = CubeState.Rotating;
     this.cubeRotationController.turn(turnDirection);
+  }
+
+  public rotateToStartSide(): void {
+    this.state = CubeState.Rotating;
+    this.cubeRotationController.rotateToStartSide();
   }
 
   public getCurrentSide(): CubeSide {
@@ -115,6 +121,11 @@ export default class Cube extends THREE.Group {
     this.cubeRotationController.emitter.on('endRotating', () => {
       this.state = CubeState.Idle;
       this.emitter.emit('endRotating');
+    });
+
+    this.cubeRotationController.emitter.on('endRotatingOnRespawn', () => {
+      this.state = CubeState.Idle;
+      this.emitter.emit('endRotatingOnRespawn');
     });
   }
 

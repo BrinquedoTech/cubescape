@@ -4,7 +4,8 @@ export interface IGameplayConfig {
     scale: number;
   },
   cube: {
-    rotationSpeed: number;
+    rotation90Speed: number;
+    rotation180Speed: number;
   },
   playerCharacter: {
     speed: number;
