@@ -12,6 +12,8 @@ const models = [
   'spikes_03.glb',
   'spikes_04.glb',
   'spikes_05.glb',
+  'wall.glb',
+  'road_no_walls.glb',
 ];
 
 const pixiAssets = [

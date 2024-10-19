@@ -3,5 +3,5 @@ export enum CellType {
   Wall = 'WALL',
   Start = 'START',
   Finish = 'FINISH',
-  Spike = 'SPIKE',
+  WallSpike = 'WALL_SPIKE',
 }

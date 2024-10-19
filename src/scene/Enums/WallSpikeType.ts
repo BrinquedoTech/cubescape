@@ -1,4 +1,4 @@
-export enum SpikeType {
+export enum WallSpikeType {
   OneSide = 'ONE_SIDE',
   TwoSidesNeighbors = 'TWO_SIDES_NEIGHBORS',
   TwoSidesOpposites = 'TWO_SIDES_OPPOSITES',

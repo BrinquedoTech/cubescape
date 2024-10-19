@@ -92,13 +92,13 @@ export default class MapController {
     }
 
     const sideMap: string[][] = this.levelConfig.map.sides[cubeSide];
-    const symbolsForFinalMap: string[] = CellsForFinalMap.map((cell: CellType) => CubeHelper.getCellSymbolByType(cell));
 
     for (let i = 1; i < mapSizeY - 1; i++) {
       for (let j = 1; j < mapSizeX - 1; j++) {
         const cellSymbolLetter: string = sideMap[i - 1][j - 1].replace(/[0-9]/g, '');
+        const currentCellType: CellType = CubeHelper.getCellTypeBySymbol(cellSymbolLetter); 
 
-        if (symbolsForFinalMap.includes(cellSymbolLetter)) {
+        if (CellsForFinalMap.includes(currentCellType)) {
           resultMap[i][j] = sideMap[i - 1][j - 1];
         }
       }

@@ -1,22 +1,22 @@
 import * as THREE from 'three';
 import { Direction } from '../Enums/Direction';
 
-export interface ISpikesGeneralConfig {
+export interface IWallSpikesGeneralConfig {
   modelStartRotation?: THREE.Euler;
 }
 
-export interface ISpikesTypesConfig {
+export interface IWallSpikesTypesConfig {
   model: string;
-  mainDirection?: ISpikeByTypeDirections[];
-  rule: ISpikeTypeRule;
+  mainDirection?: IWallSpikeByTypeDirections[];
+  rule: IWallSpikeTypeRule;
 }
 
-export interface ISpikeTypeRule {
+export interface IWallSpikeTypeRule {
   directionsCount: number;
   directions?: Direction[][];
 }
 
-export interface ISpikeByTypeDirections {
+export interface IWallSpikeByTypeDirections {
   type: Direction[];
   modelDirection: Direction;
 }

@@ -1,14 +1,14 @@
 import * as THREE from 'three';
-import { SpikeType } from '../../Enums/SpikeType';
+import { WallSpikeType } from '../../Enums/WallSpikeType';
 import { Direction } from '../../Enums/Direction';
-import { ISpikesGeneralConfig, ISpikesTypesConfig as ISpikeTypeConfig } from '../../Interfaces/ISpikesConfig';
+import { IWallSpikesGeneralConfig, IWallSpikesTypesConfig as ISpikeTypeConfig } from '../../Interfaces/ISpikesConfig';
 
-const SpikesGeneralConfig: ISpikesGeneralConfig = {
+const WallSpikesGeneralConfig: IWallSpikesGeneralConfig = {
   modelStartRotation: new THREE.Euler(Math.PI * 0.5, Math.PI * 0.5, 0),
 }
 
-const SpikesTypeConfig: { [key in SpikeType]: ISpikeTypeConfig } = {
-  [SpikeType.OneSide]: {
+const WallSpikesTypeConfig: { [key in WallSpikeType]: ISpikeTypeConfig } = {
+  [WallSpikeType.OneSide]: {
     model: 'spikes_01',
     mainDirection: [
       { type: [Direction.Up], modelDirection: Direction.Up },
@@ -20,7 +20,7 @@ const SpikesTypeConfig: { [key in SpikeType]: ISpikeTypeConfig } = {
       directionsCount: 1,
     }
   },
-  [SpikeType.TwoSidesNeighbors]: {
+  [WallSpikeType.TwoSidesNeighbors]: {
     model: 'spikes_02',
     mainDirection: [
       { type: [Direction.Up, Direction.Right], modelDirection: Direction.Up },
@@ -38,7 +38,7 @@ const SpikesTypeConfig: { [key in SpikeType]: ISpikeTypeConfig } = {
       ]
     }
   },
-  [SpikeType.TwoSidesOpposites]: {
+  [WallSpikeType.TwoSidesOpposites]: {
     model: 'spikes_03',
     mainDirection: [
       { type: [Direction.Up, Direction.Down], modelDirection: Direction.Up },
@@ -52,7 +52,7 @@ const SpikesTypeConfig: { [key in SpikeType]: ISpikeTypeConfig } = {
       ]
     }
   },
-  [SpikeType.ThreeSides]: {
+  [WallSpikeType.ThreeSides]: {
     model: 'spikes_04',
     mainDirection: [
       { type: [Direction.Up, Direction.Right, Direction.Down], modelDirection: Direction.Right },
@@ -64,7 +64,7 @@ const SpikesTypeConfig: { [key in SpikeType]: ISpikeTypeConfig } = {
       directionsCount: 3,
     }
   },
-  [SpikeType.FourSides]: {
+  [WallSpikeType.FourSides]: {
     model: 'spikes_05',
     mainDirection: [
       { type: [Direction.Up, Direction.Right, Direction.Down, Direction.Left], modelDirection: Direction.Up },
@@ -75,4 +75,4 @@ const SpikesTypeConfig: { [key in SpikeType]: ISpikeTypeConfig } = {
   },
 }
 
-export { SpikesGeneralConfig, SpikesTypeConfig };
+export { WallSpikesGeneralConfig, WallSpikesTypeConfig };

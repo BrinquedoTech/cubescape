@@ -13,20 +13,20 @@ const CellConfig = {
   [CellType.Finish]: {
     symbols: ['F', 'FI'],
   },
-  [CellType.Spike]: {
+  [CellType.WallSpike]: {
     symbols: ['X'],
   },
 }
 
 const CellsForFinalMap: CellType[] = [
   CellType.Wall,
-  CellType.Spike,
+  CellType.WallSpike,
   CellType.Finish,
 ]
 
 const CellsWithBody: CellType[] = [
   CellType.Wall,
-  CellType.Spike,
+  CellType.WallSpike,
   CellType.Finish,
 ]
 

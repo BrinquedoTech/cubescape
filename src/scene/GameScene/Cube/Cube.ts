@@ -17,6 +17,8 @@ import ThreeJSHelper from '../../Helpers/ThreeJSHelper';
 import { CellType } from '../../Enums/CellType';
 import InstancesHelper from '../../Helpers/InstancesHelper';
 import CubeHelper from '../../Helpers/CubeHelper';
+import { WallCellType } from '../../Enums/WallCellType';
+import { WallCellsConfig } from '../../Configs/WallCellsConfig';
 
 type Events = {
   endRotating: string;
@@ -150,16 +152,16 @@ export default class Cube extends THREE.Group {
   }
 
   private initInnerCube(): void {
-    const innerCubeSize = new THREE.Vector3(
-      this.levelConfig.size.x * GameplayConfig.grid.size,
-      this.levelConfig.size.y * GameplayConfig.grid.size,
-      this.levelConfig.size.z * GameplayConfig.grid.size,
-    );
+    // const innerCubeSize = new THREE.Vector3(
+    //   this.levelConfig.size.x * GameplayConfig.grid.size,
+    //   this.levelConfig.size.y * GameplayConfig.grid.size,
+    //   this.levelConfig.size.z * GameplayConfig.grid.size,
+    // );
 
-    const geometry = new THREE.BoxGeometry(innerCubeSize.x, innerCubeSize.y, innerCubeSize.z);
-    const material = new THREE.MeshStandardMaterial({ color: 0xff0000 });
-    const innerCube = this.innerCube = new THREE.Mesh(geometry, material);
-    this.add(innerCube);
+    // const geometry = new THREE.BoxGeometry(innerCubeSize.x, innerCubeSize.y, innerCubeSize.z);
+    // const material = new THREE.MeshStandardMaterial({ color: 0xff0000 });
+    // const innerCube = this.innerCube = new THREE.Mesh(geometry, material);
+    // this.add(innerCube);
   }
 
   private initEdges(): void {
@@ -232,10 +234,10 @@ export default class Cube extends THREE.Group {
   }
 
   private initSides(): void {
-    const geometry = new THREE.BoxGeometry(GameplayConfig.grid.size, GameplayConfig.grid.size, GameplayConfig.grid.size);
+    // const geometry = new THREE.BoxGeometry(GameplayConfig.grid.size, GameplayConfig.grid.size, GameplayConfig.grid.size);
     const material = new THREE.MeshStandardMaterial({ color: 0xffff00 });
 
-    const sideCells: THREE.Object3D[] = [];
+    const cellsObjectsByType: { [key in WallCellType]?: THREE.Object3D[]} = {};
 
     for (const side in CubeSide) {
       const cubeSide: CubeSide = CubeSide[side];
@@ -245,7 +247,9 @@ export default class Cube extends THREE.Group {
 
       for (let i = 0; i < sizeY; i++) {
         for (let j = 0; j < sizeX; j++) {
-          if (CubeHelper.getCellTypeBySymbol(this.levelConfig.map.sides[cubeSide][i][j]) === CellType.Wall) {
+          const cellType: CellType = CubeHelper.getCellTypeBySymbol(this.levelConfig.map.sides[cubeSide][i][j]);
+
+          if (cellType === CellType.Empty || cellType === CellType.Wall) {
             const sideCell = new THREE.Object3D();
 
             const distance: number = (this.levelConfig.size[cubeSideAxisConfig.zAxis] + 1) * 0.5 * GameplayConfig.grid.size;
@@ -259,15 +263,40 @@ export default class Cube extends THREE.Group {
             sideCell.position[cubeSideAxisConfig.xAxis] += j * GameplayConfig.grid.size * cubeSideAxisConfig.xFactor - offsetX * cubeSideAxisConfig.xFactor;
             sideCell.position[cubeSideAxisConfig.yAxis] += i * GameplayConfig.grid.size * cubeSideAxisConfig.yFactor - offsetY * cubeSideAxisConfig.yFactor;
 
+            CubeHelper.setSideRotation(sideCell, cubeSide);
+
             sideCell.scale.set(GameplayConfig.grid.scale, GameplayConfig.grid.scale, GameplayConfig.grid.scale);
 
-            sideCells.push(sideCell);
+            const wallCellType: WallCellType = this.getWallCellType(cellType);
+
+            if (!cellsObjectsByType[wallCellType]) {
+              cellsObjectsByType[wallCellType] = [];
+            }
+
+            cellsObjectsByType[wallCellType].push(sideCell);
           }
         }
       }
     }
 
-    const sideCellsInstanced = this.sideCellsInstanced = InstancesHelper.createStaticInstancedMesh(sideCells, material, geometry);
-    this.add(sideCellsInstanced);
+    for (let wallCellType in cellsObjectsByType) {
+      const modelName: string = WallCellsConfig[wallCellType].model;
+      const geometry: THREE.BufferGeometry = ThreeJSHelper.getGeometryFromModel(modelName);
+      ThreeJSHelper.setGeometryRotation(geometry, new THREE.Euler(Math.PI * 0.5, Math.PI * 0.5, 0));
+
+      const sideCellsInstanced = InstancesHelper.createStaticInstancedMesh(cellsObjectsByType[wallCellType], material, geometry);
+      this.add(sideCellsInstanced);
+    }
+  }
+
+  private getWallCellType(cellType: CellType): WallCellType {
+    switch (cellType) {
+      case CellType.Empty:
+        return WallCellType.RoadNoWalls;
+      case CellType.Wall:
+        return WallCellType.Wall;
+      default:
+        return null;
+    }
   }
 }

@@ -8,7 +8,7 @@ import { CellType } from '../Enums/CellType';
 import { Direction } from '../Enums/Direction';
 import { CellConfig } from '../Configs/CellsConfig';
 import { ICellTypeWithID } from '../Interfaces/ICellConfig';
-import { EnemyConfigMap, ISpikeConfig } from '../Interfaces/IEnemyConfig';
+import { EnemyConfigMap, IWallSpikeConfig } from '../Interfaces/IEnemyConfig';
 
 export default class CubeHelper {
   constructor() {
@@ -152,14 +152,14 @@ export default class CubeHelper {
     return CubeHelper.getEnemyConfigByTypeAndID(levelConfig, cellType, id);
   }
 
-  public static getDangerCellsForSpike(spikeConfig: ISpikeConfig): THREE.Vector2[] {
+  public static getDangerCellsForWallSpike(wallSpikeConfig: IWallSpikeConfig): THREE.Vector2[] {
     const dangerPositions: THREE.Vector2[] = [];
-    const spikePosition: THREE.Vector2 = spikeConfig.position;
+    const wallSpikePosition: THREE.Vector2 = wallSpikeConfig.position;
 
-    for (let i = 0; i < spikeConfig.directions.length; i++) {
-      const direction: Direction = spikeConfig.directions[i];
+    for (let i = 0; i < wallSpikeConfig.directions.length; i++) {
+      const direction: Direction = wallSpikeConfig.directions[i];
       const directionPosition: THREE.Vector2 = Direction2DVectorConfig[direction];
-      const dangerPosition: THREE.Vector2 = new THREE.Vector2(spikePosition.x + directionPosition.x, spikePosition.y + directionPosition.y);
+      const dangerPosition: THREE.Vector2 = new THREE.Vector2(wallSpikePosition.x + directionPosition.x, wallSpikePosition.y + directionPosition.y);
       dangerPositions.push(dangerPosition);      
     }
 

@@ -1,3 +1,3 @@
 export enum EnemyType {
-  Spike = 'SPIKE',
+  WallSpike = 'WALL_SPIKE',
 }

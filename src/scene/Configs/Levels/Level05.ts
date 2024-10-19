@@ -18,9 +18,9 @@ const Level05: ILevelConfig = {
       [CubeSide.Front]: [
         ['ST', '  ', '  ', 'X1', '  ', '  ', '  '],
         ['  ', '  ', '  ', '  ', '  ', '  ', '  '],
-        ['  ', '  ', '  ', '  ', '  ', '  ', '  '],
-        ['  ', '  ', '  ', '  ', '  ', '  ', '  '],
-        ['  ', '  ', '  ', '  ', '  ', '  ', '  '],
+        ['  ', '  ', '  ', 'WW', '  ', '  ', '  '],
+        ['  ', '  ', 'WW', 'WW', 'WW', '  ', '  '],
+        ['  ', '  ', '  ', 'WW', '  ', '  ', '  '],
         ['  ', '  ', '  ', '  ', '  ', '  ', '  '],
         ['  ', '  ', '  ', '  ', '  ', '  ', '  '],
       ],
@@ -86,7 +86,7 @@ const Level05: ILevelConfig = {
     },
   },
   enemies: {
-    [EnemyType.Spike]: [
+    [EnemyType.WallSpike]: [
       { id: 1, directions: [Direction.Left] },
       { id: 2, directions: [Direction.Right] },
       { id: 3, directions: [Direction.Down] },

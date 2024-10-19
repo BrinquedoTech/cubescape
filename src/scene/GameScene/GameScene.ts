@@ -22,7 +22,7 @@ import MapController from './MapController';
 import { CameraController } from './CameraController';
 import EnemiesController from './Enemies/EnemiesController';
 import { CellsWithBody } from '../Configs/CellsConfig';
-import { ISpikeConfig } from '../Interfaces/IEnemyConfig';
+import { IWallSpikeConfig } from '../Interfaces/IEnemyConfig';
 
 export default class GameScene extends THREE.Group {
   private cube: Cube;
@@ -41,7 +41,7 @@ export default class GameScene extends THREE.Group {
   private waitingForCubeRotation: boolean = false;
   private waitingForEndLevel: boolean = false;
   private nextMoveDirection: MoveDirection = null;
-  private spikeOnTargetPosition: string = '';
+  private wallSpikeOnTargetPosition: string = '';
 
   constructor(camera: THREE.PerspectiveCamera) {
     super();
@@ -147,8 +147,8 @@ export default class GameScene extends THREE.Group {
           this.waitingForEndLevel = true;
           break;
 
-        case CellType.Spike:
-          this.spikeOnTargetPosition = nextCellSymbol;
+        case CellType.WallSpike:
+          this.wallSpikeOnTargetPosition = nextCellSymbol;
           break;
 
         case CellType.Empty:
@@ -251,11 +251,11 @@ export default class GameScene extends THREE.Group {
       return;
     }
 
-    if (this.spikeOnTargetPosition) {
-      const spikeConfig: ISpikeConfig = CubeHelper.getEnemyConfigBySymbol(this.levelConfig, this.spikeOnTargetPosition) as unknown as ISpikeConfig;
-      const dangerCells: THREE.Vector2[] = CubeHelper.getDangerCellsForSpike(spikeConfig);
+    if (this.wallSpikeOnTargetPosition) {
+      const wallSpikeConfig: IWallSpikeConfig = CubeHelper.getEnemyConfigBySymbol(this.levelConfig, this.wallSpikeOnTargetPosition) as unknown as IWallSpikeConfig;
+      const dangerCells: THREE.Vector2[] = CubeHelper.getDangerCellsForWallSpike(wallSpikeConfig);
       const playerCharacterGridPosition: THREE.Vector2 = this.playerCharacter.getGridPosition();
-      this.spikeOnTargetPosition = '';
+      this.wallSpikeOnTargetPosition = '';
 
       if (dangerCells.some((dangerCell: THREE.Vector2) => CubeHelper.isGridCellsEqual(dangerCell, playerCharacterGridPosition))) {
         this.playerCharacter.death();
@@ -303,7 +303,7 @@ export default class GameScene extends THREE.Group {
     this.waitingForEndLevel = false;
     this.nextMoveDirection = null;
     this.nextCubeRotationDirection = null;
-    this.spikeOnTargetPosition = '';
+    this.wallSpikeOnTargetPosition = '';
   }
 
   private removeLevel(): void {

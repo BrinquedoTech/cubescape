@@ -9,7 +9,7 @@ export interface IEnemyConfig {
   side?: CubeSide;
 }
 
-export interface ISpikeConfig extends IEnemyConfig {
+export interface IWallSpikeConfig extends IEnemyConfig {
   directions: Direction[];
 }
 
@@ -18,5 +18,5 @@ export interface ISkeletonConfig extends IEnemyConfig {
 }
 
 export type EnemyConfigMap = {
-  [EnemyType.Spike]: ISpikeConfig;
+  [EnemyType.WallSpike]: IWallSpikeConfig;
 };
