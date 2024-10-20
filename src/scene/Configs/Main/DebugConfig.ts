@@ -4,10 +4,11 @@ const DebugConfig = {
   rendererStats: true,
   orbitControls: true,
   gameplay: {
-    grid: true,
+    grid: false,
     cubeSideName: true,
     cubeRotationName: true,
     gridCoordinates: false,
+    cubeRotationButtons: true,
   }
 };
 

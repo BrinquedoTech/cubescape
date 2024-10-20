@@ -3,7 +3,8 @@ import * as PIXI from 'pixi.js';
 import { GLTFLoader } from 'three/examples/jsm/Addons.js';
 
 const textures = [
-
+  'Ghost_BaseColor.png',
+  'Ghost_Normal.png',
 ];
 
 const models = [
@@ -12,8 +13,11 @@ const models = [
   'spikes_03.glb',
   'spikes_04.glb',
   'spikes_05.glb',
+
   'wall.glb',
   'road_no_walls.glb',
+
+  'ghost.glb',
 ];
 
 const pixiAssets = [

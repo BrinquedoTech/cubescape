@@ -90,6 +90,7 @@ export default class BaseScene {
     this._initRenderer();
     this._initCamera();
     this._initLights();
+    this._initFog();
     this._initLoadingOverlay();
     this.initAxesHelper();
     this._initOnResize();
@@ -120,6 +121,9 @@ export default class BaseScene {
 
     renderer.setSize(this.windowSizes.width, this.windowSizes.height);
     renderer.setPixelRatio(Math.min(window.devicePixelRatio, SCENE_CONFIG.maxPixelRatio));
+
+    renderer.shadowMap.enabled = true;
+    renderer.shadowMap.type = THREE.PCFSoftShadowMap;
   }
 
   _initCamera() {
@@ -130,12 +134,37 @@ export default class BaseScene {
   }
 
   _initLights() {
-    const ambientLight = new THREE.AmbientLight(0xffffff, 0.5);
+    const ambientLight = new THREE.AmbientLight(0xffffff, 0.7);
     this.scene.add(ambientLight);
 
     const directionalLight = new THREE.DirectionalLight(0xffffff, 1);
-    directionalLight.position.set(0, 5, 5);
+    directionalLight.position.set(-2, 3, 8);
     this.scene.add(directionalLight);
+
+    directionalLight.castShadow = true;
+
+    directionalLight.shadow.mapSize.width = 1024;
+    directionalLight.shadow.mapSize.height = 1024;
+
+    directionalLight.shadow.camera.near = 1;
+    directionalLight.shadow.camera.far = 17;
+
+    directionalLight.shadow.camera.left = -8;
+    directionalLight.shadow.camera.right = 8;
+    directionalLight.shadow.camera.top = 8;
+    directionalLight.shadow.camera.bottom = -8;
+
+    // const directionalLightCameraHelper = new THREE.CameraHelper(directionalLight.shadow.camera);
+    // this.scene.add(directionalLightCameraHelper);
+  }
+
+  _initFog() {
+    if (SCENE_CONFIG.fog.enabled) {
+      let near = SCENE_CONFIG.fog.desktop.near;
+      let far = SCENE_CONFIG.fog.desktop.far;
+
+      this.scene.fog = new THREE.Fog(SCENE_CONFIG.backgroundColor, near, far);
+    }
   }
 
   _initLoadingOverlay() {

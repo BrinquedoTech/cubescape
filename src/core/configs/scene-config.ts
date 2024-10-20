@@ -1,16 +1,16 @@
 const SCENE_CONFIG = {
   backgroundColor: 0x999999, // 0x201919
-  antialias: false,
+  antialias: true,
   fxaaPass: false,
   maxPixelRatio: 2,
-  outlinePass: {
-    enabled: true,
-    color: '#ffffff',
-    edgeGlow: 1,
-    edgeStrength: 4,
-    edgeThickness: 1,
-    pulsePeriod: 4,
-  },
+  fog: {
+    enabled: false,
+    desktop: { near: 16, far: 20 },
+    mobile: { 
+      portrait: { near: 21, far: 25.5 },
+      landscape: { near: 16, far: 20 },
+    },
+  }
 };
 
 export default SCENE_CONFIG;

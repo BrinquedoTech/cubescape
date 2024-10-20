@@ -231,11 +231,14 @@ export default class Cube extends THREE.Group {
 
     const edgeCellsInstanced = this.edgeCellsInstanced = InstancesHelper.createStaticInstancedMesh(edgeCells, material, geometry);
     this.add(edgeCellsInstanced);
+
+    edgeCellsInstanced.receiveShadow = true;
+    edgeCellsInstanced.castShadow = true;
   }
 
   private initSides(): void {
     // const geometry = new THREE.BoxGeometry(GameplayConfig.grid.size, GameplayConfig.grid.size, GameplayConfig.grid.size);
-    const material = new THREE.MeshStandardMaterial({ color: 0xffff00 });
+    // const material = new THREE.MeshStandardMaterial({ color: 0xffff00 });
 
     const cellsObjectsByType: { [key in WallCellType]?: THREE.Object3D[]} = {};
 
@@ -282,10 +285,14 @@ export default class Cube extends THREE.Group {
     for (let wallCellType in cellsObjectsByType) {
       const modelName: string = WallCellsConfig[wallCellType].model;
       const geometry: THREE.BufferGeometry = ThreeJSHelper.getGeometryFromModel(modelName);
+      const material: THREE.Material = new THREE.MeshStandardMaterial({ color: WallCellsConfig[wallCellType].color });
       ThreeJSHelper.setGeometryRotation(geometry, new THREE.Euler(Math.PI * 0.5, Math.PI * 0.5, 0));
 
       const sideCellsInstanced = InstancesHelper.createStaticInstancedMesh(cellsObjectsByType[wallCellType], material, geometry);
       this.add(sideCellsInstanced);
+
+      sideCellsInstanced.receiveShadow = true;
+      sideCellsInstanced.castShadow = true;
     }
   }
 

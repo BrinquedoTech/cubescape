@@ -9,6 +9,8 @@ import CubeHelper from '../../Helpers/CubeHelper';
 import { ICubePosition, ICubeSideAxisConfig } from '../../Interfaces/ICubeConfig';
 import mitt, { Emitter } from 'mitt';
 import { CellType } from '../../Enums/CellType';
+import ThreeJSHelper from '../../Helpers/ThreeJSHelper';
+import Loader from '../../../core/loader';
 
 type Events = {
   onMovingEnd: string;
@@ -206,10 +208,22 @@ export default class PlayerCharacter extends THREE.Group {
   }
 
   private initView(): void {
-    const geometry = new THREE.SphereGeometry(0.5, 32, 32);
-    const material = new THREE.MeshStandardMaterial({ color: 0x00ff00 });
+    const geometry: THREE.BufferGeometry = ThreeJSHelper.getGeometryFromModel('ghost');
+    ThreeJSHelper.setGeometryRotation(geometry, new THREE.Euler(Math.PI * 0.5, Math.PI * 0.5, 0));
+
+    const texture = Loader.assets['Ghost_BaseColor'];
+    texture.flipY = false;
+    const material = new THREE.MeshStandardMaterial({ map: texture });
+
+    const normalMap = Loader.assets['Ghost_Normal'];
+    normalMap.flipY = false;
+    material.normalMap = normalMap;
+
     const view = new THREE.Mesh(geometry, material);
     this.add(view);
+
+    view.castShadow = true;
+    view.receiveShadow = true;
 
     view.scale.set(GameplayConfig.grid.scale, GameplayConfig.grid.scale, GameplayConfig.grid.scale);
   }
