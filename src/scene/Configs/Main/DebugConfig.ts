@@ -8,7 +8,7 @@ const DebugConfig = {
     cubeSideName: true,
     cubeRotationName: true,
     gridCoordinates: false,
-    cubeRotationButtons: true,
+    cubeRotationButtons: false,
   }
 };
 

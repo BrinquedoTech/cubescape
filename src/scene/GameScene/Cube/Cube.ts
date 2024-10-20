@@ -31,10 +31,9 @@ export default class Cube extends THREE.Group {
   private cubeDebug: CubeDebug;
   private state: CubeState = CubeState.Idle;
 
-  private innerCube: THREE.Mesh;
   private cornerCellsInstanced: THREE.InstancedMesh;
   private edgeCellsInstanced: THREE.InstancedMesh;
-  private sideCellsInstanced: THREE.InstancedMesh;
+  private sideCellsInstanced: { [key in WallCellType]?: THREE.InstancedMesh } = {};
 
   public emitter: Emitter<Events> = mitt<Events>();
 
@@ -73,6 +72,10 @@ export default class Cube extends THREE.Group {
     return this.cubeRotationController.getCurrentRotationDirection();
   }
 
+  public getSideAfterRotation(rotateDirection: RotateDirection): CubeSide {
+    return this.cubeRotationController.getSideAfterRotation(rotateDirection);
+  }
+
   public getState(): CubeState {
     return this.state;
   }
@@ -106,13 +109,14 @@ export default class Cube extends THREE.Group {
   public removeCube(): void {
     ThreeJSHelper.killInstancedMesh(this.cornerCellsInstanced, this);
     ThreeJSHelper.killInstancedMesh(this.edgeCellsInstanced, this);
-    ThreeJSHelper.killInstancedMesh(this.sideCellsInstanced, this);
-    ThreeJSHelper.killObjects(this.innerCube, this);
+    
+    for (let wallCellType in this.sideCellsInstanced) {
+      ThreeJSHelper.killInstancedMesh(this.sideCellsInstanced[wallCellType], this);
+    }
 
     this.cornerCellsInstanced = null;
     this.edgeCellsInstanced = null;
-    this.sideCellsInstanced = null;
-    this.innerCube = null;
+    this.sideCellsInstanced = {};
 
     this.cubeDebug.removeDebug();
   }
@@ -237,9 +241,6 @@ export default class Cube extends THREE.Group {
   }
 
   private initSides(): void {
-    // const geometry = new THREE.BoxGeometry(GameplayConfig.grid.size, GameplayConfig.grid.size, GameplayConfig.grid.size);
-    // const material = new THREE.MeshStandardMaterial({ color: 0xffff00 });
-
     const cellsObjectsByType: { [key in WallCellType]?: THREE.Object3D[]} = {};
 
     for (const side in CubeSide) {
@@ -293,6 +294,8 @@ export default class Cube extends THREE.Group {
 
       sideCellsInstanced.receiveShadow = true;
       sideCellsInstanced.castShadow = true;
+
+      this.sideCellsInstanced[wallCellType] = sideCellsInstanced;
     }
   }
 

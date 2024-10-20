@@ -116,6 +116,17 @@ export default class CubeRotationController {
     this.rotationSpeed = GameplayConfig.cube.rotationSpeed[this.rotationType][rotationAngleType];
   }
 
+  public getSideAfterRotation(rotateDirection: RotateDirection): CubeSide {
+    const blankObject = new THREE.Object3D();
+    blankObject.rotation.copy(this.object.rotation);
+
+    const rotationConfig: IRotationAxisConfig = RotationAxisConfig[rotateDirection];
+    blankObject.rotateOnWorldAxis(rotationConfig.axis, rotationConfig.sign * this.rotationAngle);
+    blankObject.updateMatrixWorld();
+
+    return this.calculateCubeSide(blankObject);
+  }
+
   public instantRotateToDirection(rotateDirection: RotateDirection): void {
     this.rotationDirection = rotateDirection;
 
@@ -234,7 +245,7 @@ export default class CubeRotationController {
   private onEndRotating(): void {
     this.resetProgress();
     this.snapRotation();
-    this.calculateCurrentSide();
+    this.currentSide = this.calculateCubeSide(this.object);
     this.calculateCurrentRotationDirection();
   }
 
@@ -276,8 +287,8 @@ export default class CubeRotationController {
     }
   }
 
-  private calculateCurrentSide(): void {
-    const matrixWorld: THREE.Matrix4 = this.object.matrixWorld;
+  private calculateCubeSide(object: THREE.Object3D): CubeSide {
+    const matrixWorld: THREE.Matrix4 = object.matrixWorld;
 
     let activeSide: CubeSide = null;
     let smallestAngle: number = Infinity;
@@ -294,7 +305,7 @@ export default class CubeRotationController {
       }
     }
 
-    this.currentSide = activeSide;
+    return activeSide;
   }
 
   private calculateCurrentRotationDirection(): void {

@@ -126,4 +126,16 @@ const MovementDirectionByButtonConfig: { [key in ButtonType]: MoveDirection } = 
   [ButtonType.Down]: MoveDirection.Down,
 };
 
-export { MovementDirectionByCubeRotationConfig, MovementDirectionConfig, MovementDirectionByButtonConfig };
+const TiltAxisConfig: { [key in MoveDirection]: { axis: string, sign: number }} = {
+  [MoveDirection.Up]: { axis: 'x', sign: -1 },
+  [MoveDirection.Down]: { axis: 'x', sign: 1 },
+  [MoveDirection.Left]: { axis: 'y', sign: -1 },
+  [MoveDirection.Right]: { axis: 'y', sign: 1 },
+}
+
+export {
+  MovementDirectionByCubeRotationConfig,
+  MovementDirectionConfig,
+  MovementDirectionByButtonConfig,
+  TiltAxisConfig,
+};

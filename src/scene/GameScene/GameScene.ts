@@ -38,6 +38,7 @@ export default class GameScene extends THREE.Group {
   private levelConfig: ILevelConfig;
   private levelIndex: number = 0;
   private nextCubeRotationDirection: RotateDirection = null;
+  private currentMoveDirection: MoveDirection = null;
   private waitingForCubeRotation: boolean = false;
   private waitingForEndLevel: boolean = false;
   private nextMoveDirection: MoveDirection = null;
@@ -81,11 +82,12 @@ export default class GameScene extends THREE.Group {
   }
 
   private moveCharacter(moveDirection: MoveDirection): void {
+    this.currentMoveDirection = moveDirection;
     const currentRotationDirection: CubeRotationDirection = this.cube.getCurrentRotationDirection();
-    const newMovingDirection: MoveDirection = MovementDirectionByCubeRotationConfig[moveDirection][currentRotationDirection].direction;
+    const movingDirection: MoveDirection = MovementDirectionByCubeRotationConfig[moveDirection][currentRotationDirection].direction;
     const playerCharacterGridPosition: THREE.Vector2 = this.playerCharacter.getGridPosition();
-    const activeAxis: string = MovementDirectionConfig[newMovingDirection].activeAxis;
-    const sign: number = MovementDirectionConfig[newMovingDirection].vector[activeAxis];
+    const activeAxis: string = MovementDirectionConfig[movingDirection].activeAxis;
+    const sign: number = MovementDirectionConfig[movingDirection].vector[activeAxis];
     const startPoint: number = playerCharacterGridPosition[activeAxis];
 
     const cubeSide: CubeSide = this.cube.getCurrentSide();
@@ -94,22 +96,25 @@ export default class GameScene extends THREE.Group {
 
     if (this.checkOnEdgeMovingBack(startPoint, sign, gridSize)) {
       this.waitingForCubeRotation = true;
-      this.nextCubeRotationDirection = MovementDirectionByCubeRotationConfig[newMovingDirection][currentRotationDirection].cubeRotationDirection;
+      this.nextCubeRotationDirection = MovementDirectionByCubeRotationConfig[movingDirection][currentRotationDirection].cubeRotationDirection;
       this.rotateCube(this.nextCubeRotationDirection);
 
       return;
     }
 
-    const targetGridPosition: THREE.Vector2 = this.getMovingTargetGridPosition(startPoint, sign, gridSize, newMovingDirection);
+    const targetGridPosition: THREE.Vector2 = this.getMovingTargetGridPosition(startPoint, sign, gridSize, movingDirection);
 
     if (!CubeHelper.isGridCellsEqual(playerCharacterGridPosition, targetGridPosition)) {
+      this.playerCharacter.setMovingDirection(movingDirection);
       this.playerCharacter.moveToGridCell(targetGridPosition.x, targetGridPosition.y);
 
       if (this.isCellOnEdge(targetGridPosition.x, targetGridPosition.y)) {
         this.waitingForCubeRotation = true;
-        this.nextCubeRotationDirection = MovementDirectionByCubeRotationConfig[newMovingDirection][currentRotationDirection].cubeRotationDirection;
+        this.nextCubeRotationDirection = MovementDirectionByCubeRotationConfig[movingDirection][currentRotationDirection].cubeRotationDirection;
       }
     }
+
+    this.playerCharacter.setRotationByDirection(movingDirection);
   }
 
   private checkOnEdgeMovingBack(startPoint: number, sign: number, gridSize: number): boolean {
@@ -282,11 +287,16 @@ export default class GameScene extends THREE.Group {
       const cubeSide: CubeSide = this.cube.getCurrentSide();
       this.playerCharacter.setActiveSide(cubeSide);
       this.playerCharacter.updatePositionOnRealPosition();
+      this.playerCharacter.setRotationBySide(cubeSide);
 
       if (this.nextMoveDirection) {
         this.moveCharacter(this.nextMoveDirection);
         this.nextMoveDirection = null;
       }
+
+      const currentRotationDirection: CubeRotationDirection = this.cube.getCurrentRotationDirection();
+      const movingDirection: MoveDirection = MovementDirectionByCubeRotationConfig[this.currentMoveDirection][currentRotationDirection].direction;
+      this.playerCharacter.setRotationByDirection(movingDirection);
     }
   }
 
@@ -304,6 +314,7 @@ export default class GameScene extends THREE.Group {
     this.nextMoveDirection = null;
     this.nextCubeRotationDirection = null;
     this.wallSpikeOnTargetPosition = '';
+    this.currentMoveDirection = null;
   }
 
   private removeLevel(): void {

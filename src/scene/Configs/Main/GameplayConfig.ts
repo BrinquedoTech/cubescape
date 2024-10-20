@@ -18,9 +18,6 @@ const GameplayConfig = {
       },
     },
   },
-  playerCharacter: {
-    speed: 25,
-  },
 }
 
 export default GameplayConfig;

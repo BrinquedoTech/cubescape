@@ -62,9 +62,10 @@ export default class MapController {
       sideEdgesMap[edge] = this.levelConfig.map.edges[edge];
     }
 
-    const cellSymbol: string = CubeHelper.getCellSymbolByType(CellType.Empty);
-    const resultMap: string[][] = ArrayHelper.create2DArray(mapSizeY, mapSizeX, cellSymbol);
-    ArrayHelper.fillCornerValues(resultMap, cellSymbol);
+    const cellSymbolEmpty: string = CubeHelper.getCellSymbolByType(CellType.Empty);
+    const cellSymbolWall: string = CubeHelper.getCellSymbolByType(CellType.Wall);
+    const resultMap: string[][] = ArrayHelper.create2DArray(mapSizeY, mapSizeX, cellSymbolEmpty);
+    ArrayHelper.fillCornerValues(resultMap, cellSymbolWall);
 
     for (const edgeType in sideEdgesMap) {
       const { positionType, direction } = EdgeBySideConfig[cubeSide][edgeType];

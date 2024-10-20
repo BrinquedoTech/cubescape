@@ -1,6 +1,7 @@
 import * as PIXI from 'pixi.js';
 import Button from './Button';
 import mitt, { Emitter } from 'mitt';
+import DebugConfig from '../scene/Configs/Main/DebugConfig';
 
 type Events = {
   rotateRight: string;
@@ -28,25 +29,27 @@ export default class RotateButtons extends PIXI.Container {
   }
 
   public onResize(): void {
-    const offset = 400;
+    if (DebugConfig.gameplay.cubeRotationButtons) {
+      const offset = 400;
 
-    this.buttonRotateRight.x = offset;
-    this.buttonRotateRight.y = 0;
+      this.buttonRotateRight.x = offset;
+      this.buttonRotateRight.y = 0;
 
-    this.buttonRotateLeft.x = -offset;
-    this.buttonRotateLeft.y = 0;
+      this.buttonRotateLeft.x = -offset;
+      this.buttonRotateLeft.y = 0;
 
-    this.buttonRotateUp.x = 0;
-    this.buttonRotateUp.y = -offset;
+      this.buttonRotateUp.x = 0;
+      this.buttonRotateUp.y = -offset;
 
-    this.buttonRotateDown.x = 0;
-    this.buttonRotateDown.y = 0 + offset;
+      this.buttonRotateDown.x = 0;
+      this.buttonRotateDown.y = 0 + offset;
 
-    this.buttonRotateClockwise.x = offset;
-    this.buttonRotateClockwise.y = -offset;
+      this.buttonRotateClockwise.x = offset;
+      this.buttonRotateClockwise.y = -offset;
 
-    this.buttonRotateCounterClockwise.x = -offset;
-    this.buttonRotateCounterClockwise.y = -offset;
+      this.buttonRotateCounterClockwise.x = -offset;
+      this.buttonRotateCounterClockwise.y = -offset;
+    }
   }
 
   public show(): void {
@@ -58,11 +61,14 @@ export default class RotateButtons extends PIXI.Container {
   }
 
   private init(): void {
-    this.initButtons();
-    this.initSignals();
+    this.initDebugButtons();
   }
 
-  private initButtons(): void {
+  private initDebugButtons(): void {
+    if (!DebugConfig.gameplay.cubeRotationButtons) {
+      return;
+    }
+
     const buttonRotateRight = this.buttonRotateRight = new Button('assets/arrow-right.png');
     this.addChild(buttonRotateRight);
 
@@ -80,9 +86,11 @@ export default class RotateButtons extends PIXI.Container {
   
     const buttonRotateCounterClockwise = this.buttonRotateCounterClockwise = new Button('assets/arrow-counter-clockwise.png');
     this.addChild(buttonRotateCounterClockwise);
+
+    this.initDebugButtonsSignals();
   }
 
-  private initSignals(): void {
+  private initDebugButtonsSignals(): void {
     this.buttonRotateRight.emitter.on('click', () => this.emitter.emit('rotateRight'));
     this.buttonRotateLeft.emitter.on('click', () => this.emitter.emit('rotateLeft'));
     this.buttonRotateUp.emitter.on('click', () => this.emitter.emit('rotateUp'));
