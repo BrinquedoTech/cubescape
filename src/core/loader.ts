@@ -5,6 +5,7 @@ import { GLTFLoader } from 'three/examples/jsm/Addons.js';
 const textures = [
   'Ghost_BaseColor.png',
   'Ghost_Normal.png',
+  'dungeon_texture.png',
 ];
 
 const models = [
@@ -15,7 +16,10 @@ const models = [
   'spikes_05.glb',
 
   'wall.glb',
-  'road_no_walls.glb',
+  'roof.glb',
+  'floor.glb',
+  'corner_01.glb',
+  'corner_02.glb',
 
   'ghost.glb',
 ];

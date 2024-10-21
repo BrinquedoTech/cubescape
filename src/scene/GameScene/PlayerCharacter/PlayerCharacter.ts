@@ -339,6 +339,8 @@ export default class PlayerCharacter extends THREE.Group {
 
     const texture = Loader.assets['Ghost_BaseColor'];
     texture.flipY = false;
+    texture.colorSpace = THREE.SRGBColorSpace;
+    
     const material = new THREE.MeshStandardMaterial({
       map: texture,
       transparent: true,

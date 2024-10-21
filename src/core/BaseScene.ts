@@ -134,10 +134,10 @@ export default class BaseScene {
   }
 
   _initLights() {
-    const ambientLight = new THREE.AmbientLight(0xffffff, 0.7);
+    const ambientLight = new THREE.AmbientLight(0xffffff, 1);
     this.scene.add(ambientLight);
 
-    const directionalLight = new THREE.DirectionalLight(0xffffff, 1);
+    const directionalLight = new THREE.DirectionalLight(0xffffff, 1.3);
     directionalLight.position.set(-2, 3, 8);
     this.scene.add(directionalLight);
 
