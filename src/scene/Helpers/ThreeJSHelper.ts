@@ -66,4 +66,8 @@ export default class ThreeJSHelper {
     matrix.makeRotationFromEuler(rotation);
     geometry.applyMatrix4(matrix);
   }
+
+  public static lerp(a: number, b: number, t: number): number {
+    return a + (b - a) * t;
+  }
 }

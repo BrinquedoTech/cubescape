@@ -231,6 +231,10 @@ export default class PlayerCharacter extends THREE.Group {
     return this.gridPosition;
   }
 
+  public getSidePosition(): THREE.Vector2 {
+    return this.sidePosition;
+  }
+
   private updateMovingState(dt: number): void {
     this.movingElapsedTime += dt;
 

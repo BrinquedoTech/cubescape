@@ -55,7 +55,7 @@ export default class GameScene extends THREE.Group {
   public update(dt: number): void {
     this.cube.update(dt);
     this.playerCharacter.update(dt);
-    this.cameraController.update();
+    this.cameraController.update(dt);
   }
 
   public startGame(): void {
@@ -177,14 +177,15 @@ export default class GameScene extends THREE.Group {
   }
 
   private init(): void {
+    this.initMapController();
+    
     this.initCube();
     this.initPlayerCharacter();
     this.initEndLevelObject();
-    this.initMapController();
     this.initEnemiesController();
-
-    this.initCameraController();
+    
     this.initKeyboardController();
+    this.initCameraController();
 
     this.initSignals();
   }
@@ -216,6 +217,7 @@ export default class GameScene extends THREE.Group {
   private initCameraController(): void {
     this.cameraController = new CameraController(this.camera);
     this.cameraController.setPlayerCharacter(this.playerCharacter);
+    this.cameraController.setCube(this.cube);
   }
 
   private initKeyboardController(): void {
