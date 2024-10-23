@@ -1,4 +1,4 @@
-import { CellType } from "../Enums/CellType";
+import { CellType } from "../../Enums/CellType";
 
 const CellConfig = {
   [CellType.Empty]: {

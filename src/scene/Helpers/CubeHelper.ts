@@ -6,7 +6,7 @@ import { CubeSide } from '../Enums/CubeSide';
 import { ILevelConfig, ILevelMapConfig } from '../Interfaces/ILevelConfig';
 import { CellType } from '../Enums/CellType';
 import { Direction } from '../Enums/Direction';
-import { CellConfig } from '../Configs/CellsConfig';
+import { CellConfig } from '../Configs/Cells/CellsConfig';
 import { ICellTypeWithID } from '../Interfaces/ICellConfig';
 import { EnemyConfigMap, IWallSpikeConfig } from '../Interfaces/IEnemyConfig';
 

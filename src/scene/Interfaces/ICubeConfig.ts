@@ -4,9 +4,10 @@ import { CubeRotationDirection } from "../Enums/CubeRotationDirection";
 import { CubeSide } from "../Enums/CubeSide";
 import { CubeEdgeOnSidePositionType } from '../Enums/CubeEdgeOnSide';
 
-export interface IEdgeAxisConfig {
+export interface IEdgeConfig {
   edge: CubeEdge;
   axis: string;
+  rotation: THREE.Euler;
 }
 
 export interface ICubeSideAxisConfig {

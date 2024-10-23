@@ -1,5 +1,5 @@
 import * as THREE from 'three';
-import { EdgeBySideConfig, EdgesBySideArrayConfig } from "../Configs/EdgeConfig";
+import { EdgeBySideConfig, EdgesBySideArrayConfig } from "../Configs/Cells/EdgeCellsConfig";
 import { CubeSideAxisConfig } from "../Configs/SideConfig";
 import { CellType } from "../Enums/CellType";
 import { CubeEdge } from "../Enums/CubeEdge";
@@ -8,7 +8,7 @@ import { CubeSide } from "../Enums/CubeSide";
 import ArrayHelper from "../Helpers/ArrayHelper";
 import { ILevelConfig, ILevelEdgeConfig, IMapConfig } from "../Interfaces/ILevelConfig";
 import CubeHelper from '../Helpers/CubeHelper';
-import { CellsForFinalMap } from '../Configs/CellsConfig';
+import { CellsForFinalMap } from '../Configs/Cells/CellsConfig';
 
 export default class MapController {
   private map: IMapConfig = {};

@@ -154,6 +154,8 @@ export default class BaseScene {
     directionalLight.shadow.camera.top = 8;
     directionalLight.shadow.camera.bottom = -8;
 
+    // directionalLight.shadow.bias = 0.0001;
+
     // const directionalLightCameraHelper = new THREE.CameraHelper(directionalLight.shadow.camera);
     // this.scene.add(directionalLightCameraHelper);
   }

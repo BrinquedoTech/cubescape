@@ -21,7 +21,7 @@ import EndLevelObject from './EndLevelObject/EndLevelObject';
 import MapController from './MapController';
 import { CameraController } from './CameraController';
 import EnemiesController from './Enemies/EnemiesController';
-import { CellsWithBody } from '../Configs/CellsConfig';
+import { CellsWithBody } from '../Configs/Cells/CellsConfig';
 import { IWallSpikeConfig } from '../Interfaces/IEnemyConfig';
 
 export default class GameScene extends THREE.Group {

@@ -1,4 +1,4 @@
-import { CellModelType } from "../Enums/CellModelType";
+import { CellModelType } from "../../Enums/CellModelType";
 
 const CellModelConfig = {
   [CellModelType.Roof]: {

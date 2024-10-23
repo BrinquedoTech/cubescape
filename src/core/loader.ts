@@ -20,6 +20,8 @@ const models = [
   'floor.glb',
   'corner_01.glb',
   'corner_02.glb',
+  'edge_01.glb',
+  'edge_02.glb',
 
   'ghost.glb',
 ];

@@ -1,8 +1,13 @@
 import * as THREE from 'three';
-import { CubeEdge } from '../Enums/CubeEdge';
-import { IEdgeAxisConfig, IEdgeBySideConfig } from '../Interfaces/ICubeConfig';
-import { CubeSide } from '../Enums/CubeSide';
-import { CubeEdgeOnSidePositionType } from '../Enums/CubeEdgeOnSide';
+import { CubeEdge } from '../../Enums/CubeEdge';
+import { IEdgeConfig, IEdgeBySideConfig } from '../../Interfaces/ICubeConfig';
+import { CubeSide } from '../../Enums/CubeSide';
+import { CubeEdgeOnSidePositionType } from '../../Enums/CubeEdgeOnSide';
+
+const EdgeModelsConfig = {
+  probabilities: [0.8, 0.2],
+  models: ['edge_01', 'edge_02'],
+}
 
 const EdgeDistanceConfig: THREE.Vector3[] = [
   new THREE.Vector3(0, 1, 1), // FrontTop
@@ -19,19 +24,19 @@ const EdgeDistanceConfig: THREE.Vector3[] = [
   new THREE.Vector3(1, 0, -1), // BackRight
 ];
 
-const EdgeAxisConfig: IEdgeAxisConfig[] = [
-  { edge: CubeEdge.FrontTop, axis: 'x' },
-  { edge: CubeEdge.FrontDown, axis: 'x' },
-  { edge: CubeEdge.FrontLeft, axis: 'y' },
-  { edge: CubeEdge.FrontRight, axis: 'y' },
-  { edge: CubeEdge.TopLeft, axis: 'z' },
-  { edge: CubeEdge.TopRight, axis: 'z' },
-  { edge: CubeEdge.DownLeft, axis: 'z' },
-  { edge: CubeEdge.DownRight, axis: 'z' },
-  { edge: CubeEdge.BackTop, axis: 'x' },
-  { edge: CubeEdge.BackDown, axis: 'x' },
-  { edge: CubeEdge.BackLeft, axis: 'y' },
-  { edge: CubeEdge.BackRight, axis: 'y' },
+const EdgeRotationConfig: IEdgeConfig[] = [
+  { edge: CubeEdge.FrontTop, axis: 'x', rotation: new THREE.Euler(0, 0, 0) },
+  { edge: CubeEdge.FrontDown, axis: 'x', rotation: new THREE.Euler(Math.PI * 0.5, 0, 0) },
+  { edge: CubeEdge.FrontLeft, axis: 'y', rotation: new THREE.Euler(0, 0, Math.PI * 0.5) },
+  { edge: CubeEdge.FrontRight, axis: 'y', rotation: new THREE.Euler(0, 0, -Math.PI * 0.5) },
+  { edge: CubeEdge.TopLeft, axis: 'z', rotation: new THREE.Euler(0, -Math.PI * 0.5, 0) },
+  { edge: CubeEdge.TopRight, axis: 'z', rotation: new THREE.Euler(0, Math.PI * 0.5, 0) },
+  { edge: CubeEdge.DownLeft, axis: 'z', rotation: new THREE.Euler(0, -Math.PI * 0.5, Math.PI) },
+  { edge: CubeEdge.DownRight, axis: 'z', rotation: new THREE.Euler(0, Math.PI * 0.5, Math.PI) },
+  { edge: CubeEdge.BackTop, axis: 'x', rotation: new THREE.Euler(0, Math.PI, 0) },
+  { edge: CubeEdge.BackDown, axis: 'x', rotation: new THREE.Euler(0, Math.PI, Math.PI) },
+  { edge: CubeEdge.BackLeft, axis: 'y', rotation: new THREE.Euler(0, -Math.PI * 0.5, Math.PI * 0.5) },
+  { edge: CubeEdge.BackRight, axis: 'y', rotation: new THREE.Euler(0, Math.PI * 0.5, -Math.PI * 0.5) },
 ];
 
 const EdgesBySideArrayConfig: { [key in CubeSide]: CubeEdge[] } = {
@@ -82,4 +87,10 @@ const EdgeBySideConfig: IEdgeBySideConfig = {
   },
 }
 
-export { EdgeDistanceConfig, EdgeAxisConfig, EdgesBySideArrayConfig, EdgeBySideConfig };
+export {
+  EdgeDistanceConfig,
+  EdgeRotationConfig,
+  EdgesBySideArrayConfig,
+  EdgeBySideConfig,
+  EdgeModelsConfig,
+};

@@ -70,4 +70,20 @@ export default class ThreeJSHelper {
   public static lerp(a: number, b: number, t: number): number {
     return a + (b - a) * t;
   }
+
+  public static splitObjectsByProbability(objects: THREE.Object3D[], probabilities: number[]) {
+    const shuffledArray: THREE.Object3D[] = objects.sort(() => Math.random() - 0.5);
+  
+    const totalItems: number = objects.length;
+    let currentIndex: number = 0;
+  
+    return probabilities.map(probability => {
+      const numberOfItems: number = Math.round(probability * totalItems);
+      
+      const split: THREE.Object3D[] = shuffledArray.slice(currentIndex, currentIndex + numberOfItems);
+      currentIndex += numberOfItems;
+  
+      return split;
+    });
+  }
 }
