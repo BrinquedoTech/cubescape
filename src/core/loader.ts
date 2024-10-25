@@ -15,8 +15,8 @@ const models = [
   'spikes_04.glb',
   'spikes_05.glb',
 
-  'wall.glb',
   'wall_01.glb',
+  'wall_02.glb',
   'roof_01.glb',
   'roof_02.glb',
   'roof_03.glb',

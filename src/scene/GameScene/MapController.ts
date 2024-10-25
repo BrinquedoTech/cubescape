@@ -1,14 +1,7 @@
 import * as THREE from 'three';
-import { EdgeBySideConfig, EdgesBySideArrayConfig } from "../Configs/Cells/EdgeCellsConfig";
-import { CubeSideAxisConfig } from "../Configs/SideConfig";
-import { CellType } from "../Enums/CellType";
-import { CubeEdge } from "../Enums/CubeEdge";
-import { CubeEdgeOnSidePositionType } from "../Enums/CubeEdgeOnSide";
 import { CubeSide } from "../Enums/CubeSide";
-import ArrayHelper from "../Helpers/ArrayHelper";
-import { ILevelConfig, ILevelEdgeConfig, IMapConfig } from "../Interfaces/ILevelConfig";
-import CubeHelper from '../Helpers/CubeHelper';
-import { CellsForFinalMap } from '../Configs/Cells/CellsConfig';
+import { ILevelConfig, IMapConfig } from "../Interfaces/ILevelConfig";
+import MapHelper from '../Helpers/MapHelper';
 
 export default class MapController {
   private map: IMapConfig = {};
@@ -24,7 +17,7 @@ export default class MapController {
 
     for (const cubeSide in CubeSide) {
       const side: CubeSide = CubeSide[cubeSide] as CubeSide;
-      this.map[side] = this.createFullSideMap(side);
+      this.map[side] = MapHelper.createFullSideMap(this.levelConfig, side);
     }
   }
 
@@ -49,66 +42,5 @@ export default class MapController {
 
   private reset(): void {
     this.map = {};
-  }
-
-  private createFullSideMap(cubeSide: CubeSide): string[][] {
-    const mapSizeX: number = this.levelConfig.size[CubeSideAxisConfig[cubeSide].xAxis] + 2;
-    const mapSizeY: number = this.levelConfig.size[CubeSideAxisConfig[cubeSide].yAxis] + 2;
-
-    const sideEdgesMap: ILevelEdgeConfig = {};
-    const edgesInSide: CubeEdge[] = EdgesBySideArrayConfig[cubeSide];
-    for (let i = 0; i < edgesInSide.length; i++) {
-      const edge = edgesInSide[i];
-      sideEdgesMap[edge] = [...this.levelConfig.map.edges[edge]];
-    }
-
-    const cellSymbolEmpty: string = CubeHelper.getCellSymbolByType(CellType.Empty);
-    const cellSymbolWall: string = CubeHelper.getCellSymbolByType(CellType.Wall);
-    const resultMap: string[][] = ArrayHelper.create2DArray(mapSizeY, mapSizeX, cellSymbolEmpty);
-    ArrayHelper.fillCornerValues(resultMap, cellSymbolWall);
-
-    for (const edgeType in sideEdgesMap) {
-      const { positionType, direction } = EdgeBySideConfig[cubeSide][edgeType];
-      let edgeMap: string[] = [...sideEdgesMap[edgeType]];
-      edgeMap = direction === 1 ? edgeMap : edgeMap.reverse();
-
-      switch (positionType) {
-        case CubeEdgeOnSidePositionType.Top:
-          for (let i = 1; i < mapSizeX - 1; i++)
-            resultMap[0][i] = edgeMap[i - 1];
-          break;
-        case CubeEdgeOnSidePositionType.Down:
-          for (let i = 1; i < mapSizeX - 1; i++)
-            resultMap[mapSizeY - 1][i] = edgeMap[i - 1];
-          break;
-        case CubeEdgeOnSidePositionType.Left:
-          for (let i = 1; i < mapSizeY - 1; i++)
-            resultMap[i][0] = edgeMap[i - 1];
-          break;
-        case CubeEdgeOnSidePositionType.Right:
-          for (let i = 1; i < mapSizeY - 1; i++)
-            resultMap[i][mapSizeX - 1] = edgeMap[i - 1];
-          break;
-      }
-    }
-
-    const sideMap: string[][] = [];
-
-    for (let i = 0; i < this.levelConfig.map.sides[cubeSide].length; i++) {
-      sideMap.push([...this.levelConfig.map.sides[cubeSide][i]]);
-    }
-
-    for (let i = 1; i < mapSizeY - 1; i++) {
-      for (let j = 1; j < mapSizeX - 1; j++) {
-        const cellSymbolLetter: string = sideMap[i - 1][j - 1].replace(/[0-9]/g, '');
-        const currentCellType: CellType = CubeHelper.getCellTypeBySymbol(cellSymbolLetter); 
-
-        if (CellsForFinalMap.includes(currentCellType)) {
-          resultMap[i][j] = sideMap[i - 1][j - 1];
-        }
-      }
-    }
-
-    return resultMap;
   }
 }

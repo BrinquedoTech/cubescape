@@ -102,6 +102,10 @@ export default class BaseScene {
     new Loader();
   }
 
+  initMaterials() {
+    
+  }
+
   _initScene() {
     this.scene = new THREE.Scene();
   }

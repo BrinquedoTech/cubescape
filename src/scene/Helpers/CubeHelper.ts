@@ -3,7 +3,7 @@ import GameplayConfig from '../Configs/Main/GameplayConfig';
 import { ICubePosition, ICubePositionWithID, ICubeSideAxisConfig } from '../Interfaces/ICubeConfig';
 import { CellDirectionConfig, CharacterSideConfig, CubeSideAxisConfig, Direction2DVectorConfig, ObjectsRotationBySideConfig, SideVectorConfig } from '../Configs/SideConfig';
 import { CubeSide } from '../Enums/CubeSide';
-import { ILevelConfig, ILevelMapConfig } from '../Interfaces/ILevelConfig';
+import { ILevelConfig, ILevelSideConfig } from '../Interfaces/ILevelConfig';
 import { CellType } from '../Enums/CellType';
 import { Direction } from '../Enums/Direction';
 import { CellConfig } from '../Configs/Cells/CellsConfig';
@@ -49,7 +49,7 @@ export default class CubeHelper {
     return new THREE.Vector3(newX, newY, newZ);
   }
 
-  public static getItemPositions(map: ILevelMapConfig, cellType: CellType): ICubePosition[] {
+  public static getItemPositions(map: ILevelSideConfig, cellType: CellType): ICubePosition[] {
     const itemPositions: ICubePosition[] = [];
 
     for (let side in map) {
@@ -71,7 +71,7 @@ export default class CubeHelper {
     return itemPositions;
   }
 
-  public static getItemWithIDPositions(map: ILevelMapConfig, cellType: CellType): ICubePositionWithID[] {
+  public static getItemWithIDPositions(map: ILevelSideConfig, cellType: CellType): ICubePositionWithID[] {
     const itemPositions: ICubePositionWithID[] = [];
 
     for (let side in map) {

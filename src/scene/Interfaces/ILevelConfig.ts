@@ -6,19 +6,19 @@ import { EnemyType } from '../Enums/EnemyType';
 import { EnemyConfigMap } from './IEnemyConfig';
 
 export interface ILevelConfig {
-  size: THREE.Vector3;
+  size?: THREE.Vector3;
   startSide?: {
     side?: CubeSide;
     rotationDirection?: CubeRotationDirection;
   };
   map: {
-    sides: ILevelMapConfig;
+    sides: ILevelSideConfig;
     edges: ILevelEdgeConfig;
   };
   enemies?: IEnemiesConfig;
 }
 
-export type ILevelMapConfig = {
+export type ILevelSideConfig = {
   [key in CubeSide]?: string[][];
 }
 
