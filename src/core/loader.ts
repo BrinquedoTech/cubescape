@@ -16,12 +16,19 @@ const models = [
   'spikes_05.glb',
 
   'wall.glb',
-  'roof.glb',
-  'floor.glb',
+  'wall_01.glb',
+  'roof_01.glb',
+  'roof_02.glb',
+  'roof_03.glb',
+  'floor_01.glb',
+  'floor_02.glb',
   'corner_01.glb',
   'corner_02.glb',
   'edge_01.glb',
+  'edge_01_1.glb',
+  'edge_01_2.glb',
   'edge_02.glb',
+  'edge_03.glb',
 
   'ghost.glb',
 ];

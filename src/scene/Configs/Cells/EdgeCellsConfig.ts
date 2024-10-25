@@ -5,8 +5,8 @@ import { CubeSide } from '../../Enums/CubeSide';
 import { CubeEdgeOnSidePositionType } from '../../Enums/CubeEdgeOnSide';
 
 const EdgeModelsConfig = {
-  probabilities: [0.8, 0.2],
-  models: ['edge_01', 'edge_02'],
+  probabilities: [0.1, 0.1, 0.8],
+  models: ['edge_01', 'edge_02', 'edge_01_1'],
 }
 
 const EdgeDistanceConfig: THREE.Vector3[] = [

@@ -19,7 +19,7 @@ export interface ILevelConfig {
 }
 
 export type ILevelMapConfig = {
-  [key in CubeSide]: string[][];
+  [key in CubeSide]?: string[][];
 }
 
 export type ILevelEdgeConfig = {

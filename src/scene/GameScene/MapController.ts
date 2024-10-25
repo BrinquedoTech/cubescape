@@ -59,7 +59,7 @@ export default class MapController {
     const edgesInSide: CubeEdge[] = EdgesBySideArrayConfig[cubeSide];
     for (let i = 0; i < edgesInSide.length; i++) {
       const edge = edgesInSide[i];
-      sideEdgesMap[edge] = this.levelConfig.map.edges[edge];
+      sideEdgesMap[edge] = [...this.levelConfig.map.edges[edge]];
     }
 
     const cellSymbolEmpty: string = CubeHelper.getCellSymbolByType(CellType.Empty);
@@ -92,7 +92,11 @@ export default class MapController {
       }
     }
 
-    const sideMap: string[][] = this.levelConfig.map.sides[cubeSide];
+    const sideMap: string[][] = [];
+
+    for (let i = 0; i < this.levelConfig.map.sides[cubeSide].length; i++) {
+      sideMap.push([...this.levelConfig.map.sides[cubeSide][i]]);
+    }
 
     for (let i = 1; i < mapSizeY - 1; i++) {
       for (let j = 1; j < mapSizeX - 1; j++) {

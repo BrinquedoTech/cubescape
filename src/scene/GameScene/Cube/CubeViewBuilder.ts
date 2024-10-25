@@ -2,25 +2,27 @@ import * as THREE from 'three';
 import Loader from '../../../core/loader';
 import ThreeJSHelper from '../../Helpers/ThreeJSHelper';
 import GameplayConfig from '../../Configs/Main/GameplayConfig';
-import { ILevelConfig } from '../../Interfaces/ILevelConfig';
+import { ILevelConfig, ILevelEdgeConfig, ILevelMapConfig } from '../../Interfaces/ILevelConfig';
 import CornerCellsConfig from '../../Configs/Cells/CornerCellsConfig';
 import { EdgeRotationConfig, EdgeDistanceConfig, EdgeModelsConfig } from '../../Configs/Cells/EdgeCellsConfig';
 import { ICubeSideAxisConfig, IEdgeConfig } from '../../Interfaces/ICubeConfig';
 import CubeHelper from '../../Helpers/CubeHelper';
 import { CellType } from '../../Enums/CellType';
 import InstancesHelper from '../../Helpers/InstancesHelper';
-import { CellModelType } from '../../Enums/CellModelType';
-import { CellModelConfig } from '../../Configs/Cells/CellModelConfig';
 import { CubeSideAxisConfig, SideVectorConfig } from '../../Configs/SideConfig';
 import { CubeSide } from '../../Enums/CubeSide';
+import { FloorCellsGeometryConfig, FloorCellTypes, FloorModelsConfig } from '../../Configs/Cells/FloorCellsConfig';
+import { RoofCellsGeometryConfig, RoofCellTypes, RoofModelsConfig } from '../../Configs/Cells/RoofCellsConfig';
+import { CubeEdge } from '../../Enums/CubeEdge';
+import { WallCellDirection } from '../../Enums/WallCellDirection';
+import { Direction } from '../../Enums/Direction';
 
 export default class CubeViewBuilder extends THREE.Group {
   private mainMaterial: THREE.MeshStandardMaterial;
-  private levelConfig: ILevelConfig;
+  private levelMap: ILevelConfig;
 
   private corners: THREE.Mesh[] = [];
   private edgeCellsInstanced: THREE.InstancedMesh[] = [];
-  private sideCellsInstanced: { [key in CellModelType]?: THREE.InstancedMesh } = {};
 
   constructor() {
     super();
@@ -29,11 +31,14 @@ export default class CubeViewBuilder extends THREE.Group {
   }
 
   public init(levelConfig: ILevelConfig): void {
-    this.levelConfig = levelConfig;
+    this.createLevelMap(levelConfig);
 
     this.initCorners();
     this.initEdges();
-    this.initSides();
+    this.initFloor();
+    this.initRoof();
+    this.initWalls();
+    // this.initSides();
   }
 
   public removeView(): void {
@@ -42,21 +47,69 @@ export default class CubeViewBuilder extends THREE.Group {
     for (let i = 0; i < this.edgeCellsInstanced.length; i++) {
       ThreeJSHelper.killInstancedMesh(this.edgeCellsInstanced[i], this);
     }
-    
-    for (let wallCellType in this.sideCellsInstanced) {
-      ThreeJSHelper.killInstancedMesh(this.sideCellsInstanced[wallCellType], this);
-    }
 
     this.corners = [];
     this.edgeCellsInstanced = [];
-    this.sideCellsInstanced = {};
+  }
+
+  private createLevelMap(levelConfig: ILevelConfig): void {
+    this.copyLevelMap(levelConfig);
+    
+    for (const cubeSide in CubeSide) {
+      const side: CubeSide = CubeSide[cubeSide] as CubeSide;
+
+      const mapSizeX: number = levelConfig.size[CubeSideAxisConfig[side].xAxis];
+      const mapSizeY: number = levelConfig.size[CubeSideAxisConfig[side].yAxis];
+      
+      for (let i = 0; i < mapSizeX; i++) {
+        for (let j = 0; j < mapSizeY; j++) {
+          const cellType: CellType = CubeHelper.getCellTypeBySymbol(this.levelMap.map.sides[side][j][i]);
+
+          if (FloorCellTypes.includes(cellType)) {
+            const floorCellSymbol: string = CubeHelper.getCellSymbolByType(CellType.Empty);
+            this.levelMap.map.sides[side][j][i] = floorCellSymbol;
+          }
+
+          if (RoofCellTypes.includes(cellType)) {
+            const roofCellSymbol: string = CubeHelper.getCellSymbolByType(CellType.Wall);
+            this.levelMap.map.sides[side][j][i] = roofCellSymbol;
+          }
+        }
+      }
+    }
+  }
+
+  private copyLevelMap(levelConfig: ILevelConfig): void {
+    this.levelMap = {
+      size: levelConfig.size,
+      map: {
+        sides: {},
+        edges: {},
+      },
+    };
+
+    for (const cubeSide in CubeSide) {
+      const side: CubeSide = CubeSide[cubeSide] as CubeSide;
+      const sideMap: string[][] = [];
+
+      for (let i = 0; i < levelConfig.map.sides[side].length; i++) {
+        sideMap.push([...levelConfig.map.sides[side][i]]);
+      }
+
+      this.levelMap.map.sides[side] = sideMap;
+    }
+
+    for (const cubeEdge in CubeEdge) {
+      const edge: CubeEdge = CubeEdge[cubeEdge] as CubeEdge;
+      this.levelMap.map.edges[edge] = [...levelConfig.map.edges[edge]];
+    }
   }
 
   private initCorners(): void {
     const distance = new THREE.Vector3(
-      (this.levelConfig.size.x + 1) * 0.5 * GameplayConfig.grid.size,
-      (this.levelConfig.size.y + 1) * 0.5 * GameplayConfig.grid.size,
-      (this.levelConfig.size.z + 1) * 0.5 * GameplayConfig.grid.size,
+      (this.levelMap.size.x + 1) * 0.5 * GameplayConfig.grid.size,
+      (this.levelMap.size.y + 1) * 0.5 * GameplayConfig.grid.size,
+      (this.levelMap.size.z + 1) * 0.5 * GameplayConfig.grid.size,
     );
 
     for (let i = 0; i < CornerCellsConfig.length; i++) {
@@ -83,19 +136,19 @@ export default class CubeViewBuilder extends THREE.Group {
 
   private initEdges(): void {
     const distance = new THREE.Vector3(
-      (this.levelConfig.size.x + 1) * 0.5 * GameplayConfig.grid.size,
-      (this.levelConfig.size.y + 1) * 0.5 * GameplayConfig.grid.size,
-      (this.levelConfig.size.z + 1) * 0.5 * GameplayConfig.grid.size,
+      (this.levelMap.size.x + 1) * 0.5 * GameplayConfig.grid.size,
+      (this.levelMap.size.y + 1) * 0.5 * GameplayConfig.grid.size,
+      (this.levelMap.size.z + 1) * 0.5 * GameplayConfig.grid.size,
     );
 
     const edgeCells: THREE.Object3D[] = [];
 
     for (let i = 0; i < EdgeRotationConfig.length; i++) {
       const edgeConfig: IEdgeConfig = EdgeRotationConfig[i];
-      const edgeSize: number = this.levelConfig.size[edgeConfig.axis];
-      
+      const edgeSize: number = this.levelMap.size[edgeConfig.axis];
+
       for (let j = 0; j < edgeSize; j++) {
-        if (CubeHelper.getCellTypeBySymbol(this.levelConfig.map.edges[edgeConfig.edge][j]) === CellType.Wall) {
+        if (CubeHelper.getCellTypeBySymbol(this.levelMap.map.edges[edgeConfig.edge][j]) === CellType.Wall) {
           const edgeCell = new THREE.Object3D();
 
           edgeCell.position.x = EdgeDistanceConfig[i].x * distance.x;
@@ -116,97 +169,202 @@ export default class CubeViewBuilder extends THREE.Group {
     }
 
     const edgeCellsByProbability: THREE.Object3D[][] = ThreeJSHelper.splitObjectsByProbability(edgeCells, EdgeModelsConfig.probabilities);
-    
+
     for (let i = 0; i < EdgeModelsConfig.models.length; i++) {
       const modelName: string = EdgeModelsConfig.models[i];
       const geometry: THREE.BufferGeometry = ThreeJSHelper.getGeometryFromModel(modelName);
       const edgeCells: THREE.Object3D[] = edgeCellsByProbability[i];
-      
+
       const edgeCellsInstanced = InstancesHelper.createStaticInstancedMesh(edgeCells, this.mainMaterial, geometry);
       this.add(edgeCellsInstanced);
 
       this.edgeCellsInstanced.push(edgeCellsInstanced);
-  
+
       edgeCellsInstanced.receiveShadow = true;
       edgeCellsInstanced.castShadow = true;
     }
   }
 
-  private initSides(): void {
-    const dungeonTexture = Loader.assets['dungeon_texture'];
-    dungeonTexture.flipY = false;
-    const dungeonMaterial = new THREE.MeshStandardMaterial({
-      map: dungeonTexture,
-    });
-
-    const cellsObjectsByType: { [key in CellModelType]?: THREE.Object3D[]} = {};
+  private initFloor(): void {
+    const floorCells = [];
 
     for (const side in CubeSide) {
       const cubeSide: CubeSide = CubeSide[side];
       const cubeSideAxisConfig: ICubeSideAxisConfig = CubeSideAxisConfig[cubeSide];
-      const sizeX: number = this.levelConfig.size[cubeSideAxisConfig.xAxis];
-      const sizeY: number = this.levelConfig.size[cubeSideAxisConfig.yAxis];
+      const sizeX: number = this.levelMap.size[cubeSideAxisConfig.xAxis];
+      const sizeY: number = this.levelMap.size[cubeSideAxisConfig.yAxis];
 
       for (let i = 0; i < sizeY; i++) {
         for (let j = 0; j < sizeX; j++) {
-          const cellType: CellType = CubeHelper.getCellTypeBySymbol(this.levelConfig.map.sides[cubeSide][i][j]);
+          const cellType: CellType = CubeHelper.getCellTypeBySymbol(this.levelMap.map.sides[cubeSide][i][j]);
 
-          if (cellType === CellType.Empty || cellType === CellType.Wall || cellType === CellType.Start || cellType === CellType.Finish) {
-            const sideCell = new THREE.Object3D();
+          if (cellType === CellType.Empty) {
+            const floor = new THREE.Object3D();
 
-            const distance: number = (this.levelConfig.size[cubeSideAxisConfig.zAxis] + 1) * 0.5 * GameplayConfig.grid.size;
-            const offsetX: number = (this.levelConfig.size[cubeSideAxisConfig.xAxis] - 1) * 0.5 * GameplayConfig.grid.size;
-            const offsetY: number = (this.levelConfig.size[cubeSideAxisConfig.yAxis] - 1) * 0.5 * GameplayConfig.grid.size;
+            const distance: number = (this.levelMap.size[cubeSideAxisConfig.zAxis] + 1) * 0.5 * GameplayConfig.grid.size;
+            const offsetX: number = (this.levelMap.size[cubeSideAxisConfig.xAxis] - 1) * 0.5 * GameplayConfig.grid.size;
+            const offsetY: number = (this.levelMap.size[cubeSideAxisConfig.yAxis] - 1) * 0.5 * GameplayConfig.grid.size;
 
-            sideCell.position.x = SideVectorConfig[cubeSide].x * distance;
-            sideCell.position.y = SideVectorConfig[cubeSide].y * distance;
-            sideCell.position.z = SideVectorConfig[cubeSide].z * distance;
+            floor.position.x = SideVectorConfig[cubeSide].x * distance;
+            floor.position.y = SideVectorConfig[cubeSide].y * distance;
+            floor.position.z = SideVectorConfig[cubeSide].z * distance;
 
-            sideCell.position[cubeSideAxisConfig.xAxis] += j * GameplayConfig.grid.size * cubeSideAxisConfig.xFactor - offsetX * cubeSideAxisConfig.xFactor;
-            sideCell.position[cubeSideAxisConfig.yAxis] += i * GameplayConfig.grid.size * cubeSideAxisConfig.yFactor - offsetY * cubeSideAxisConfig.yFactor;
+            floor.position[cubeSideAxisConfig.xAxis] += j * GameplayConfig.grid.size * cubeSideAxisConfig.xFactor - offsetX * cubeSideAxisConfig.xFactor;
+            floor.position[cubeSideAxisConfig.yAxis] += i * GameplayConfig.grid.size * cubeSideAxisConfig.yFactor - offsetY * cubeSideAxisConfig.yFactor;
 
-            CubeHelper.setSideRotation(sideCell, cubeSide);
+            CubeHelper.setSideRotation(floor, cubeSide);
 
-            sideCell.scale.set(GameplayConfig.grid.scale, GameplayConfig.grid.scale, GameplayConfig.grid.scale);
+            floor.scale.set(GameplayConfig.grid.scale, GameplayConfig.grid.scale, GameplayConfig.grid.scale);
 
-            const wallCellType: CellModelType = this.getWallCellType(cellType);
-
-            if (!cellsObjectsByType[wallCellType]) {
-              cellsObjectsByType[wallCellType] = [];
-            }
-
-            cellsObjectsByType[wallCellType].push(sideCell);
+            floorCells.push(floor);
           }
         }
       }
     }
 
-    for (let wallCellType in cellsObjectsByType) {
-      const modelName: string = CellModelConfig[wallCellType].model;
+    const floorCellsByProbability: THREE.Object3D[][] = ThreeJSHelper.splitObjectsByProbability(floorCells, FloorModelsConfig.probabilities);
+
+    for (let i = 0; i < FloorModelsConfig.models.length; i++) {
+      const modelName: string = FloorModelsConfig.models[i];
       const geometry: THREE.BufferGeometry = ThreeJSHelper.getGeometryFromModel(modelName);
-      ThreeJSHelper.setGeometryRotation(geometry, new THREE.Euler(Math.PI * 0.5, Math.PI * 0.5, 0));
+      ThreeJSHelper.setGeometryRotation(geometry, FloorCellsGeometryConfig.rotation);
+      const floorCells: THREE.Object3D[] = floorCellsByProbability[i];
 
-      const sideCellsInstanced = InstancesHelper.createStaticInstancedMesh(cellsObjectsByType[wallCellType], dungeonMaterial, geometry);
-      this.add(sideCellsInstanced);
+      const floorCellsInstanced = InstancesHelper.createStaticInstancedMesh(floorCells, this.mainMaterial, geometry);
+      this.add(floorCellsInstanced);
 
-      sideCellsInstanced.receiveShadow = true;
-    //   sideCellsInstanced.castShadow = true;
-
-      this.sideCellsInstanced[wallCellType] = sideCellsInstanced;
+      floorCellsInstanced.receiveShadow = true;
     }
   }
 
-  private getWallCellType(cellType: CellType): CellModelType {
-    switch (cellType) {
-      case CellType.Empty:
-      case CellType.Start:
-      case CellType.Finish:
-        return CellModelType.Road;
-      case CellType.Wall:
-        return CellModelType.Roof;
-      default:
-        return null;
+  private initRoof(): void {
+    const roofCells = [];
+
+    for (const side in CubeSide) {
+      const cubeSide: CubeSide = CubeSide[side];
+      const cubeSideAxisConfig: ICubeSideAxisConfig = CubeSideAxisConfig[cubeSide];
+      const sizeX: number = this.levelMap.size[cubeSideAxisConfig.xAxis];
+      const sizeY: number = this.levelMap.size[cubeSideAxisConfig.yAxis];
+
+      for (let i = 0; i < sizeY; i++) {
+        for (let j = 0; j < sizeX; j++) {
+          const cellType: CellType = CubeHelper.getCellTypeBySymbol(this.levelMap.map.sides[cubeSide][i][j]);
+
+          if (cellType === CellType.Wall) {
+            const roof = new THREE.Object3D();
+
+            const distance: number = (this.levelMap.size[cubeSideAxisConfig.zAxis] + 1) * 0.5 * GameplayConfig.grid.size;
+            const offsetX: number = (this.levelMap.size[cubeSideAxisConfig.xAxis] - 1) * 0.5 * GameplayConfig.grid.size;
+            const offsetY: number = (this.levelMap.size[cubeSideAxisConfig.yAxis] - 1) * 0.5 * GameplayConfig.grid.size;
+
+            roof.position.x = SideVectorConfig[cubeSide].x * distance;
+            roof.position.y = SideVectorConfig[cubeSide].y * distance;
+            roof.position.z = SideVectorConfig[cubeSide].z * distance;
+
+            roof.position[cubeSideAxisConfig.xAxis] += j * GameplayConfig.grid.size * cubeSideAxisConfig.xFactor - offsetX * cubeSideAxisConfig.xFactor;
+            roof.position[cubeSideAxisConfig.yAxis] += i * GameplayConfig.grid.size * cubeSideAxisConfig.yFactor - offsetY * cubeSideAxisConfig.yFactor;
+
+            CubeHelper.setSideRotation(roof, cubeSide);
+
+            roof.scale.set(GameplayConfig.grid.scale, GameplayConfig.grid.scale, GameplayConfig.grid.scale);
+
+            roofCells.push(roof);
+          }
+        }
+      }
     }
+
+    const roofCellsByProbability: THREE.Object3D[][] = ThreeJSHelper.splitObjectsByProbability(roofCells, RoofModelsConfig.probabilities);
+
+    for (let i = 0; i < RoofModelsConfig.models.length; i++) {
+      const modelName: string = RoofModelsConfig.models[i];
+      const geometry: THREE.BufferGeometry = ThreeJSHelper.getGeometryFromModel(modelName);
+      ThreeJSHelper.setGeometryRotation(geometry, RoofCellsGeometryConfig.rotation);
+      const roofCells: THREE.Object3D[] = roofCellsByProbability[i];
+
+      const roofCellsInstanced = InstancesHelper.createStaticInstancedMesh(roofCells, this.mainMaterial, geometry);
+      this.add(roofCellsInstanced);
+
+      roofCellsInstanced.receiveShadow = true;
+      roofCellsInstanced.castShadow = true;
+    }
+  }
+
+  private initWalls(): void {
+    const wallCells = [];
+
+    for (const side in CubeSide) {
+      const cubeSide: CubeSide = CubeSide[side];
+      const cubeSideAxisConfig: ICubeSideAxisConfig = CubeSideAxisConfig[cubeSide];
+      const sizeX: number = this.levelMap.size[cubeSideAxisConfig.xAxis];
+      const sizeY: number = this.levelMap.size[cubeSideAxisConfig.yAxis];
+
+      for (let row = 0; row < sizeY; row++) {
+        for (let column = 0; column < sizeX; column++) {
+          const cellType: CellType = CubeHelper.getCellTypeBySymbol(this.levelMap.map.sides[cubeSide][row][column]);
+
+          if (cellType === CellType.Wall) {
+            const wallDirections: Direction[] = this.getWallDirections(this.levelMap.map.sides[cubeSide], row, column);
+
+            for (let i = 0; i < wallDirections.length; i++) {
+              const wallDirection: Direction = wallDirections[i];
+              
+              const wall = new THREE.Object3D();
+
+              const distance: number = (this.levelMap.size[cubeSideAxisConfig.zAxis] + 1) * 0.5 * GameplayConfig.grid.size;
+              const offsetX: number = (this.levelMap.size[cubeSideAxisConfig.xAxis] - 1) * 0.5 * GameplayConfig.grid.size;
+              const offsetY: number = (this.levelMap.size[cubeSideAxisConfig.yAxis] - 1) * 0.5 * GameplayConfig.grid.size;
+
+              wall.position.x = SideVectorConfig[cubeSide].x * distance;
+              wall.position.y = SideVectorConfig[cubeSide].y * distance;
+              wall.position.z = SideVectorConfig[cubeSide].z * distance;
+
+              wall.position[cubeSideAxisConfig.xAxis] += column * GameplayConfig.grid.size * cubeSideAxisConfig.xFactor - offsetX * cubeSideAxisConfig.xFactor;
+              wall.position[cubeSideAxisConfig.yAxis] += row * GameplayConfig.grid.size * cubeSideAxisConfig.yFactor - offsetY * cubeSideAxisConfig.yFactor;
+
+              CubeHelper.setSideRotation(wall, cubeSide);
+              CubeHelper.setRotationByDirection(wall, cubeSide, wallDirection);
+
+              wall.scale.set(GameplayConfig.grid.scale, GameplayConfig.grid.scale, GameplayConfig.grid.scale);
+
+              wallCells.push(wall);
+            }
+          }
+        }
+      }
+    }
+
+    const modelName: string = 'wall_01';
+    const geometry: THREE.BufferGeometry = ThreeJSHelper.getGeometryFromModel(modelName);
+    ThreeJSHelper.setGeometryRotation(geometry, new THREE.Euler(Math.PI * 0.5, 0, 0));
+
+    const roofCellsInstanced = InstancesHelper.createStaticInstancedMesh(wallCells, this.mainMaterial, geometry);
+    this.add(roofCellsInstanced);
+  }
+
+  private getWallDirections(map: string[][], row: number, column: number): Direction[] {
+    const neighboursCells: Direction[] = [];
+    const cellTypeToCheck: CellType = CellType.Empty;
+    const cellTypeToCheckSymbol: string = CubeHelper.getCellSymbolByType(cellTypeToCheck);
+
+    if (row > 0 && map[row - 1][column] === cellTypeToCheckSymbol) {
+      neighboursCells.push(Direction.Up);
+    }
+
+    if (row < map.length - 1 && map[row + 1][column] === cellTypeToCheckSymbol) {
+      neighboursCells.push(Direction.Down);
+    }
+
+    if (column > 0 && map[row][column - 1] === cellTypeToCheckSymbol) {
+      neighboursCells.push(Direction.Left);
+    }
+
+    if (column < map[0].length - 1 && map[row][column + 1] === cellTypeToCheckSymbol) {
+      neighboursCells.push(Direction.Right);
+    }
+
+    return neighboursCells;
+
   }
 
   private initMaterial(): void {
@@ -216,6 +374,7 @@ export default class CubeViewBuilder extends THREE.Group {
 
     this.mainMaterial = new THREE.MeshStandardMaterial({
       map: texture,
+      side: THREE.DoubleSide,
     });
   }
 }

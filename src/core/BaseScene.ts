@@ -127,7 +127,7 @@ export default class BaseScene {
   }
 
   _initCamera() {
-    const camera = this.camera = new THREE.PerspectiveCamera(50, this.windowSizes.width / this.windowSizes.height, 0.5, 70);
+    const camera = this.camera = new THREE.PerspectiveCamera(50, this.windowSizes.width / this.windowSizes.height, 2, 70);
     this.scene.add(camera);
 
     camera.position.set(0, 0, 20);
@@ -138,13 +138,13 @@ export default class BaseScene {
     this.scene.add(ambientLight);
 
     const directionalLight = new THREE.DirectionalLight(0xffffff, 1.3);
-    directionalLight.position.set(-2, 3, 8);
+    directionalLight.position.set(-3, 3, 9);
     this.scene.add(directionalLight);
 
     directionalLight.castShadow = true;
 
-    directionalLight.shadow.mapSize.width = 1024;
-    directionalLight.shadow.mapSize.height = 1024;
+    directionalLight.shadow.mapSize.width = 2048;
+    directionalLight.shadow.mapSize.height = 2048;
 
     directionalLight.shadow.camera.near = 1;
     directionalLight.shadow.camera.far = 17;
@@ -154,7 +154,7 @@ export default class BaseScene {
     directionalLight.shadow.camera.top = 8;
     directionalLight.shadow.camera.bottom = -8;
 
-    // directionalLight.shadow.bias = 0.0001;
+    directionalLight.shadow.bias = -0.001;
 
     // const directionalLightCameraHelper = new THREE.CameraHelper(directionalLight.shadow.camera);
     // this.scene.add(directionalLightCameraHelper);
