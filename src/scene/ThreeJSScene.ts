@@ -2,12 +2,20 @@ import * as THREE from 'three';
 import GameScene from './GameScene/GameScene';
 import { RotateDirection, TurnDirection } from './Enums/RotateDirection';
 import { ILibrariesData } from './Interfaces/ILibrariesData';
+import mitt, { Emitter } from 'mitt';
+
+type Events = {
+  onWinLevel: string;
+  onPressStart: string;
+};
 
 export default class ThreeJSScene extends THREE.Group {
   // private data: any;
   // private scene: any;
   private camera: THREE.PerspectiveCamera;
   private gameScene: GameScene;
+
+  public emitter: Emitter<Events> = mitt<Events>();
 
   constructor(data: ILibrariesData) {
     super();
@@ -44,10 +52,23 @@ export default class ThreeJSScene extends THREE.Group {
     this.gameScene.turnCube(turnDirection);
   }
 
-  private init(): void {
-    this.gameScene = new GameScene(this.camera);
-    this.add(this.gameScene);
-
+  public startGame(): void {
     this.gameScene.startGame();
+  }
+
+  public startNextLevel(): void {
+    this.gameScene.startNextLevel();
+  }
+
+  public startIntro(): void {
+    this.gameScene.startIntro();
+  }
+
+  private init(): void {
+    const gameScene = this.gameScene = new GameScene(this.camera);
+    this.add(gameScene);
+
+    gameScene.emitter.on('onWinLevel', () => this.emitter.emit('onWinLevel'));
+    gameScene.emitter.on('onPressStart', () => this.emitter.emit('onPressStart'));
   }
 }

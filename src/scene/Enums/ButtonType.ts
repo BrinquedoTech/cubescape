@@ -3,4 +3,5 @@ export enum ButtonType {
   Right = 'RIGHT',
   Up = 'UP',
   Down = 'DOWN',
+  Start = 'START',
 }

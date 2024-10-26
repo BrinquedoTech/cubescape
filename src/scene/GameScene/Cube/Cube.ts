@@ -9,16 +9,22 @@ import CubeDebug from './CubeDebug';
 import mitt, { Emitter } from 'mitt';
 import { DefaultStartSideConfig } from '../../Configs/StartSideConfig';
 import CubeViewBuilder from './CubeViewBuilder';
+import TWEEN from 'three/addons/libs/tween.module.js';
+import CubeIntroRotationController from './CubeIntroRotationController';
 
 type Events = {
   endRotating: string;
   endRotatingOnRespawn: string;
+  winAnimationEnd: string;
+  startLevelAnimationEnd: string;
+  endIntroRotation: string;
 };
 
 export default class Cube extends THREE.Group {
   private levelConfig: ILevelConfig;
   private cubeViewBuilder: CubeViewBuilder;
   private cubeRotationController: CubeRotationController;
+  private cubeIntroRotationController: CubeIntroRotationController;
   private cubeDebug: CubeDebug;
   private state: CubeState = CubeState.Idle;
 
@@ -29,6 +35,7 @@ export default class Cube extends THREE.Group {
 
     this.initCubeViewBuilder();
     this.initCubeRotationController();
+    this.initCubeIntroRotationController();
     this.initCubeDebug();
 
     this.hide();
@@ -36,6 +43,7 @@ export default class Cube extends THREE.Group {
 
   public update(dt: number): void {
     this.cubeRotationController.update(dt);
+    this.cubeIntroRotationController.update(dt);
   }
 
   public rotateToDirection(rotateDirection: RotateDirection): void {
@@ -98,6 +106,37 @@ export default class Cube extends THREE.Group {
     this.cubeDebug.removeDebug();
   }
 
+  public winLevelAnimation(): void {
+    new TWEEN.Tween(this.scale)
+      .to({ x: 0, y: 0, z: 0 }, 500)
+      .easing(TWEEN.Easing.Back.In)
+      .start()
+      .onComplete(() => {
+        this.emitter.emit('winAnimationEnd');
+      });
+  }
+
+  public showStartLevelAnimation(): void {
+    this.visible = true;
+    this.scale.set(0, 0, 0);
+
+    new TWEEN.Tween(this.scale)
+      .to({ x: 1, y: 1, z: 1 }, 500)
+      .easing(TWEEN.Easing.Back.Out)
+      .start()
+      .onComplete(() => {
+        this.emitter.emit('startLevelAnimationEnd');
+      });
+  }
+
+  public startIntroAnimation(): void {
+    this.cubeIntroRotationController.start();
+  }
+
+  public stopIntroAnimation(): void {
+    this.cubeIntroRotationController.stop();
+  }
+
   private initCubeViewBuilder(): void {
     const cubeViewBuilder = this.cubeViewBuilder = new CubeViewBuilder();
     this.add(cubeViewBuilder);
@@ -114,6 +153,14 @@ export default class Cube extends THREE.Group {
     this.cubeRotationController.emitter.on('endRotatingOnRespawn', () => {
       this.state = CubeState.Idle;
       this.emitter.emit('endRotatingOnRespawn');
+    });
+  }
+
+  private initCubeIntroRotationController(): void {
+    this.cubeIntroRotationController = new CubeIntroRotationController(this);
+
+    this.cubeIntroRotationController.emitter.on('onStop', () => {
+      this.emitter.emit('endIntroRotation');
     });
   }
 

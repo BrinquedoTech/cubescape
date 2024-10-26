@@ -13,6 +13,9 @@ const ButtonConfig: { [key in ButtonType]: { keyCode: string[] } } = {
   [ButtonType.Down]: {
     keyCode: ['ArrowDown', 'KeyS'],
   },
+  [ButtonType.Start]: {
+    keyCode: ['Space', 'Enter'],
+  },
 }
 
 export { ButtonConfig };

@@ -23,6 +23,13 @@ import { CameraController } from './CameraController';
 import EnemiesController from './Enemies/EnemiesController';
 import { CellsWithBody } from '../Configs/Cells/CellsConfig';
 import { IWallSpikeConfig } from '../Interfaces/IEnemyConfig';
+import { GameState } from '../Enums/GameState';
+import mitt, { Emitter } from 'mitt';
+
+type Events = {
+  onWinLevel: string;
+  onPressStart: string;
+};
 
 export default class GameScene extends THREE.Group {
   private cube: Cube;
@@ -34,6 +41,8 @@ export default class GameScene extends THREE.Group {
   private enemiesController: EnemiesController;
 
   private camera: THREE.PerspectiveCamera;
+  private state: GameState = GameState.Paused;
+  private isIntroActive: boolean = false;
 
   private levelConfig: ILevelConfig;
   private levelIndex: number = 0;
@@ -43,6 +52,8 @@ export default class GameScene extends THREE.Group {
   private waitingForEndLevel: boolean = false;
   private nextMoveDirection: MoveDirection = null;
   private wallSpikeOnTargetPosition: string = '';
+
+  public emitter: Emitter<Events> = mitt<Events>();
 
   constructor(camera: THREE.PerspectiveCamera) {
     super();
@@ -59,11 +70,23 @@ export default class GameScene extends THREE.Group {
   }
 
   public startGame(): void {
-    const currentLevelType: LevelType = LevelsQueue[this.levelIndex];
-    this.startLevel(currentLevelType);
+    this.cube.stopIntroAnimation();
   }
 
-  public startLevel(levelType: LevelType): void {
+  public startIntro(): void {
+    this.isIntroActive = true;
+    const currentLevelType: LevelType = LevelsQueue[this.levelIndex];
+    this.createLevel(currentLevelType);
+
+    this.playerCharacter.hide();
+    this.cube.hide();
+
+    setTimeout(() => {
+      this.cube.showStartLevelAnimation();
+    }, 100);
+  }
+
+  public createLevel(levelType: LevelType): void {
     const levelConfig: ILevelConfig = this.levelConfig = LevelsConfig[levelType];
 
     this.mapController.init(levelConfig);
@@ -79,6 +102,10 @@ export default class GameScene extends THREE.Group {
 
   public turnCube(turnDirection: TurnDirection): void {
     this.cube.turn(turnDirection);
+  }
+
+  public startNextLevel(): void {
+    this.cube.winLevelAnimation();
   }
 
   private moveCharacter(moveDirection: MoveDirection): void {
@@ -229,18 +256,24 @@ export default class GameScene extends THREE.Group {
   }
 
   private onButtonPress(buttonType: ButtonType): void {
-    if (!this.playerCharacter.isActivated()) {
+    if (buttonType === ButtonType.Start) {
+      this.emitter.emit('onPressStart');
+    }
+
+    if (!this.playerCharacter.isActivated() || this.state === GameState.Paused) {
       return;
     }
-
+    
     const moveDirection: MoveDirection = MovementDirectionByButtonConfig[buttonType];
 
-    if ((this.cube.getState() === CubeState.Rotating || this.playerCharacter.getState() === PlayerCharacterState.Moving) && this.nextMoveDirection === null) {
-      this.nextMoveDirection = moveDirection;
-    }
-
-    if (this.cube.getState() === CubeState.Idle && this.playerCharacter.getState() === PlayerCharacterState.Idle) {
-      this.moveCharacter(moveDirection);
+    if (moveDirection) {
+      if ((this.cube.getState() === CubeState.Rotating || this.playerCharacter.getState() === PlayerCharacterState.Moving) && this.nextMoveDirection === null) {
+        this.nextMoveDirection = moveDirection;
+      }
+  
+      if (this.cube.getState() === CubeState.Idle && this.playerCharacter.getState() === PlayerCharacterState.Idle) {
+        this.moveCharacter(moveDirection);
+      }
     }
   }
 
@@ -249,6 +282,16 @@ export default class GameScene extends THREE.Group {
     this.playerCharacter.emitter.on('onDeathAnimationEnd', () => this.resetLevelOnDeath());
     this.cube.emitter.on('endRotating', () => this.onCubeRotatingEnd());
     this.cube.emitter.on('endRotatingOnRespawn', () => this.respawnPlayerCharacter());
+    this.cube.emitter.on('winAnimationEnd', () => this.onCubeWinLevelAnimationEnd());
+    this.cube.emitter.on('startLevelAnimationEnd', () => this.onCubeStartLevelAnimationEnd());
+    this.cube.emitter.on('endIntroRotation', () => this.endIntroRotation());
+  }
+
+  private endIntroRotation(): void {
+    this.isIntroActive = false;
+
+    this.state = GameState.Active;
+    this.playerCharacter.showAnimation();
   }
 
   private onPlayerCharacterMovingEnd(): void {
@@ -303,11 +346,30 @@ export default class GameScene extends THREE.Group {
   }
 
   private onLevelEnd(): void {
+    this.state = GameState.Paused;
+    this.playerCharacter.setActiveState(false);
+
+    this.playerCharacter.hideAnimation();
+
+    this.emitter.emit('onWinLevel');
+  }
+
+  private onCubeWinLevelAnimationEnd(): void {
     this.reset();
     this.removeLevel();
     this.hideLevel();
     
-    this.startNextLevel();
+    this.createNextLevel();
+  }
+
+  private onCubeStartLevelAnimationEnd(): void {
+    if (this.isIntroActive) {
+      this.cube.startIntroAnimation();
+      return;
+    }
+
+    this.state = GameState.Active;
+    this.playerCharacter.showAnimation();
   }
 
   private reset(): void {
@@ -332,12 +394,13 @@ export default class GameScene extends THREE.Group {
     this.cube.hide();
   }
 
-  private startNextLevel(): void {
+  private createNextLevel(): void {
     this.levelIndex++;
 
     if (this.levelIndex < LevelsQueue.length) {
       const currentLevelType: LevelType = LevelsQueue[this.levelIndex];
-      this.startLevel(currentLevelType);
+      this.createLevel(currentLevelType);
+      this.cube.showStartLevelAnimation();
     }
   }
 

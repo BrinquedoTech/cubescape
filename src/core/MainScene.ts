@@ -3,6 +3,7 @@ import { RotateDirection, TurnDirection } from "../scene/Enums/RotateDirection";
 import { ILibrariesData } from "../scene/Interfaces/ILibrariesData";
 import ThreeJSScene from "../scene/ThreeJSScene";
 import UI from "../UI/UI";
+import { ScreenType } from '../scene/Enums/UI/ScreenType';
 
 export default class MainScene {
   private data: ILibrariesData;
@@ -20,12 +21,18 @@ export default class MainScene {
   }
 
   afterAssetsLoad() {
-
     this.scene.add(this.scene3D);
+
+    this.startIntro();
   }
 
   update(dt: number) {
     this.scene3D.update(dt);
+  }
+
+  private startIntro() {
+    this.ui.showScreen(ScreenType.Intro);
+    this.scene3D.startIntro();
   }
 
   _init() {
@@ -50,6 +57,28 @@ export default class MainScene {
     this.ui.emitter.on('rotateClockwise', () => this.scene3D.turnCubeToDirection(TurnDirection.Clockwise));
     this.ui.emitter.on('rotateCounterClockwise', () => this.scene3D.turnCubeToDirection(TurnDirection.CounterClockwise));
 
+    this.ui.emitter.on('onStartClick', () => this.scene3D.startGame());
+    this.ui.emitter.on('onNextLevelClick', () => this.scene3D.startNextLevel());
+
+    this.scene3D.emitter.on('onWinLevel', () => {
+      this.ui.showScreen(ScreenType.LevelWin);
+      this.ui.hideScreen(ScreenType.Gameplay);
+    });
+
+    this.scene3D.emitter.on('onPressStart', () => {
+      if (this.ui.getActiveScreen() === ScreenType.Intro) {
+        this.ui.hideScreen(ScreenType.Intro);
+        this.ui.showScreen(ScreenType.Gameplay);
+        this.scene3D.startGame();
+      }
+
+      if (this.ui.getActiveScreen() === ScreenType.LevelWin) {
+        this.ui.hideScreen(ScreenType.LevelWin);
+        this.ui.showScreen(ScreenType.Gameplay);
+        this.scene3D.startNextLevel();
+      }
+    });
+
 
     // this._ui.on('onPointerMove', (msg, x, y) => this._scene3D.onPointerMove(x, y));
     // this._ui.on('onPointerMove', (msg, x, y) => this._scene3D.onPointerMove(x, y));
@@ -64,6 +93,5 @@ export default class MainScene {
 
   onResize() {
     this.ui.onResize();
-
   }
 }

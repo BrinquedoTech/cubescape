@@ -2,7 +2,8 @@
 const DebugConfig = {
   fpsMeter: true,
   rendererStats: true,
-  orbitControls: true,
+  orbitControls: false,
+  gui: false,
   gameplay: {
     grid: false,
     cubeSideName: true,

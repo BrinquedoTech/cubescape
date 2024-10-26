@@ -174,11 +174,31 @@ export default class PlayerCharacter extends THREE.Group {
       });
   }
 
+  public hideAnimation(): void {
+    new TWEEN.Tween(this.scale)
+      .to({ x: 0, y: 0, z: 0 }, 300)
+      .easing(TWEEN.Easing.Back.In)
+      .start()
+      .onComplete(() => {
+        this.hide();
+      });
+  }
+
+  public showAnimation(): void {
+    this.show();
+    this.scale.set(0, 0, 0);
+
+    new TWEEN.Tween(this.scale)
+      .to({ x: 1, y: 1, z: 1 }, 300)
+      .easing(TWEEN.Easing.Back.Out)
+      .start();
+  }
+
   public respawn(): void {
     this.reset();
     this.setStartPosition();
     this.show();
-    
+
     new TWEEN.Tween(this.scale)
       .to({ x: 1, y: 1, z: 1 }, 300)
       .easing(TWEEN.Easing.Back.Out)
@@ -217,6 +237,10 @@ export default class PlayerCharacter extends THREE.Group {
 
   public hide(): void {
     this.visible = false;
+  }
+
+  public setActiveState(isActive: boolean): void {
+    this.isActive = isActive;
   }
 
   public isActivated(): boolean {
@@ -344,7 +368,7 @@ export default class PlayerCharacter extends THREE.Group {
     const texture = Loader.assets['Ghost_BaseColor'];
     texture.flipY = false;
     texture.colorSpace = THREE.SRGBColorSpace;
-    
+
     const material = new THREE.MeshStandardMaterial({
       map: texture,
     });
@@ -353,7 +377,7 @@ export default class PlayerCharacter extends THREE.Group {
     normalMap.flipY = false;
     material.normalMap = normalMap;
 
-    const view = this.view =new THREE.Mesh(geometry, material);
+    const view = this.view = new THREE.Mesh(geometry, material);
     this.add(view);
 
     view.castShadow = true;

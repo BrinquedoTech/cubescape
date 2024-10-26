@@ -132,7 +132,7 @@ export default class CubeRotationController {
 
     this.applyRotationByDirection(this.rotationAngle);
     this.object.updateMatrixWorld();
-    
+
     this.onEndRotating();
   }
 
@@ -151,7 +151,7 @@ export default class CubeRotationController {
 
   public rotateToStartSide(): void {
     this.rotationType = CubeRotationType.ForRespawn;
-    
+
     if (this.currentSide !== this.initCubeSide) {
       this.waitingForRotationOnRespawn = true;
       this.rotateFromSideToSide(this.currentSide, this.initCubeSide);
@@ -177,11 +177,11 @@ export default class CubeRotationController {
 
     this.applyTurnByDirection(this.rotationAngle);
     this.object.updateMatrixWorld();
-    
+
     this.onEndRotating();
   }
 
-  public getCurrentSide(): CubeSide { 
+  public getCurrentSide(): CubeSide {
     return this.currentSide;
   }
 
@@ -233,7 +233,7 @@ export default class CubeRotationController {
       }
     }
   }
-  
+
   private onEndRotatingOnRespawn(): void {
     this.waitingForRotationOnRespawn = false;
     this.waitingForTurnOnRespawn = false;
@@ -292,13 +292,13 @@ export default class CubeRotationController {
 
     let activeSide: CubeSide = null;
     let smallestAngle: number = Infinity;
-  
+
     const forwardDirection = new THREE.Vector3(0, 0, 1);
-  
+
     for (const side in SideVectorConfig) {
       const sideVector: THREE.Vector3 = SideVectorConfig[side].clone().applyMatrix4(matrixWorld).normalize();
       const angle: number = sideVector.angleTo(forwardDirection);
-  
+
       if (angle < smallestAngle) {
         smallestAngle = angle;
         activeSide = side as CubeSide;
