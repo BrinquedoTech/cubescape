@@ -119,7 +119,7 @@ const MovementDirectionConfig: { [key in MoveDirection]: IMovementDirectionConfi
   },
 };
 
-const MovementDirectionByButtonConfig: { [key in ButtonType]: MoveDirection } = {
+const MovementDirectionByButtonConfig: { [key in ButtonType]?: MoveDirection } = {
   [ButtonType.Right]: MoveDirection.Right,
   [ButtonType.Left]: MoveDirection.Left,
   [ButtonType.Up]: MoveDirection.Up,
