@@ -1,12 +1,22 @@
 import * as THREE from 'three';
 import { CubeEdge } from '../../Enums/CubeEdge';
-import { IEdgeConfig, IEdgeBySideConfig } from '../../Interfaces/ICubeConfig';
+import { IEdgeConfig, IEdgeBySideConfig, IEdgeWallsRotation } from '../../Interfaces/ICubeConfig';
 import { CubeSide } from '../../Enums/CubeSide';
 import { CubeEdgeOnSidePositionType } from '../../Enums/CubeEdgeOnSide';
+import { ICellModelConfig, IGeometryRotationConfig } from '../../Interfaces/ICellConfig';
 
-const EdgeModelsConfig = {
+const EdgeModelsConfig: ICellModelConfig = {
   probabilities: [0.1, 0.1, 0.8],
   models: ['edge_01', 'edge_02', 'edge_01_1'],
+}
+
+const EdgeWallModelsConfig: ICellModelConfig = {
+  probabilities: [1],
+  models: ['edge_wall_01'],
+}
+
+const EdgeWallCellGeometryConfig: IGeometryRotationConfig = {
+  rotation: new THREE.Euler(0, 0, 0),
 }
 
 const EdgeDistanceConfig: THREE.Vector3[] = [
@@ -87,10 +97,44 @@ const EdgeBySideConfig: IEdgeBySideConfig = {
   },
 }
 
+const CubeSideByEdge: { [key in CubeEdge]: CubeSide } = {
+  [CubeEdge.FrontTop]: CubeSide.Front,
+  [CubeEdge.FrontDown]: CubeSide.Front,
+  [CubeEdge.FrontLeft]: CubeSide.Front,
+  [CubeEdge.FrontRight]: CubeSide.Front,
+  [CubeEdge.TopLeft]: CubeSide.Top,
+  [CubeEdge.TopRight]: CubeSide.Top,
+  [CubeEdge.DownLeft]: CubeSide.Bottom,
+  [CubeEdge.DownRight]: CubeSide.Bottom,
+  [CubeEdge.BackTop]: CubeSide.Back,
+  [CubeEdge.BackDown]: CubeSide.Back,
+  [CubeEdge.BackLeft]: CubeSide.Back,
+  [CubeEdge.BackRight]: CubeSide.Back,
+}
+
+const EdgeWallsRotation: { [key in CubeEdge]: IEdgeWallsRotation } = {
+  [CubeEdge.FrontTop]: { axis: new THREE.Vector3(1, 0, 0), leftRotation: -Math.PI * 0.5, rightRotation: 0 },
+  [CubeEdge.FrontDown]: { axis: new THREE.Vector3(1, 0, 0), leftRotation: Math.PI * 0.5, rightRotation: 0 },
+  [CubeEdge.FrontLeft]: { axis: new THREE.Vector3(0, 1, 0), leftRotation: -Math.PI * 0.5, rightRotation: 0 },
+  [CubeEdge.FrontRight]: { axis: new THREE.Vector3(0, 1, 0), leftRotation: Math.PI * 0.5, rightRotation: 0 },
+  [CubeEdge.TopLeft]: { axis: new THREE.Vector3(0, 0, 1), leftRotation: Math.PI * 0.5, rightRotation: 0 },
+  [CubeEdge.TopRight]: { axis: new THREE.Vector3(0, 0, 1), leftRotation: -Math.PI * 0.5, rightRotation: 0 },
+  [CubeEdge.DownLeft]: { axis: new THREE.Vector3(0, 0, 1), leftRotation: -Math.PI * 0.5, rightRotation: 0 },
+  [CubeEdge.DownRight]: { axis: new THREE.Vector3(0, 0, 1), leftRotation: Math.PI * 0.5, rightRotation: 0 },
+  [CubeEdge.BackTop]: { axis: new THREE.Vector3(1, 0, 0), leftRotation: Math.PI * 0.5, rightRotation: 0 },
+  [CubeEdge.BackDown]: { axis: new THREE.Vector3(1, 0, 0), leftRotation: -Math.PI * 0.5, rightRotation: 0 },
+  [CubeEdge.BackLeft]: { axis: new THREE.Vector3(0, 1, 0), leftRotation: Math.PI * 0.5, rightRotation: 0 },
+  [CubeEdge.BackRight]: { axis: new THREE.Vector3(0, 1, 0), leftRotation: Math.PI * 0.5, rightRotation: 0 },
+}
+
 export {
   EdgeDistanceConfig,
   EdgeRotationConfig,
   EdgesBySideArrayConfig,
   EdgeBySideConfig,
   EdgeModelsConfig,
+  CubeSideByEdge,
+  EdgeWallsRotation,
+  EdgeWallModelsConfig,
+  EdgeWallCellGeometryConfig,
 };

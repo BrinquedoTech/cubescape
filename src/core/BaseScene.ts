@@ -131,7 +131,7 @@ export default class BaseScene {
   }
 
   _initCamera() {
-    const camera = this.camera = new THREE.PerspectiveCamera(50, this.windowSizes.width / this.windowSizes.height, 2, 70);
+    const camera = this.camera = new THREE.PerspectiveCamera(50, this.windowSizes.width / this.windowSizes.height, 1, 70);
     this.scene.add(camera);
 
     camera.position.set(0, 0, 20);
@@ -158,7 +158,7 @@ export default class BaseScene {
     directionalLight.shadow.camera.top = 8;
     directionalLight.shadow.camera.bottom = -8;
 
-    directionalLight.shadow.bias = -0.001;
+    directionalLight.shadow.bias = -0.01;
 
     // const directionalLightCameraHelper = new THREE.CameraHelper(directionalLight.shadow.camera);
     // this.scene.add(directionalLightCameraHelper);

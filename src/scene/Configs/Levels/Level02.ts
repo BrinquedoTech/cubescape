@@ -70,17 +70,17 @@ const Level02: ILevelConfig = {
       ],
     },
     edges: {
-      [CubeEdge.FrontTop]: ['W', 'W', 'W', 'W', ' '], // sizeX
+      [CubeEdge.FrontTop]: ['W', 'W', ' ', 'W', ' '], // sizeX
       [CubeEdge.FrontDown]: [' ', 'W', 'W', 'W', 'W'], // sizeX
       [CubeEdge.FrontLeft]: ['W', 'W', 'W', 'W', 'W', ' '], // sizeY
       [CubeEdge.FrontRight]: [' ', 'W', 'W', 'W', 'W', 'W'], // sizeY
       [CubeEdge.TopLeft]: ['W', 'W', 'W', 'W', 'W', 'W', ' '], // sizeZ
       [CubeEdge.TopRight]: ['W', 'W', 'W', 'W', 'W', 'W', ' '], // sizeZ
-      [CubeEdge.DownLeft]: ['W', 'W', 'W', 'W', 'W', 'W', 'W'], // sizeZ
-      [CubeEdge.DownRight]: ['W', 'W', 'W', 'W', 'W', 'W', 'W'], // sizeZ
+      [CubeEdge.DownLeft]: ['W', 'W', ' ', 'W', 'W', 'W', 'W'], // sizeZ
+      [CubeEdge.DownRight]: ['W', 'W', 'W', ' ', 'W', 'W', 'W'], // sizeZ
       [CubeEdge.BackTop]: [' ', 'W', 'W', 'W', 'W'], // sizeX
       [CubeEdge.BackDown]: ['W', 'W', 'W', 'W', ' '], // sizeX
-      [CubeEdge.BackLeft]: [' ', 'W', 'W', 'W', 'W', 'W'], // sizeY
+      [CubeEdge.BackLeft]: [' ', 'W', 'W', ' ', 'W', 'W'], // sizeY
       [CubeEdge.BackRight]: ['W', 'W', 'W', 'W', 'W', ' '], // sizeY
     },
   },

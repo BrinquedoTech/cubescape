@@ -29,6 +29,7 @@ const models = [
   'edge_01_2.glb',
   'edge_02.glb',
   'edge_03.glb',
+  'edge_wall_01.glb',
 
   'ghost.glb',
 ];

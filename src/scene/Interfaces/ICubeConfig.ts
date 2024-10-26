@@ -55,3 +55,9 @@ export interface ICubePosition {
 export interface ICubePositionWithID extends ICubePosition {
   id: number;
 }
+
+export interface IEdgeWallsRotation {
+  axis: THREE.Vector3;
+  leftRotation: number;
+  rightRotation: number;
+}
