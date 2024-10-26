@@ -347,8 +347,6 @@ export default class PlayerCharacter extends THREE.Group {
     
     const material = new THREE.MeshStandardMaterial({
       map: texture,
-      transparent: true,
-      opacity: 0.8,
     });
 
     const normalMap = Loader.assets['Ghost_Normal'];

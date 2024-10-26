@@ -25,6 +25,10 @@ export default class CubeViewBuilder extends THREE.Group {
 
   private corners: THREE.Mesh[] = [];
   private edgeCellsInstanced: THREE.InstancedMesh[] = [];
+  private edgeWallCellsInstanced: THREE.InstancedMesh[] = [];
+  private floorCellsInstanced: THREE.InstancedMesh[] = [];
+  private roofCellsInstanced: THREE.InstancedMesh[] = [];
+  private wallsCellsInstanced: THREE.InstancedMesh[] = [];
 
   constructor() {
     super();
@@ -44,15 +48,19 @@ export default class CubeViewBuilder extends THREE.Group {
   }
 
   public removeView(): void {
-    // TODO
     ThreeJSHelper.killObjects(this.corners, this);
-
-    for (let i = 0; i < this.edgeCellsInstanced.length; i++) {
-      ThreeJSHelper.killInstancedMesh(this.edgeCellsInstanced[i], this);
-    }
+    ThreeJSHelper.killInstancedMesh(this.edgeCellsInstanced, this);
+    ThreeJSHelper.killInstancedMesh(this.edgeWallCellsInstanced, this);
+    ThreeJSHelper.killInstancedMesh(this.floorCellsInstanced, this);
+    ThreeJSHelper.killInstancedMesh(this.roofCellsInstanced, this);
+    ThreeJSHelper.killInstancedMesh(this.wallsCellsInstanced, this);
 
     this.corners = [];
     this.edgeCellsInstanced = [];
+    this.edgeWallCellsInstanced = [];
+    this.floorCellsInstanced = [];
+    this.roofCellsInstanced = [];
+    this.wallsCellsInstanced = [];
   }
 
   private createLevelMap(levelConfig: ILevelConfig): void {
@@ -193,7 +201,7 @@ export default class CubeViewBuilder extends THREE.Group {
 
             edgeCell.scale.set(GameplayConfig.grid.scale, GameplayConfig.grid.scale, GameplayConfig.grid.scale);
   
-            edgeWallCells.push(edgeCell);            
+            edgeWallCells.push(edgeCell);    
           }
         }
 
@@ -232,6 +240,8 @@ export default class CubeViewBuilder extends THREE.Group {
 
       const edgeWallCellsInstanced = InstancesHelper.createStaticInstancedMesh(edgeWallCells, material, geometry);
       this.add(edgeWallCellsInstanced);
+
+      this.edgeWallCellsInstanced.push(edgeWallCellsInstanced);
 
       edgeWallCellsInstanced.receiveShadow = true;
       edgeWallCellsInstanced.castShadow = true;
@@ -276,6 +286,8 @@ export default class CubeViewBuilder extends THREE.Group {
       const floorCellsInstanced = InstancesHelper.createStaticInstancedMesh(floorCells, material, geometry);
       this.add(floorCellsInstanced);
 
+      this.floorCellsInstanced.push(floorCellsInstanced);
+
       floorCellsInstanced.receiveShadow = true;
     }
   }
@@ -317,6 +329,8 @@ export default class CubeViewBuilder extends THREE.Group {
 
       const roofCellsInstanced = InstancesHelper.createStaticInstancedMesh(roofCells, material, geometry);
       this.add(roofCellsInstanced);
+
+      this.roofCellsInstanced.push(roofCellsInstanced);
 
       roofCellsInstanced.receiveShadow = true;
       roofCellsInstanced.castShadow = true;
@@ -400,6 +414,8 @@ export default class CubeViewBuilder extends THREE.Group {
 
       const wallCellsInstanced = InstancesHelper.createStaticInstancedMesh(wallCells, material, geometry);
       this.add(wallCellsInstanced);
+
+      this.wallsCellsInstanced.push(wallCellsInstanced);
 
       wallCellsInstanced.receiveShadow = true;
       wallCellsInstanced.castShadow = true;

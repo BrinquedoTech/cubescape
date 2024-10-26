@@ -40,12 +40,22 @@ export default class ThreeJSHelper {
     material.dispose();
   }
 
-  public static killInstancedMesh(instancedMesh: THREE.InstancedMesh, parent?: THREE.Object3D): void {
-    if (parent) {
-      parent.remove(instancedMesh);
-    }
+  public static killInstancedMesh(instancedMesh: THREE.InstancedMesh | THREE.InstancedMesh[], parent?: THREE.Object3D): void {
+    if (Array.isArray(instancedMesh)) {
+      instancedMesh.forEach((mesh) => {
+        if (parent) {
+          parent.remove(mesh);
+        }
 
-    this.disposeInstancedMesh(instancedMesh);
+        this.disposeInstancedMesh(mesh);
+      });
+    } else {
+      if (parent) {
+        parent.remove(instancedMesh);
+      }
+
+      this.disposeInstancedMesh(instancedMesh);
+    }
   }
 
   public static setMaterialToChildren(object: THREE.Object3D, material: THREE.Material): void {
