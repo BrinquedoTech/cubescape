@@ -24,6 +24,7 @@ type Events = {
 
 export default class PlayerCharacter extends THREE.Group {
   private view: THREE.Mesh;
+  private viewGroup: THREE.Group;
   private levelConfig: ILevelConfig;
   private activeSide: CubeSide;
   private gridPosition: THREE.Vector2 = new THREE.Vector2();
@@ -124,11 +125,11 @@ export default class PlayerCharacter extends THREE.Group {
     const finalRotationAngle: number = CellDirectionConfig[direction].rotation.z;
 
     if (instant) {
-      this.view.rotation.z = finalRotationAngle;
+      this.viewGroup.rotation.z = finalRotationAngle;
       return;
     }
 
-    const currentRotation: number = this.view.rotation.z;
+    const currentRotation: number = this.viewGroup.rotation.z;
     let deltaRotation: number = finalRotationAngle - currentRotation;
 
     if (deltaRotation > Math.PI) {
@@ -137,12 +138,12 @@ export default class PlayerCharacter extends THREE.Group {
       deltaRotation += 2 * Math.PI;
     }
 
-    new TWEEN.Tween(this.view.rotation)
+    new TWEEN.Tween(this.viewGroup.rotation)
       .to({ z: currentRotation + deltaRotation }, PlayerCharacterGeneralConfig.rotateDuration)
       .easing(TWEEN.Easing.Sinusoidal.Out)
       .start()
       .onComplete(() => {
-        this.view.rotation.z = finalRotationAngle;
+        this.viewGroup.rotation.z = finalRotationAngle;
         this.idleStartRotation = finalRotationAngle;
         this.enableIdleRotationAnimation = true;
       });
@@ -281,18 +282,18 @@ export default class PlayerCharacter extends THREE.Group {
     this.idleRotationElapsedTime += dt;
     const idleAnimation = PlayerCharacterGeneralConfig.idleAnimation;
 
-    this.view.position.z = Math.sin(this.idleElapsedTime * idleAnimation.bounceFrequency) * idleAnimation.bounceAmplitude * this.idlePositionSign;
+    this.viewGroup.position.z = Math.sin(this.idleElapsedTime * idleAnimation.bounceFrequency) * idleAnimation.bounceAmplitude * this.idlePositionSign;
 
     if (this.enableIdleRotationAnimation) {
-      this.view.rotation.z = this.idleStartRotation + Math.sin(this.idleRotationElapsedTime * idleAnimation.rotationFrequency) * idleAnimation.rotationAmplitude * this.idleRotationSign;
+      this.viewGroup.rotation.z = this.idleStartRotation + Math.sin(this.idleRotationElapsedTime * idleAnimation.rotationFrequency) * idleAnimation.rotationAmplitude * this.idleRotationSign;
     }
   }
 
   private resetViewZPosition(): void {
-    if (this.view.position.z !== 0 && Math.abs(this.view.position.z) > 0.01) {
-      this.view.position.z += -this.view.position.z * 0.25;
+    if (this.viewGroup.position.z !== 0 && Math.abs(this.view.position.z) > 0.01) {
+      this.viewGroup.position.z += -this.view.position.z * 0.25;
     } else {
-      this.view.position.z = 0;
+      this.viewGroup.position.z = 0;
     }
   }
 
@@ -300,7 +301,7 @@ export default class PlayerCharacter extends THREE.Group {
     this.state = state;
 
     if (state === PlayerCharacterState.Idle) {
-      this.idleStartRotation = this.view.rotation.z;
+      this.idleStartRotation = this.viewGroup.rotation.z;
       this.idlePositionSign = Math.random() > 0.5 ? 1 : -1;
       this.idleRotationSign = Math.random() > 0.5 ? 1 : -1;
     }
@@ -311,7 +312,7 @@ export default class PlayerCharacter extends THREE.Group {
     const tiltAxisConfig = TiltAxisConfig[this.currentMoveDirection];
     const angleRadians: number = tiltConfig.angle * Math.PI / 180;
 
-    new TWEEN.Tween(this.view.rotation)
+    new TWEEN.Tween(this.viewGroup.rotation)
       .to({ [tiltAxisConfig.axis]: angleRadians * tiltAxisConfig.sign }, tiltConfig.startDuration)
       .easing(TWEEN.Easing.Sinusoidal.Out)
       .start();
@@ -320,7 +321,7 @@ export default class PlayerCharacter extends THREE.Group {
   private stopTilt(): void {
     const tiltAxisConfig = TiltAxisConfig[this.currentMoveDirection];
 
-    new TWEEN.Tween(this.view.rotation)
+    new TWEEN.Tween(this.viewGroup.rotation)
       .to({ [tiltAxisConfig.axis]: 0 }, PlayerCharacterGeneralConfig.tilt.endDuration)
       .easing(TWEEN.Easing.Sinusoidal.Out)
       .start();
@@ -362,6 +363,9 @@ export default class PlayerCharacter extends THREE.Group {
   }
 
   private initView(): void {
+    this.viewGroup = new THREE.Group();
+    this.add(this.viewGroup);
+
     const geometry: THREE.BufferGeometry = ThreeJSHelper.getGeometryFromModel('ghost');
     ThreeJSHelper.setGeometryRotation(geometry, new THREE.Euler(Math.PI * 0.5, Math.PI, 0));
 
@@ -371,6 +375,9 @@ export default class PlayerCharacter extends THREE.Group {
 
     const material = new THREE.MeshStandardMaterial({
       map: texture,
+      emissive: 0xffffff,
+      emissiveMap: texture,
+      emissiveIntensity: 1.5,
     });
 
     const normalMap = Loader.assets['Ghost_Normal'];
@@ -378,11 +385,23 @@ export default class PlayerCharacter extends THREE.Group {
     material.normalMap = normalMap;
 
     const view = this.view = new THREE.Mesh(geometry, material);
-    this.add(view);
+    this.viewGroup.add(view);
 
-    view.castShadow = true;
-    view.receiveShadow = true;
+    // view.castShadow = true;
+    // view.receiveShadow = true;
 
     view.scale.set(GameplayConfig.grid.scale, GameplayConfig.grid.scale, GameplayConfig.grid.scale);
+
+    const light = new THREE.PointLight(0xffffff, 5, 10, 2);
+    light.position.set(0, 0, 0.3);
+    this.viewGroup.add(light);
+
+    light.castShadow = true;
+    light.shadow.mapSize.width = 128;
+    light.shadow.mapSize.height = 128;
+    light.shadow.camera.near = 0.1;
+    light.shadow.camera.far = 5;
+
+    light.shadow.bias = -0.001;
   }
 }

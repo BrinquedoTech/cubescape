@@ -4,6 +4,7 @@ import { ILibrariesData } from "../scene/Interfaces/ILibrariesData";
 import ThreeJSScene from "../scene/ThreeJSScene";
 import UI from "../UI/UI";
 import { ScreenType } from '../scene/Enums/UI/ScreenType';
+import DebugConfig from '../scene/Configs/Main/DebugConfig';
 
 export default class MainScene {
   private data: ILibrariesData;
@@ -23,7 +24,11 @@ export default class MainScene {
   afterAssetsLoad() {
     this.scene.add(this.scene3D);
 
-    this.startIntro();
+    if (DebugConfig.gameplay.disableIntro) {
+      this.scene3D.startGameWithoutIntro();
+    } else {
+      this.startIntro();
+    }
   }
 
   update(dt: number) {

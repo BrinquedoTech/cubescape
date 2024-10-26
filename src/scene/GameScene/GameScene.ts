@@ -17,7 +17,7 @@ import { LevelType } from '../Enums/LevelType';
 import { ICubeSideAxisConfig } from '../Interfaces/ICubeConfig';
 import { CubeSideAxisConfig } from '../Configs/SideConfig';
 import { CellType } from '../Enums/CellType';
-import EndLevelObject from './EndLevelObject/EndLevelObject';
+import FinishLevelObject from './FinishLevelObject/FinishLevelObject';
 import MapController from './MapController';
 import { CameraController } from './CameraController';
 import EnemiesController from './Enemies/EnemiesController';
@@ -25,6 +25,7 @@ import { CellsWithBody } from '../Configs/Cells/CellsConfig';
 import { IWallSpikeConfig } from '../Interfaces/IEnemyConfig';
 import { GameState } from '../Enums/GameState';
 import mitt, { Emitter } from 'mitt';
+import { LightController } from './LightController';
 
 type Events = {
   onWinLevel: string;
@@ -34,7 +35,7 @@ type Events = {
 export default class GameScene extends THREE.Group {
   private cube: Cube;
   private playerCharacter: PlayerCharacter;
-  private endGameObject: EndLevelObject;
+  private finishLevelObject: FinishLevelObject;
   private keyboardController: KeyboardController;
   private mapController: MapController;
   private cameraController: CameraController;
@@ -67,6 +68,7 @@ export default class GameScene extends THREE.Group {
     this.cube.update(dt);
     this.playerCharacter.update(dt);
     this.cameraController.update(dt);
+    this.finishLevelObject.update(dt);
   }
 
   public startGame(): void {
@@ -86,13 +88,21 @@ export default class GameScene extends THREE.Group {
     }, 100);
   }
 
+  public startGameWithoutIntro(): void {
+    const currentLevelType: LevelType = LevelsQueue[this.levelIndex];
+    this.createLevel(currentLevelType);
+
+    this.state = GameState.Active;
+    this.playerCharacter.showAnimation();
+  }
+
   public createLevel(levelType: LevelType): void {
     const levelConfig: ILevelConfig = this.levelConfig = LevelsConfig[levelType];
 
     this.mapController.init(levelConfig);
     this.cube.init(levelConfig);
     this.playerCharacter.init(levelConfig);
-    this.endGameObject.init(levelConfig);
+    this.finishLevelObject.init(levelConfig);
     this.enemiesController.init(levelConfig);
   }
 
@@ -208,8 +218,9 @@ export default class GameScene extends THREE.Group {
     
     this.initCube();
     this.initPlayerCharacter();
-    this.initEndLevelObject();
+    this.initFinishLevelObject();
     this.initEnemiesController();
+    this.initLightController();
     
     this.initKeyboardController();
     this.initCameraController();
@@ -227,9 +238,9 @@ export default class GameScene extends THREE.Group {
     this.cube.add(playerCharacter);
   }
 
-  private initEndLevelObject(): void {
-    const endGameObject = this.endGameObject = new EndLevelObject();
-    this.cube.add(endGameObject);
+  private initFinishLevelObject(): void {
+    const finishGameObject = this.finishLevelObject = new FinishLevelObject();
+    this.cube.add(finishGameObject);
   }
 
   private initMapController(): void {
@@ -239,6 +250,13 @@ export default class GameScene extends THREE.Group {
   private initEnemiesController(): void {
     const enemiesController = this.enemiesController = new EnemiesController();
     this.cube.add(enemiesController);
+  }
+
+  private initLightController(): void {
+    const lightController = new LightController();
+    this.add(lightController);
+
+    lightController.addPlayerCharacter(this.playerCharacter);
   }
 
   private initCameraController(): void {
@@ -390,7 +408,7 @@ export default class GameScene extends THREE.Group {
 
   private hideLevel(): void {
     this.playerCharacter.hide();
-    this.endGameObject.hide();
+    this.finishLevelObject.hide();
     this.cube.hide();
   }
 

@@ -4,18 +4,30 @@ import CubeHelper from '../../Helpers/CubeHelper';
 import { ILevelConfig } from '../../Interfaces/ILevelConfig';
 import { ICubePosition } from '../../Interfaces/ICubeConfig';
 import { CellType } from '../../Enums/CellType';
-import { Text } from 'troika-three-text';
 import { Direction } from '../../Enums/Direction';
+import Materials from '../../../core/Materials';
+import { MaterialType } from '../../Enums/MaterialType';
+import ThreeJSHelper from '../../Helpers/ThreeJSHelper';
 
-export default class EndLevelObject extends THREE.Group {
+export default class FinishLevelObject extends THREE.Group {
   private levelConfig: ILevelConfig;
   private cubeSide: CubeSide;
+  private view: THREE.Mesh;
 
   constructor() {
     super();
 
     this.initView();
     this.hide();
+  }
+
+  public update(dt: number): void {
+    this.view.rotation.z += dt;
+    this.view.rotation.x += dt;
+    this.view.rotation.y += dt;
+
+
+    this.view.position.z = Math.sin(this.view.rotation.z * 2) * 0.1;
   }
 
   public init(levelConfig: ILevelConfig): void {
@@ -46,24 +58,26 @@ export default class EndLevelObject extends THREE.Group {
   }
 
   private initView(): void {
-    const geometry = new THREE.BoxGeometry(0.9, 0.9, 0.9);
-    const material = new THREE.MeshBasicMaterial({
-      color: 0x0000aa,
-      opacity: 0.5,
-      transparent: true,
-    });
+    const material: THREE.Material = Materials.getInstance().materials[MaterialType.Main];
 
-    const mesh = new THREE.Mesh(geometry, material);
-    this.add(mesh);
+    const modelName: string = 'finish-object';
+    const geometry: THREE.BufferGeometry = ThreeJSHelper.getGeometryFromModel(modelName);
 
-    const finishText = new Text();
-    finishText.text = 'Finish';
-    finishText.fontSize = 0.28;
-    finishText.anchorX = 'center';
-    finishText.anchorY = 'middle';
-    finishText.color = 0xffffff;
-    this.add(finishText);
+    const view: THREE.Mesh = this.view = new THREE.Mesh(geometry, material);
+    this.add(view);
 
-    finishText.position.set(0, 0, 0.45 + 0.01);
+    view.castShadow = true;
+
+    const light = new THREE.PointLight(0xff0000, 2, 100);
+    light.position.set(0, 0, 0);
+    this.add(light);
+
+    light.castShadow = true;
+    light.shadow.mapSize.width = 128;
+    light.shadow.mapSize.height = 128;
+    light.shadow.camera.near = 0.1;
+    light.shadow.camera.far = 3;
+
+    light.shadow.bias = -0.0001;
   }
 }

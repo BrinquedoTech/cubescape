@@ -64,6 +64,10 @@ export default class ThreeJSScene extends THREE.Group {
     this.gameScene.startIntro();
   }
 
+  public startGameWithoutIntro(): void {
+    this.gameScene.startGameWithoutIntro();
+  }
+
   private init(): void {
     const gameScene = this.gameScene = new GameScene(this.camera);
     this.add(gameScene);

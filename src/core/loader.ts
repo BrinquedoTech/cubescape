@@ -32,6 +32,8 @@ const models = [
   'edge_wall_01.glb',
 
   'ghost.glb',
+
+  'finish-object.glb',
 ];
 
 const pixiAssets = [
