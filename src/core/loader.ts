@@ -19,6 +19,7 @@ const models = [
   'wall_02.glb',
   'wall_03.glb',
   'wall_04.glb',
+  'wall_05.glb',
   'roof_01.glb',
   'roof_02.glb',
   'roof_03.glb',

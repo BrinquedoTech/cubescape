@@ -390,7 +390,8 @@ export default class PlayerCharacter extends THREE.Group {
     view.castShadow = true;
     view.receiveShadow = true;
 
-    view.scale.set(GameplayConfig.grid.scale, GameplayConfig.grid.scale, GameplayConfig.grid.scale);
+    const viewScale: number = PlayerCharacterGeneralConfig.scale;
+    view.scale.set(GameplayConfig.grid.scale * viewScale, GameplayConfig.grid.scale * viewScale, GameplayConfig.grid.scale * viewScale);
 
     // const light = new THREE.PointLight(0xffffff, 5, 10, 2);
     // light.position.set(0, 0, 0.3);

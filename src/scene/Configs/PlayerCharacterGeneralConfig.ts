@@ -1,5 +1,6 @@
 const PlayerCharacterGeneralConfig = {
   movingSpeed: 23,
+  scale: 0.9,
   tilt: {
     angle: 50,
     startDuration: 100,
@@ -8,7 +9,7 @@ const PlayerCharacterGeneralConfig = {
   rotateDuration: 100,
   idleAnimation: {
     bounceFrequency: 2,
-    bounceAmplitude: 0.1,
+    bounceAmplitude: 0.07,
     rotationFrequency: 1,
     rotationAmplitude: 0.2,
   },

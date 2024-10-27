@@ -2,8 +2,8 @@ import * as THREE from 'three';
 import { ICellModelConfig, IGeometryRotationConfig } from '../../Interfaces/ICellConfig';
 
 const WallModelsConfig: ICellModelConfig = {
-  probabilities: [0.9, 0.04, 0.04, 0.03],
-  models: ['wall_01', 'wall_02', 'wall_03', 'wall_04'],
+  probabilities: [0.9, 0.025, 0.025, 0.025, 0.025],
+  models: ['wall_01', 'wall_02', 'wall_03', 'wall_04', 'wall_05'],
 }
 
 const WallCellGeometryConfig: IGeometryRotationConfig = {
