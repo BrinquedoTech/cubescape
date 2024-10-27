@@ -46,6 +46,13 @@ export default class InstancesHelper {
     instanceMesh.instanceMatrix.needsUpdate = true;
   }
 
+  public static setScaleToInstance(instanceMesh: THREE.InstancedMesh, instanceId: number, scale: THREE.Vector3): void {
+    const transform = InstancesHelper.getTransformFromInstance(instanceMesh, instanceId);
+    transform.scale.copy(scale);
+
+    InstancesHelper.setTransformToInstance(instanceMesh, instanceId, transform);
+  }
+
   public static addLocalPositionToInstanceBySide(instanceMesh: THREE.InstancedMesh, instanceId: number, side: CubeSide, position: THREE.Vector3): void {
     const cubeSideAxisConfig: ICubeSideAxisConfig = CubeSideAxisConfig[side];
 

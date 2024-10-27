@@ -26,6 +26,7 @@ import { IWallSpikeConfig } from '../Interfaces/IEnemyConfig';
 import { GameState } from '../Enums/GameState';
 import mitt, { Emitter } from 'mitt';
 import { LightController } from './LightController';
+import Coins from './Coins/Coins';
 
 type Events = {
   onWinLevel: string;
@@ -40,6 +41,7 @@ export default class GameScene extends THREE.Group {
   private mapController: MapController;
   private cameraController: CameraController;
   private enemiesController: EnemiesController;
+  private coins: Coins;
 
   private camera: THREE.PerspectiveCamera;
   private state: GameState = GameState.Paused;
@@ -69,6 +71,7 @@ export default class GameScene extends THREE.Group {
     this.playerCharacter.update(dt);
     this.cameraController.update(dt);
     this.finishLevelObject.update(dt);
+    this.coins.update(dt);
   }
 
   public startGame(): void {
@@ -104,6 +107,7 @@ export default class GameScene extends THREE.Group {
     this.playerCharacter.init(levelConfig);
     this.finishLevelObject.init(levelConfig);
     this.enemiesController.init(levelConfig);
+    this.coins.init(levelConfig);
   }
 
   public rotateCube(rotateDirection: RotateDirection): void {
@@ -221,6 +225,7 @@ export default class GameScene extends THREE.Group {
     this.initFinishLevelObject();
     this.initEnemiesController();
     this.initLightController();
+    this.initCoinsController();
     
     this.initKeyboardController();
     this.initCameraController();
@@ -257,6 +262,11 @@ export default class GameScene extends THREE.Group {
     this.add(lightController);
 
     lightController.addPlayerCharacter(this.playerCharacter);
+  }
+
+  private initCoinsController(): void {
+    const coins = this.coins = new Coins();
+    this.cube.add(coins);
   }
 
   private initCameraController(): void {
@@ -404,6 +414,7 @@ export default class GameScene extends THREE.Group {
     this.cube.reset();
     this.cube.removeCube();
     this.enemiesController.removeEnemies();
+    this.coins.removeCoins();
   }
 
   private hideLevel(): void {

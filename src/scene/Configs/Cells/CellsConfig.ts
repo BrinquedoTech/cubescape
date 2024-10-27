@@ -19,6 +19,9 @@ const CellConfig = {
   [CellType.FloorSpike]: {
     symbols: ['I'],
   },
+  [CellType.Coin]: {
+    symbols: ['C', 'CC'],
+  },
 }
 
 const CellsForFinalMap: CellType[] = [

@@ -43,6 +43,8 @@ const models = [
 
   'floor_spikes.glb',
   'floor_spikes_base.glb',
+
+  'coin.glb',
 ];
 
 const pixiAssets = [

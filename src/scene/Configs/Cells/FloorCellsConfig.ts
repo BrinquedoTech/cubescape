@@ -11,6 +11,7 @@ const FloorCellTypes: CellType[] = [
   CellType.Empty,
   CellType.Start,
   CellType.Finish,
+  CellType.Coin,
 ]
 
 const FloorCellsGeometryConfig: IGeometryRotationConfig = {
