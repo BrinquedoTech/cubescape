@@ -7,8 +7,8 @@ const DebugConfig = {
   gameplay: {
     disableIntro: true,
     grid: false,
-    cubeSideName: false,
-    cubeRotationName: false,
+    cubeSideName: true,
+    cubeRotationName: true,
     gridCoordinates: false,
     cubeRotationButtons: false,
   }

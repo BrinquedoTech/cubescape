@@ -86,12 +86,15 @@ export default class ThreeJSHelper {
   
     const totalItems: number = objects.length;
     let currentIndex: number = 0;
+    let remainingItems: number = totalItems;
   
-    return probabilities.map(probability => {
-      const numberOfItems: number = Math.round(probability * totalItems);
+    return probabilities.map((probability, index) => {
+      const isLast = index === probabilities.length - 1;
+      const numberOfItems: number = isLast ? remainingItems : Math.round(probability * totalItems);
       
       const split: THREE.Object3D[] = shuffledArray.slice(currentIndex, currentIndex + numberOfItems);
       currentIndex += numberOfItems;
+      remainingItems -= numberOfItems;
   
       return split;
     });

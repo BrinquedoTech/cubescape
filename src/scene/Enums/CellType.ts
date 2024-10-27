@@ -4,4 +4,5 @@ export enum CellType {
   Start = 'START',
   Finish = 'FINISH',
   WallSpike = 'WALL_SPIKE',
+  FloorSpike = 'FLOOR_SPIKE',
 }

@@ -1,7 +1,7 @@
 import * as THREE from 'three';
 import { WallSpikeType } from '../../Enums/WallSpikeType';
 import { Direction } from '../../Enums/Direction';
-import { IWallSpikesGeneralConfig, IWallSpikesTypesConfig as ISpikeTypeConfig } from '../../Interfaces/ISpikesConfig';
+import { IWallSpikesGeneralConfig, IWallSpikesTypesConfig as ISpikeTypeConfig } from '../../Interfaces/IWallSpikesConfig';
 
 const WallSpikesGeneralConfig: IWallSpikesGeneralConfig = {
   modelStartRotation: new THREE.Euler(Math.PI * 0.5, Math.PI * 0.5, 0),

@@ -2,6 +2,7 @@ import * as THREE from 'three';
 import { CubeEdge } from "../../Enums/CubeEdge";
 import { CubeSide } from "../../Enums/CubeSide";
 import { ILevelConfig } from "../../Interfaces/ILevelConfig";
+import { EnemyType } from '../../Enums/EnemyType';
 
 // Empty = ' ',
 // Wall = 'W',
@@ -14,18 +15,18 @@ const Level02: ILevelConfig = {
     sides: {
       [CubeSide.Front]: [
         // sizeX x sizeY
-        [' ', ' ', ' ', ' ', ' '],
+        [' ', 'I1', ' ', ' ', ' '],
         [' ', ' ', ' ', ' ', ' '],
         [' ', ' ', 'F', 'S', ' '],
         [' ', ' ', ' ', ' ', ' '],
-        [' ', ' ', ' ', ' ', ' '],
+        [' ', ' ', ' ', 'I2', ' '],
         [' ', ' ', ' ', ' ', ' '],
       ],
       [CubeSide.Left]: [
         // sizeZ x sizeY
         [' ', ' ', ' ', ' ', ' ', ' ', ' '],
         [' ', ' ', ' ', ' ', ' ', ' ', ' '],
-        [' ', ' ', ' ', ' ', ' ', ' ', ' '],
+        [' ', ' ', ' ', 'I3', ' ', ' ', ' '],
         [' ', ' ', ' ', ' ', ' ', ' ', ' '],
         [' ', ' ', ' ', ' ', ' ', ' ', ' '],
         [' ', ' ', ' ', ' ', ' ', ' ', ' '],
@@ -34,7 +35,7 @@ const Level02: ILevelConfig = {
         // sizeZ x sizeY
         [' ', ' ', ' ', ' ', ' ', ' ', ' '],
         [' ', ' ', ' ', ' ', ' ', ' ', ' '],
-        [' ', ' ', ' ', ' ', ' ', ' ', ' '],
+        [' ', ' ', ' ', ' ', 'I5', ' ', ' '],
         [' ', ' ', ' ', ' ', ' ', ' ', ' '],
         [' ', ' ', ' ', ' ', ' ', ' ', ' '],
         [' ', ' ', ' ', ' ', ' ', ' ', ' '],
@@ -43,7 +44,7 @@ const Level02: ILevelConfig = {
         // sizeX x sizeZ
         [' ', ' ', ' ', ' ', ' '],
         [' ', ' ', ' ', ' ', ' '],
-        [' ', ' ', ' ', ' ', ' '],
+        [' ', ' ', 'I4', ' ', ' '],
         [' ', ' ', ' ', ' ', ' '],
         [' ', ' ', ' ', ' ', ' '],
         [' ', ' ', ' ', ' ', ' '],
@@ -84,6 +85,15 @@ const Level02: ILevelConfig = {
       [CubeEdge.BackRight]: ['W', 'W', 'W', 'W', 'W', ' '], // sizeY
     },
   },
+  enemies: {
+    [EnemyType.FloorSpike]: [
+      { id: 1 },
+      { id: 2 },
+      { id: 3 },
+      { id: 4 },
+      { id: 5 },
+    ],
+  }
 };
 
 export default Level02;

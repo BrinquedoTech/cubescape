@@ -37,6 +37,9 @@ const models = [
   'ghost.glb',
 
   'finish-object.glb',
+
+  'floor_spikes.glb',
+  'floor_spikes_base.glb',
 ];
 
 const pixiAssets = [

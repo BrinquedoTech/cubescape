@@ -6,9 +6,9 @@ import { ILevelConfig } from '../../../Interfaces/ILevelConfig';
 import InstancesHelper from '../../../Helpers/InstancesHelper';
 import ThreeJSHelper from '../../../Helpers/ThreeJSHelper';
 import { Direction } from '../../../Enums/Direction';
-import { WallSpikesGeneralConfig, WallSpikesTypeConfig } from '../../../Configs/Enemies/SpikesConfig';
+import { WallSpikesGeneralConfig, WallSpikesTypeConfig } from '../../../Configs/Enemies/WallSpikesConfig';
 import { WallSpikeType } from '../../../Enums/WallSpikeType';
-import { IWallSpikeByTypeDirections, IWallSpikesTypesConfig, IWallSpikeTypeRule } from '../../../Interfaces/ISpikesConfig';
+import { IWallSpikeByTypeDirections, IWallSpikesTypesConfig, IWallSpikeTypeRule } from '../../../Interfaces/IWallSpikesConfig';
 import ArrayHelper from '../../../Helpers/ArrayHelper';
 
 type ConfigByType = { [key in WallSpikeType]?: IWallSpikeConfig[] };

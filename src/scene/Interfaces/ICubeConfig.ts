@@ -16,6 +16,7 @@ export interface ICubeSideAxisConfig {
   zAxis: string;
   xFactor: number;
   yFactor: number;
+  zFactor: number;
 }
 
 export interface ICharacterSideConfig {

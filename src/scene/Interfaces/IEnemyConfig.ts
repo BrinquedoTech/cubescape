@@ -10,13 +10,14 @@ export interface IEnemyConfig {
 }
 
 export interface IWallSpikeConfig extends IEnemyConfig {
-  directions: Direction[];
+  directions?: Direction[];
 }
 
-export interface ISkeletonConfig extends IEnemyConfig {
-  health: number;
+export interface IFloorSpikeConfig extends IEnemyConfig {
+  frequency?: number;
 }
 
 export type EnemyConfigMap = {
   [EnemyType.WallSpike]: IWallSpikeConfig;
+  [EnemyType.FloorSpike]: IFloorSpikeConfig;
 };

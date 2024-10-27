@@ -23,12 +23,12 @@ const SideVectorConfig: { [key in CubeSide]: THREE.Vector3 } = {
 }
 
 const CubeSideAxisConfig: { [key in CubeSide]: ICubeSideAxisConfig } = {
-  [CubeSide.Front]: { xAxis: 'x', yAxis: 'y', zAxis: 'z', xFactor: 1, yFactor: -1 },
-  [CubeSide.Left]: { xAxis: 'z', yAxis: 'y', zAxis: 'x', xFactor: 1, yFactor: -1 },
-  [CubeSide.Right]: { xAxis: 'z', yAxis: 'y', zAxis: 'x', xFactor: -1, yFactor: -1 },
-  [CubeSide.Top]: { xAxis: 'x', yAxis: 'z', zAxis: 'y', xFactor: 1, yFactor: 1 },
-  [CubeSide.Bottom]: { xAxis: 'x', yAxis: 'z', zAxis: 'y', xFactor: 1, yFactor: -1 },
-  [CubeSide.Back]: { xAxis: 'x', yAxis: 'y', zAxis: 'z', xFactor: -1, yFactor: -1 },
+  [CubeSide.Front]: { xAxis: 'x', yAxis: 'y', zAxis: 'z', xFactor: 1, yFactor: -1, zFactor: 1 },
+  [CubeSide.Left]: { xAxis: 'z', yAxis: 'y', zAxis: 'x', xFactor: 1, yFactor: -1, zFactor: -1 },
+  [CubeSide.Right]: { xAxis: 'z', yAxis: 'y', zAxis: 'x', xFactor: -1, yFactor: -1, zFactor: 1 },
+  [CubeSide.Top]: { xAxis: 'x', yAxis: 'z', zAxis: 'y', xFactor: 1, yFactor: 1, zFactor: 1 },
+  [CubeSide.Bottom]: { xAxis: 'x', yAxis: 'z', zAxis: 'y', xFactor: 1, yFactor: -1, zFactor: -1 },
+  [CubeSide.Back]: { xAxis: 'x', yAxis: 'y', zAxis: 'z', xFactor: -1, yFactor: -1, zFactor: -1 },
 }
 
 const CharacterSideConfig: { [key in CubeSide]: (x: number, y: number) => ICharacterSideConfig } = {
