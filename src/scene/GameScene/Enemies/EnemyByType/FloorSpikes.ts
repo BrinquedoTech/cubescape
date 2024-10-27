@@ -65,13 +65,13 @@ export default class FloorSpikes extends THREE.Group {
     floorSpikesInstanced.receiveShadow = true;
     floorSpikesInstanced.castShadow = true;
 
-    // setTimeout(() => {
-    //   this.activateSpikes(4);
-    // }, 1000);
+    setTimeout(() => {
+      this.activateSpikes(4);
+    }, 1000);
 
-    // setTimeout(() => {
-    //   this.deactivateSpikes(4);
-    // }, 2000);
+    setTimeout(() => {
+      this.deactivateSpikes(4);
+    }, 2000);
   }
 
   public kill(): void {
