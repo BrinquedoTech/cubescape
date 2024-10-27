@@ -18,6 +18,7 @@ import Materials from '../../../core/Materials';
 import { MaterialType } from '../../Enums/MaterialType';
 import { WallCellGeometryConfig, WallModelsConfig } from '../../Configs/Cells/WallCellsConfig';
 import { ICornerCellsConfig } from '../../Interfaces/ICellConfig';
+import ArrayHelper from '../../Helpers/ArrayHelper';
 
 export default class CubeViewBuilder extends THREE.Group {
   private levelMap: ILevelConfig;
@@ -266,6 +267,8 @@ export default class CubeViewBuilder extends THREE.Group {
 
             this.setCellPosition(floor, cubeSide, row, column);
             CubeHelper.setSideRotation(floor, cubeSide);
+            const randomDirection: Direction = ArrayHelper.getRandomArrayElement([Direction.Up, Direction.Down, Direction.Left, Direction.Right]);
+            CubeHelper.setRotationByDirection(floor, cubeSide, randomDirection);
             floor.scale.set(GameplayConfig.grid.scale, GameplayConfig.grid.scale, GameplayConfig.grid.scale);
 
             floorCells.push(floor);
@@ -310,6 +313,8 @@ export default class CubeViewBuilder extends THREE.Group {
 
             this.setCellPosition(roof, cubeSide, row, column);
             CubeHelper.setSideRotation(roof, cubeSide);
+            const randomDirection: Direction = ArrayHelper.getRandomArrayElement([Direction.Up, Direction.Down, Direction.Left, Direction.Right]);
+            CubeHelper.setRotationByDirection(roof, cubeSide, randomDirection);
             roof.scale.set(GameplayConfig.grid.scale, GameplayConfig.grid.scale, GameplayConfig.grid.scale);
 
             roofCells.push(roof);

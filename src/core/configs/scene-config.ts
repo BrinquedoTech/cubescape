@@ -1,5 +1,5 @@
 const SCENE_CONFIG = {
-  backgroundColor: 0x000000, // 0x201919
+  backgroundColor: 0x666666, // 0x201919
   antialias: true,
   fxaaPass: false,
   maxPixelRatio: 2,

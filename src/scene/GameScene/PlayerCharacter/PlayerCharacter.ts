@@ -375,9 +375,9 @@ export default class PlayerCharacter extends THREE.Group {
 
     const material = new THREE.MeshStandardMaterial({
       map: texture,
-      emissive: 0xffffff,
-      emissiveMap: texture,
-      emissiveIntensity: 1.5,
+      // emissive: 0xffffff,
+      // emissiveMap: texture,
+      // emissiveIntensity: 1.5,
     });
 
     const normalMap = Loader.assets['Ghost_Normal'];
@@ -387,21 +387,21 @@ export default class PlayerCharacter extends THREE.Group {
     const view = this.view = new THREE.Mesh(geometry, material);
     this.viewGroup.add(view);
 
-    // view.castShadow = true;
-    // view.receiveShadow = true;
+    view.castShadow = true;
+    view.receiveShadow = true;
 
     view.scale.set(GameplayConfig.grid.scale, GameplayConfig.grid.scale, GameplayConfig.grid.scale);
 
-    const light = new THREE.PointLight(0xffffff, 5, 10, 2);
-    light.position.set(0, 0, 0.3);
-    this.viewGroup.add(light);
+    // const light = new THREE.PointLight(0xffffff, 5, 10, 2);
+    // light.position.set(0, 0, 0.3);
+    // this.viewGroup.add(light);
 
-    light.castShadow = true;
-    light.shadow.mapSize.width = 128;
-    light.shadow.mapSize.height = 128;
-    light.shadow.camera.near = 0.1;
-    light.shadow.camera.far = 5;
+    // light.castShadow = true;
+    // light.shadow.mapSize.width = 128;
+    // light.shadow.mapSize.height = 128;
+    // light.shadow.camera.near = 0.1;
+    // light.shadow.camera.far = 5;
 
-    light.shadow.bias = -0.001;
+    // light.shadow.bias = -0.001;
   }
 }

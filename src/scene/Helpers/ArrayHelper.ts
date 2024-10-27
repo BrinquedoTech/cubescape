@@ -38,4 +38,8 @@ export default class ArrayHelper {
 
     return true;
   }
+
+  public static getRandomArrayElement(array: any[]): any {
+    return array[Math.floor(Math.random() * array.length)];
+  }
 }
