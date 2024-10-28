@@ -11,6 +11,7 @@ const DebugConfig = {
     cubeRotationName: false,
     gridCoordinates: false,
     cubeRotationButtons: false,
+    physicalBody: false,
   }
 };
 

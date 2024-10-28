@@ -16,6 +16,10 @@ import { Direction } from '../../Enums/Direction';
 import { MoveDirectionToDirectionConfig } from '../../Configs/DirectionConfig';
 import { TiltAxisConfig } from '../../Configs/PlayerCharacterConfig';
 import { PlayerCharacterGeneralConfig } from '../../Configs/PlayerCharacterGeneralConfig';
+import { OBB } from 'three/addons/math/OBB.js';
+import Materials from '../../../core/Materials';
+import { MaterialType } from '../../Enums/MaterialType';
+import DebugConfig from '../../Configs/Main/DebugConfig';
 
 type Events = {
   onMovingEnd: string;
@@ -24,6 +28,7 @@ type Events = {
 
 export default class PlayerCharacter extends THREE.Group {
   private view: THREE.Mesh;
+  private body: THREE.Mesh;
   private viewGroup: THREE.Group;
   private levelConfig: ILevelConfig;
   private activeSide: CubeSide;
@@ -53,6 +58,7 @@ export default class PlayerCharacter extends THREE.Group {
     super();
 
     this.initView();
+    this.initBody();
     this.hide();
   }
 
@@ -64,14 +70,23 @@ export default class PlayerCharacter extends THREE.Group {
     if (this.state === PlayerCharacterState.Idle) {
       this.updateIdleState(dt);
     }
+
+    this.updateBody();
+  }
+
+  public getBody(): THREE.Mesh {
+    return this.body;
+  }
+
+  private updateBody(): void {
+    this.body.userData.obb.copy(this.body.geometry.userData.obb);
+    this.body.userData.obb.applyMatrix4(this.body.matrixWorld);
   }
 
   public init(levelConfig: ILevelConfig): void {
     this.levelConfig = levelConfig;
 
-    const isPositionFound: boolean = this.setStartPosition();
-    this.show();
-    this.isActive = isPositionFound;
+    this.setStartPosition();
   }
 
   public setActiveSide(side: CubeSide): void {
@@ -192,7 +207,10 @@ export default class PlayerCharacter extends THREE.Group {
     new TWEEN.Tween(this.scale)
       .to({ x: 1, y: 1, z: 1 }, 300)
       .easing(TWEEN.Easing.Back.Out)
-      .start();
+      .start()
+      .onComplete(() => {
+        this.isActive = true;
+      });
   }
 
   public respawn(): void {
@@ -404,5 +422,28 @@ export default class PlayerCharacter extends THREE.Group {
     // light.shadow.camera.far = 5;
 
     // light.shadow.bias = -0.001;
+  }
+
+  private initBody(): void {
+    const material: THREE.Material = Materials.getInstance().materials[MaterialType.DebugBody];
+
+    const boundingBox: THREE.Box3 = new THREE.Box3().setFromObject(this.view);
+    const size: THREE.Vector3 = boundingBox.getSize(new THREE.Vector3());
+
+    const geometry = new THREE.BoxGeometry(size.x, size.y, size.z);
+
+    const body = this.body = new THREE.Mesh(geometry, material);
+    this.viewGroup.add(body);
+
+    body.geometry.computeBoundingBox();
+
+    body.geometry.userData.obb = new OBB().fromBox3(body.geometry.boundingBox);
+    body.userData.obb = new OBB();
+
+    body.visible = false;
+
+    if (DebugConfig.gameplay.physicalBody) {
+      body.visible = true;
+    }
   }
 }

@@ -15,8 +15,8 @@ const LevelsConfig: { [key in LevelType]?: ILevelConfig } = {
 }
 
 const LevelsQueue: LevelType[] = [
-  LevelType.Level01,
-  LevelType.Level03,
+  LevelType.Level02,
+  LevelType.Level05,
   LevelType.Level02,
   LevelType.Level04,
 ]

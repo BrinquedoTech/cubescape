@@ -16,7 +16,7 @@ const Level05: ILevelConfig = {
   map: {
     sides: {
       [CubeSide.Front]: [
-        ['ST', '  ', '  ', 'X1', 'CC', 'CC', '  '],
+        ['  ', 'ST', '  ', 'X1', 'CC', 'CC', '  '],
         ['  ', '  ', '  ', '  ', 'CC', 'CC', '  '],
         ['  ', '  ', '  ', 'WW', 'CC', 'CC', '  '],
         ['  ', '  ', 'WW', 'WW', 'WW', '  ', '  '],

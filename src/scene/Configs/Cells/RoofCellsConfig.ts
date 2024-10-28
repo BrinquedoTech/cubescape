@@ -15,5 +15,4 @@ const RoofCellsGeometryConfig: IGeometryRotationConfig = {
   rotation: new THREE.Euler(Math.PI * 0.5, Math.PI * 0.5, 0),
 }
 
-
 export { RoofModelsConfig, RoofCellTypes, RoofCellsGeometryConfig };

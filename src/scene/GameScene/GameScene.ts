@@ -72,6 +72,30 @@ export default class GameScene extends THREE.Group {
     this.cameraController.update(dt);
     this.finishLevelObject.update(dt);
     this.coins.update(dt);
+
+    this.updateCollisions();
+  }
+
+  private updateCollisions(): void {
+    if (this.playerCharacter.isActivated()) {
+      this.updateCoinsCollisions();
+    }
+  }
+
+  private updateCoinsCollisions(): void {
+    const playerCharacterBody: THREE.Mesh = this.playerCharacter.getBody();
+    const currentSide: CubeSide = this.cube.getCurrentSide();
+    const coinsBodies: THREE.Mesh[] = this.coins.getBodiesForSide(currentSide);
+
+    for (let i = 0; i < coinsBodies.length; i++) {
+      const coinBody: THREE.Mesh = coinsBodies[i];
+
+      if (coinBody.userData.config.isActive && playerCharacterBody.userData.obb.intersectsOBB(coinBody.userData.obb)) {
+        const id: number = coinBody.userData.config.instanceId;
+        this.coins.hideCoin(id);
+        this.coins.deactivateCoin(id);
+      }
+    }
   }
 
   public startGame(): void {
@@ -94,9 +118,7 @@ export default class GameScene extends THREE.Group {
   public startGameWithoutIntro(): void {
     const currentLevelType: LevelType = LevelsQueue[this.levelIndex];
     this.createLevel(currentLevelType);
-
-    this.state = GameState.Active;
-    this.playerCharacter.showAnimation();
+    this.activateGame();
   }
 
   public createLevel(levelType: LevelType): void {
@@ -120,6 +142,12 @@ export default class GameScene extends THREE.Group {
 
   public startNextLevel(): void {
     this.cube.winLevelAnimation();
+  }
+
+  private activateGame(): void {
+    this.state = GameState.Active;
+    this.playerCharacter.showAnimation();
+    this.coins.activateCoins();
   }
 
   private moveCharacter(moveDirection: MoveDirection): void {
@@ -317,9 +345,7 @@ export default class GameScene extends THREE.Group {
 
   private endIntroRotation(): void {
     this.isIntroActive = false;
-
-    this.state = GameState.Active;
-    this.playerCharacter.showAnimation();
+    this.activateGame();
   }
 
   private onPlayerCharacterMovingEnd(): void {
@@ -396,8 +422,7 @@ export default class GameScene extends THREE.Group {
       return;
     }
 
-    this.state = GameState.Active;
-    this.playerCharacter.showAnimation();
+    this.activateGame();
   }
 
   private reset(): void {
@@ -435,6 +460,7 @@ export default class GameScene extends THREE.Group {
 
   private resetLevelOnDeath(): void {
     this.reset();
+    this.coins.respawnCoins();
     this.cube.rotateToStartSide();
   }
 

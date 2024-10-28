@@ -9,7 +9,6 @@ export default class Materials {
 
   private constructor() {
     this.initMaterials();
-
   }
 
   public static getInstance(): Materials {
@@ -21,6 +20,7 @@ export default class Materials {
 
   initMaterials(): void {
     this.initMainMaterial();
+    this.initDebugBodyMaterial();
   }
 
   initMainMaterial() {
@@ -31,6 +31,13 @@ export default class Materials {
     this.materials[MaterialType.Main] = new THREE.MeshPhongMaterial({
       map: texture,
       side: THREE.DoubleSide,
+    });
+  }
+
+  initDebugBodyMaterial() {
+    this.materials[MaterialType.DebugBody] = new THREE.MeshBasicMaterial({
+      color: 0x00ff00,
+      wireframe: true,
     });
   }
 }

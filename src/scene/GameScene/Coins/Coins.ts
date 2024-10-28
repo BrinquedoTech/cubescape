@@ -10,12 +10,15 @@ import { CubeSide } from '../../Enums/CubeSide';
 import InstancesHelper from '../../Helpers/InstancesHelper';
 import { ITransform } from '../../Interfaces/IThreeJS';
 import { CoinsConfig } from '../../Configs/CoinsConfig';
+import { OBB } from 'three/addons/math/OBB.js';
+import DebugConfig from '../../Configs/Main/DebugConfig';
 
 export default class Coins extends THREE.Group {
   private levelConfig: ILevelConfig;
   private coinsInstanced: THREE.InstancedMesh;
   private coinsConfig = [];
   private elapsedTime: number = 0;
+  private bodies: THREE.Mesh[] = [];
 
   constructor() {
     super();
@@ -27,6 +30,7 @@ export default class Coins extends THREE.Group {
 
     this.updateRotation(dt);
     this.updatePosition();
+    this.updateBodies();
   }
 
   public init(levelConfig: ILevelConfig): void {
@@ -59,6 +63,8 @@ export default class Coins extends THREE.Group {
       const coinsInstanced = this.coinsInstanced = new THREE.InstancedMesh(geometry, material, itemsCount);
       this.add(coinsInstanced);
 
+      coinsInstanced.instanceMatrix.usage = THREE.DynamicDrawUsage;
+
       for (let i = 0; i < itemsCount; i++) {
         const cubePosition: ICubePosition = itemPositions[i];
         const object = coinsObjects[i];
@@ -84,29 +90,117 @@ export default class Coins extends THREE.Group {
       coinsInstanced.castShadow = true;
 
       this.setStartRandomRotation();
+
+      this.initBodies(coinsObjects);
     }
+  }
+
+  public respawnCoins(): void {
+    for (let i = 0; i < this.coinsConfig.length; i++) {
+      const config = this.coinsConfig[i];
+      
+      if (!config.isActive) {
+        this.showCoin(i);
+        config.isActive = true;
+      }
+    }
+  }
+
+  public activateCoins(): void {
+    for (let i = 0; i < this.coinsConfig.length; i++) {
+      const config = this.coinsConfig[i];
+      config.isActive = true;
+    }
+  }
+
+  public activateCoin(id: number): void {
+    const config = this.coinsConfig[id];
+    config.isActive = true;
+  }
+
+  public deactivateCoin(id: number): void {
+    const config = this.coinsConfig[id];
+    config.isActive = false;
   }
 
   public removeCoins(): void {
-    ThreeJSHelper.disposeInstancedMesh(this.coinsInstanced);
+    if (this.coinsInstanced) {
+      ThreeJSHelper.killInstancedMesh(this.coinsInstanced, this);
+    }
+
+    this.coinsConfig = [];
+    this.bodies = [];
   }
 
-  public showCoin(cubeSide: CubeSide, gridPosition: THREE.Vector2): void {
-    const config = this.getConfigByPosition(cubeSide, gridPosition);
-    
-    if (config) {
-      const scale = new THREE.Vector3(1, 1, 1);
-      InstancesHelper.setScaleToInstance(this.coinsInstanced, config.instanceId, scale);
+  public showCoin(id: number): void {
+    const config = this.coinsConfig[id];
+    const scale = new THREE.Vector3(1, 1, 1);
+    InstancesHelper.setScaleToInstance(this.coinsInstanced, config.instanceId, scale);
+  }
+
+  public hideCoin(id: number): void {
+    const config = this.coinsConfig[id];
+    const hideScale = CoinsConfig.hideScale;
+    const scale = new THREE.Vector3(hideScale, hideScale, hideScale);
+    InstancesHelper.setScaleToInstance(this.coinsInstanced, config.instanceId, scale);
+  }
+
+  public getBodies(): THREE.Mesh[] {
+    return this.bodies;
+  }
+
+  public getBodiesForSide(side: CubeSide): THREE.Mesh[] {
+    return this.bodies.filter((body) => {
+      return body.userData.config.mapConfig.side === side;
+    });
+  }
+
+  private initBodies(coinsObjects: THREE.Object3D[]): void {
+    const material: THREE.Material = Materials.getInstance().materials[MaterialType.DebugBody];
+    const viewGeometry: THREE.BufferGeometry = ThreeJSHelper.getGeometryFromModel(CoinsConfig.model);
+    const view = new THREE.Mesh(viewGeometry, material);
+    const boundingBox: THREE.Box3 = new THREE.Box3().setFromObject(view);
+    const size: THREE.Vector3 = boundingBox.getSize(new THREE.Vector3());
+
+    for (let i = 0; i < coinsObjects.length; i++) {
+      const coinObject = coinsObjects[i];
+
+      const geometry = new THREE.BoxGeometry(size.x, size.y, size.z);
+  
+      const body = new THREE.Mesh(geometry, material);
+      this.add(body);
+  
+      body.geometry.computeBoundingBox();
+      body.geometry.userData.obb = new OBB().fromBox3(body.geometry.boundingBox);
+      body.userData.obb = new OBB();
+  
+      body.userData.config = this.coinsConfig[i];
+      body.visible = false;
+
+      body.position.copy(coinObject.position);
+  
+      if (DebugConfig.gameplay.physicalBody) {
+        body.visible = true;
+      }
+      
+      this.bodies.push(body);
     }
   }
 
-  public hideCoin(cubeSide: CubeSide, gridPosition: THREE.Vector2): void {
-    const config = this.getConfigByPosition(cubeSide, gridPosition);
+  private updateBodies(): void {
+    for (let i = 0; i < this.bodies.length; i++) {
+      const body = this.bodies[i];
 
-    if (config) {
-      const hideScale = CoinsConfig.hideScale;
-      const scale = new THREE.Vector3(hideScale, hideScale, hideScale);
-      InstancesHelper.setScaleToInstance(this.coinsInstanced, config.instanceId, scale);
+      if (body.userData.config.isActive) {
+        const instanceId: number = body.userData.config.instanceId;
+
+        const transform: ITransform = InstancesHelper.getTransformFromInstance(this.coinsInstanced, instanceId);
+        body.position.copy(transform.position);
+        body.quaternion.copy(transform.rotation);
+  
+        body.userData.obb.copy(body.geometry.userData.obb);
+        body.userData.obb.applyMatrix4(body.matrixWorld);
+      }
     }
   }
 
@@ -149,9 +243,9 @@ export default class Coins extends THREE.Group {
     }
   }
 
-  private getConfigByPosition(cubeSide: CubeSide, gridPosition: THREE.Vector2) {
-    return this.coinsConfig.find((config) => {
-      return config.mapConfig.side === cubeSide && config.mapConfig.gridPosition.x === gridPosition.x && config.mapConfig.gridPosition.y === gridPosition.y;
-    });
-  }
+  // private getConfigByPosition(cubeSide: CubeSide, gridPosition: THREE.Vector2) {
+  //   return this.coinsConfig.find((config) => {
+  //     return config.mapConfig.side === cubeSide && config.mapConfig.gridPosition.x === gridPosition.x && config.mapConfig.gridPosition.y === gridPosition.y;
+  //   });
+  // }
 }

@@ -2,7 +2,7 @@ import * as THREE from 'three';
 
 const CoinsConfig = {
   model: 'coin',
-  geometryRotation: new THREE.Euler(Math.PI * 0.5, 0, 0),
+  geometryRotation: new THREE.Euler(0, 0, 0),
   hideScale: 0.001,
   idle: {
     rotationSpeed: 2,

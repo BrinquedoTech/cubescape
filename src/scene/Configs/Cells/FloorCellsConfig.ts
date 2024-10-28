@@ -18,5 +18,4 @@ const FloorCellsGeometryConfig: IGeometryRotationConfig = {
   rotation: new THREE.Euler(Math.PI * 0.5, Math.PI * 0.5, 0),
 }
 
-
 export { FloorModelsConfig, FloorCellTypes, FloorCellsGeometryConfig };
