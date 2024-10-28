@@ -15,7 +15,7 @@ const Level02: ILevelConfig = {
     sides: {
       [CubeSide.Front]: [
         // sizeX x sizeY
-        [' ', 'I1', ' ', ' ', ' '],
+        [' ', 'I1', ' ', ' ', 'I6'],
         [' ', ' ', ' ', ' ', ' '],
         [' ', ' ', 'F', 'S', 'C'],
         [' ', ' ', ' ', ' ', ' '],
@@ -87,11 +87,12 @@ const Level02: ILevelConfig = {
   },
   enemies: {
     [EnemyType.FloorSpike]: [
-      { id: 1 },
-      { id: 2 },
-      { id: 3 },
-      { id: 4 },
-      { id: 5 },
+      { id: 1, inactiveTime: 1, activeTime: 2 },
+      { id: 2, inactiveTime: 2, activeTime: 1 },
+      { id: 3, inactiveTime: 1, activeTime: 2 },
+      { id: 4, inactiveTime: 1, activeTime: 2 },
+      { id: 5, inactiveTime: 1, activeTime: 2 },
+      { id: 6, inactiveTime: 1, activeTime: 2 },
     ],
   }
 };

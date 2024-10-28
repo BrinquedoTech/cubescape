@@ -6,6 +6,8 @@ import { EnemiesClassName, EnemyCellType } from '../../Configs/Enemies/EnemiesGe
 import { ICubePosition, ICubePositionWithID } from '../../Interfaces/ICubeConfig';
 import CubeHelper from '../../Helpers/CubeHelper';
 import { CellType } from '../../Enums/CellType';
+import { CubeSide } from '../../Enums/CubeSide';
+import FloorSpikes from './EnemyByType/FloorSpikes';
 
 export default class EnemiesController extends THREE.Group {
   private levelConfig: ILevelConfig;
@@ -14,6 +16,13 @@ export default class EnemiesController extends THREE.Group {
   constructor() {
     super();
 
+  }
+
+  public update(dt: number): void {
+    for (const enemyType in this.enemies) {
+      const enemy = this.enemies[enemyType];
+      enemy.update(dt);
+    }
   }
 
   public init(levelConfig: ILevelConfig): void {
@@ -69,5 +78,15 @@ export default class EnemiesController extends THREE.Group {
     }
 
     this.enemies = {};
+  }
+
+  public getFloorSpikesBodiesForSide(side: CubeSide): THREE.Mesh[] | null {
+    const floorSpikes: FloorSpikes = this.enemies[EnemyType.FloorSpike] as FloorSpikes;
+
+    if (floorSpikes) {
+      return floorSpikes.getBodiesForSide(side);
+    }
+
+    return null;
   }
 }

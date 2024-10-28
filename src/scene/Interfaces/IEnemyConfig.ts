@@ -14,7 +14,8 @@ export interface IWallSpikeConfig extends IEnemyConfig {
 }
 
 export interface IFloorSpikeConfig extends IEnemyConfig {
-  frequency?: number;
+  inactiveTime?: number;
+  activeTime?: number;
 }
 
 export type EnemyConfigMap = {

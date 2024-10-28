@@ -71,6 +71,7 @@ export default class GameScene extends THREE.Group {
     this.playerCharacter.update(dt);
     this.cameraController.update(dt);
     this.finishLevelObject.update(dt);
+    this.enemiesController.update(dt);
     this.coins.update(dt);
 
     this.updateCollisions();
@@ -79,6 +80,7 @@ export default class GameScene extends THREE.Group {
   private updateCollisions(): void {
     if (this.playerCharacter.isActivated()) {
       this.updateCoinsCollisions();
+      this.updateFloorSpikesCollisions();
     }
   }
 
@@ -87,13 +89,32 @@ export default class GameScene extends THREE.Group {
     const currentSide: CubeSide = this.cube.getCurrentSide();
     const coinsBodies: THREE.Mesh[] = this.coins.getBodiesForSide(currentSide);
 
-    for (let i = 0; i < coinsBodies.length; i++) {
-      const coinBody: THREE.Mesh = coinsBodies[i];
+    if (coinsBodies.length > 0) {
+      for (let i = 0; i < coinsBodies.length; i++) {
+        const coinBody: THREE.Mesh = coinsBodies[i];
+  
+        if (coinBody.userData.config.isActive && playerCharacterBody.userData.obb.intersectsOBB(coinBody.userData.obb)) {
+          const id: number = coinBody.userData.config.instanceId;
+          this.coins.hideCoin(id);
+          this.coins.deactivateCoin(id);
+        }
+      }
+    }
+  }
 
-      if (coinBody.userData.config.isActive && playerCharacterBody.userData.obb.intersectsOBB(coinBody.userData.obb)) {
-        const id: number = coinBody.userData.config.instanceId;
-        this.coins.hideCoin(id);
-        this.coins.deactivateCoin(id);
+  private updateFloorSpikesCollisions(): void {
+    const playerCharacterBody: THREE.Mesh = this.playerCharacter.getBody();
+    const currentSide: CubeSide = this.cube.getCurrentSide();
+    const floorSpikesBodies: THREE.Mesh[] = this.enemiesController.getFloorSpikesBodiesForSide(currentSide);
+
+    if (floorSpikesBodies && floorSpikesBodies.length > 0) {
+      for (let i = 0; i < floorSpikesBodies.length; i++) {
+        const floorSpikeBody: THREE.Mesh = floorSpikesBodies[i];
+
+        if (floorSpikeBody.userData.config.isActive && playerCharacterBody.userData.obb.intersectsOBB(floorSpikeBody.userData.obb)) {
+          console.log('Death');
+          this.playerCharacter.death();
+        }
       }
     }
   }

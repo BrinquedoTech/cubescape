@@ -50,6 +50,9 @@ export default class PlayerCharacter extends THREE.Group {
   private idleRotationSign: number = 1;
   private enableIdleRotationAnimation: boolean = true;
 
+  private startTiltTween;
+  private stopTiltTween
+
   private isActive: boolean = false;
 
   public emitter: Emitter<Events> = mitt<Events>();
@@ -178,7 +181,19 @@ export default class PlayerCharacter extends THREE.Group {
   }
 
   public death(): void {
+    this.setState(PlayerCharacterState.Idle);
     this.isActive = false;
+
+    this.viewGroup.position.z = 0;
+    this.viewGroup.rotation.set(0, 0, 0);
+
+    if (this.startTiltTween) {
+      this.startTiltTween.stop();
+    }
+
+    if (this.stopTiltTween) {
+      this.stopTiltTween.stop();
+    }
 
     new TWEEN.Tween(this.scale)
       .to({ x: 0, y: 0, z: 0 }, 300)
@@ -330,7 +345,7 @@ export default class PlayerCharacter extends THREE.Group {
     const tiltAxisConfig = TiltAxisConfig[this.currentMoveDirection];
     const angleRadians: number = tiltConfig.angle * Math.PI / 180;
 
-    new TWEEN.Tween(this.viewGroup.rotation)
+    this.startTiltTween = new TWEEN.Tween(this.viewGroup.rotation)
       .to({ [tiltAxisConfig.axis]: angleRadians * tiltAxisConfig.sign }, tiltConfig.startDuration)
       .easing(TWEEN.Easing.Sinusoidal.Out)
       .start();
@@ -339,7 +354,7 @@ export default class PlayerCharacter extends THREE.Group {
   private stopTilt(): void {
     const tiltAxisConfig = TiltAxisConfig[this.currentMoveDirection];
 
-    new TWEEN.Tween(this.viewGroup.rotation)
+    this.stopTiltTween = new TWEEN.Tween(this.viewGroup.rotation)
       .to({ [tiltAxisConfig.axis]: 0 }, PlayerCharacterGeneralConfig.tilt.endDuration)
       .easing(TWEEN.Easing.Sinusoidal.Out)
       .start();

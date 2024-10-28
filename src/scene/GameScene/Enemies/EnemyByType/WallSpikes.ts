@@ -24,6 +24,10 @@ export default class WallSpikes extends THREE.Group {
     this.configs = configs;
   }
 
+  public update(_dt: number): void {
+
+  }
+
   public init(levelConfig: ILevelConfig): void {
     this.levelConfig = levelConfig;
 

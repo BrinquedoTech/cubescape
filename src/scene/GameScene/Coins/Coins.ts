@@ -126,6 +126,7 @@ export default class Coins extends THREE.Group {
   public removeCoins(): void {
     if (this.coinsInstanced) {
       ThreeJSHelper.killInstancedMesh(this.coinsInstanced, this);
+      ThreeJSHelper.killObjects(this.bodies, this);
     }
 
     this.coinsConfig = [];

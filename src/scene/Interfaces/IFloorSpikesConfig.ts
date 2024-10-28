@@ -6,5 +6,6 @@ export interface IFloorSpikeInstanceConfig {
   instanceId: number;
   isActive: boolean;
   startPosition: THREE.Vector3;
+  time: number;
 }
 
