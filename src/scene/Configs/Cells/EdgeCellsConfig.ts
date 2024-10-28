@@ -124,7 +124,7 @@ const EdgeWallsRotation: { [key in CubeEdge]: IEdgeWallsRotation } = {
   [CubeEdge.BackTop]: { axis: new THREE.Vector3(1, 0, 0), leftRotation: Math.PI * 0.5, rightRotation: 0 },
   [CubeEdge.BackDown]: { axis: new THREE.Vector3(1, 0, 0), leftRotation: -Math.PI * 0.5, rightRotation: 0 },
   [CubeEdge.BackLeft]: { axis: new THREE.Vector3(0, 1, 0), leftRotation: Math.PI * 0.5, rightRotation: 0 },
-  [CubeEdge.BackRight]: { axis: new THREE.Vector3(0, 1, 0), leftRotation: Math.PI * 0.5, rightRotation: 0 },
+  [CubeEdge.BackRight]: { axis: new THREE.Vector3(0, 1, 0), leftRotation: -Math.PI * 0.5, rightRotation: 0 },
 }
 
 export {

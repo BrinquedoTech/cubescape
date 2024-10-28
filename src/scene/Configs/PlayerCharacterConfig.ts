@@ -117,14 +117,14 @@ const MovementDirectionConfig: { [key in MoveDirection]: IMovementDirectionConfi
     activeAxis: 'x',
     rotateDirection: RotateDirection.Right,
   },
-};
+}
 
 const MovementDirectionByButtonConfig: { [key in ButtonType]?: MoveDirection } = {
   [ButtonType.Right]: MoveDirection.Right,
   [ButtonType.Left]: MoveDirection.Left,
   [ButtonType.Up]: MoveDirection.Up,
   [ButtonType.Down]: MoveDirection.Down,
-};
+}
 
 const TiltAxisConfig: { [key in MoveDirection]: { axis: string, sign: number }} = {
   [MoveDirection.Up]: { axis: 'x', sign: -1 },
