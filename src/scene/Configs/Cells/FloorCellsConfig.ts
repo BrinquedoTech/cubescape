@@ -3,8 +3,8 @@ import { CellType } from "../../Enums/CellType";
 import { ICellModelConfig, IGeometryRotationConfig } from '../../Interfaces/ICellConfig';
 
 const FloorModelsConfig: ICellModelConfig = {
-  probabilities: [0.9, 0.04, 0.03, 0.03],
-  models: ['floor_01', 'floor_02', 'floor_03', 'floor_04'],
+  probabilities: [0.82, 0.04, 0.04, 0.04, 0.04, 0.02],
+  models: ['floor_01', 'floor_02', 'floor_03', 'floor_04', 'floor_05', 'floor_06'],
 }
 
 const FloorCellTypes: CellType[] = [

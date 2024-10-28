@@ -20,21 +20,32 @@ const models = [
   'wall_03.glb',
   'wall_04.glb',
   'wall_05.glb',
+
   'roof_01.glb',
   'roof_02.glb',
   'roof_03.glb',
   'roof_04.glb',
+  'roof_05.glb',
+  'roof_06.glb',
+
   'floor_01.glb',
   'floor_02.glb',
   'floor_03.glb',
   'floor_04.glb',
+  'floor_05.glb',
+  'floor_06.glb',
+
   'corner_01.glb',
   'corner_02.glb',
+  'corner_03.glb',
+  'corner_04.glb',
+  'corner_05.glb',
+
   'edge_01.glb',
-  'edge_01_1.glb',
-  'edge_01_2.glb',
   'edge_02.glb',
   'edge_03.glb',
+  'edge_04.glb',
+
   'edge_wall_01.glb',
 
   'ghost.glb',

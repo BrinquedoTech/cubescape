@@ -3,8 +3,8 @@ import { CellType } from "../../Enums/CellType";
 import { ICellModelConfig, IGeometryRotationConfig } from '../../Interfaces/ICellConfig';
 
 const RoofModelsConfig: ICellModelConfig = {
-  probabilities: [0.9, 0.04, 0.03, 0.03],
-  models: ['roof_01', 'roof_02', 'roof_03', 'roof_04'],
+  probabilities: [0.88, 0.03, 0.02, 0.02, 0.02, 0.03],
+  models: ['roof_01', 'roof_02', 'roof_03', 'roof_04', 'roof_05', 'roof_06'],
 }
 
 const RoofCellTypes: CellType[] = [

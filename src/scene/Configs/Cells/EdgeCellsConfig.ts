@@ -6,8 +6,8 @@ import { CubeEdgeOnSidePositionType } from '../../Enums/CubeEdgeOnSide';
 import { ICellModelConfig, IGeometryRotationConfig } from '../../Interfaces/ICellConfig';
 
 const EdgeModelsConfig: ICellModelConfig = {
-  probabilities: [0.1, 0.1, 0.8],
-  models: ['edge_01', 'edge_02', 'edge_01_1'],
+  probabilities: [0.94, 0.03, 0.03, 0.03],
+  models: ['edge_01', 'edge_02', 'edge_03', 'edge_04'],
 }
 
 const EdgeWallModelsConfig: ICellModelConfig = {

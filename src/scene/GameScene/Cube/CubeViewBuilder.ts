@@ -99,6 +99,9 @@ export default class CubeViewBuilder extends THREE.Group {
       const cornerCell = new THREE.Mesh(geometry, material);
       this.add(cornerCell);
 
+      cornerCell.receiveShadow = true;
+      cornerCell.castShadow = true;
+
       cornerCell.position.x = cornerConfig.position.x * distance.x;
       cornerCell.position.y = cornerConfig.position.y * distance.y;
       cornerCell.position.z = cornerConfig.position.z * distance.z;
