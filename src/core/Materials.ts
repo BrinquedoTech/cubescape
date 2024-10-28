@@ -30,7 +30,7 @@ export default class Materials {
 
     this.materials[MaterialType.Main] = new THREE.MeshPhongMaterial({
       map: texture,
-      side: THREE.DoubleSide,
+      // side: THREE.DoubleSide,
     });
   }
 

@@ -311,7 +311,7 @@ export default class CubeViewBuilder extends THREE.Group {
         for (let column = 0; column < sizeX; column++) {
           const cellType: CellType = CubeHelper.getCellTypeBySymbol(this.levelMap.map.sides[cubeSide][row][column]);
 
-          if (cellType === CellType.Wall) {
+          if (cellType === CellType.Wall || cellType === CellType.WallSpike) {
             const roof = new THREE.Object3D();
 
             this.setCellPosition(roof, cubeSide, row, column);
