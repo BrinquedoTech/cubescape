@@ -1,4 +1,4 @@
-# Template Three.js and Pixi.js
+# CubeScape
 
 
 ## Setup
