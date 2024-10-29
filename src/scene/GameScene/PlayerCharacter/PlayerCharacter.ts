@@ -181,7 +181,7 @@ export default class PlayerCharacter extends THREE.Group {
   }
 
   public death(): void {
-    this.setState(PlayerCharacterState.Idle);
+    this.setState(PlayerCharacterState.Death);
     this.isActive = false;
 
     this.viewGroup.position.z = 0;
@@ -195,12 +195,27 @@ export default class PlayerCharacter extends THREE.Group {
       this.stopTiltTween.stop();
     }
 
-    new TWEEN.Tween(this.scale)
-      .to({ x: 0, y: 0, z: 0 }, 300)
-      .easing(TWEEN.Easing.Back.In)
+    const duration: number = 800;
+    this.view.castShadow = false;
+
+    new TWEEN.Tween(this.viewGroup.rotation)
+      .to({ z: Math.PI * 2 }, duration)
+      .easing(TWEEN.Easing.Sinusoidal.Out)
+      .start();
+
+    new TWEEN.Tween(this.view.material)
+      .to({ opacity: 0 }, duration * 0.9)
+      .easing(TWEEN.Easing.Sinusoidal.Out)
+      .start();
+
+    new TWEEN.Tween(this.viewGroup.position)
+      .to({ z: 2.5 }, duration)
+      .easing(TWEEN.Easing.Sinusoidal.Out)
       .start()
       .onComplete(() => {
         this.hide();
+        (<THREE.Material>this.view.material).opacity = 1;
+        this.view.castShadow = true;
         this.emitter.emit('onDeathAnimationEnd');
       });
   }
@@ -232,6 +247,8 @@ export default class PlayerCharacter extends THREE.Group {
     this.reset();
     this.setStartPosition();
     this.show();
+
+    this.scale.set(0, 0, 0);
 
     new TWEEN.Tween(this.scale)
       .to({ x: 1, y: 1, z: 1 }, 300)
@@ -408,6 +425,7 @@ export default class PlayerCharacter extends THREE.Group {
 
     const material = new THREE.MeshStandardMaterial({
       map: texture,
+      transparent: true,
       // emissive: 0xffffff,
       // emissiveMap: texture,
       // emissiveIntensity: 1.5,
