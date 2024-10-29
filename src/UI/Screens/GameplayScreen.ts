@@ -1,6 +1,7 @@
 import * as PIXI from 'pixi.js';
 import { Text } from 'pixi.js';
 import AbstractScreen from './AbstractScreen';
+import SCENE_CONFIG from '../../core/configs/scene-config';
 
 export default class GameplayScreen extends AbstractScreen {
   private scoreText: PIXI.Text;
@@ -24,6 +25,18 @@ export default class GameplayScreen extends AbstractScreen {
     this.scoreText.y = 70;
   }
 
+  public updateLevelText(level: number): void {
+    this.currentLevelText.text = `Level ${level + 1}`;
+  }
+
+  public updateScore(score: number): void {
+    this.scoreText.text = `Score: ${score}`;
+  }
+
+  public updateLives(lives: number): void {
+    this.livesText.text = `Lives: ${lives}`;
+  }
+
   private init(): void {
     this.initLives();
     this.initCurrentLevel();
@@ -41,6 +54,7 @@ export default class GameplayScreen extends AbstractScreen {
       },
     });
 
+    livesText.resolution = Math.min(window.devicePixelRatio, SCENE_CONFIG.maxPixelRatio);
     livesText.anchor.set(0.5);
 
     this.addChild(livesText);
@@ -48,7 +62,7 @@ export default class GameplayScreen extends AbstractScreen {
 
   private initCurrentLevel(): void {
     const currentLevelText = this.currentLevelText = new Text({
-      text: 'Level: 1',
+      text: 'Level 1',
       style: {
         fontFamily: 'riky',
         fill: 0xffffff,
@@ -57,13 +71,14 @@ export default class GameplayScreen extends AbstractScreen {
       },
     });
 
+    currentLevelText.resolution = Math.min(window.devicePixelRatio, SCENE_CONFIG.maxPixelRatio);
     currentLevelText.anchor.set(0.5);
 
     this.addChild(currentLevelText);
   }
 
   private initScore(): void {
-    const score = this.scoreText = new Text({
+    const scoreText = this.scoreText = new Text({
       text: 'Score: 0',
       style: {
         fontFamily: 'riky',
@@ -73,8 +88,9 @@ export default class GameplayScreen extends AbstractScreen {
       },
     });
 
-    score.anchor.set(0.5);
+    scoreText.resolution = Math.min(window.devicePixelRatio, SCENE_CONFIG.maxPixelRatio);
+    scoreText.anchor.set(0.5);
 
-    this.addChild(score);
+    this.addChild(scoreText);
   }
 }

@@ -184,7 +184,7 @@ export default class PlayerCharacter extends THREE.Group {
     this.setGridPositionOnActiveSide(gridPosition.x, gridPosition.y);
   }
 
-  public death(): void {
+  public death(sendSignal: boolean = true): void {
     this.setState(PlayerCharacterState.Death);
     this.isActive = false;
 
@@ -220,7 +220,10 @@ export default class PlayerCharacter extends THREE.Group {
         this.hide();
         (<THREE.Material>this.view.material).opacity = 1;
         this.view.castShadow = true;
-        this.emitter.emit('onDeathAnimationEnd');
+
+        if (sendSignal) {
+          this.emitter.emit('onDeathAnimationEnd');
+        }
       });
   }
 

@@ -5,10 +5,14 @@ import mitt, { Emitter } from 'mitt';
 import { ScreenType } from '../scene/Enums/UI/ScreenType';
 import AbstractScreen from './Screens/AbstractScreen';
 import IntroScreen from './Screens/IntroScreen';
+import { ILevelScore } from '../scene/Interfaces/IScore';
+import LoseScreen from './Screens/LoseScreen';
+import GameWinScreen from './Screens/GameWinScreen';
 
 type Events = {
-  onStartClick: string;
-  onNextLevelClick: string;
+  onStartClick: void;
+  onNextLevelClick: void;
+  onStartAgain: void;
 };
 
 export default class ScreensController extends PIXI.Container {
@@ -42,10 +46,42 @@ export default class ScreensController extends PIXI.Container {
     return this.activeScreen;
   }
 
+  public updateLevelText(level: number): void {
+    const gameplayScreen = this.screens[ScreenType.Gameplay] as GameplayScreen;
+    gameplayScreen.updateLevelText(level);
+  }
+
+  public updateScore(score: number): void {
+    const gameplayScreen = this.screens[ScreenType.Gameplay] as GameplayScreen;
+    gameplayScreen.updateScore(score);
+  }
+
+  public updateLives(lives: number): void {
+    const gameplayScreen = this.screens[ScreenType.Gameplay] as GameplayScreen;
+    gameplayScreen.updateLives(lives);
+  }
+
+  public setLevelTime(time: number): void {
+    const gameplayScreen = this.screens[ScreenType.LevelWin] as LevelWinScreen;
+    gameplayScreen.setLevelTime(time);
+  }
+
+  public setScoreForLevel(score: ILevelScore): void {
+    const levelWinScreen = this.screens[ScreenType.LevelWin] as LevelWinScreen;
+    levelWinScreen.setScoreForLevel(score);
+  }
+
+  public setOverallScore(score: number): void {
+    const gameWinScreen = this.screens[ScreenType.GameWin] as GameWinScreen;
+    gameWinScreen.setOverallScore(score);
+  }
+
   private init(): void {
     this.initIntroScreen();
     this.initGameplayScreen();
     this.initLevelWinScreen();
+    this.initLoseScreen();
+    this.initGameWinScreen();
 
     this.initSignals();
   }
@@ -77,10 +113,29 @@ export default class ScreensController extends PIXI.Container {
     this.screens[ScreenType.LevelWin] = levelWinScreen;
   }
 
+  private initLoseScreen(): void {
+    const loseScreen = new LoseScreen();
+    this.addChild(loseScreen);
+
+    loseScreen.hide(true);
+
+    this.screens[ScreenType.Lose] = loseScreen;
+  }
+
+  private initGameWinScreen(): void {
+    const gameWinScreen = new GameWinScreen();
+    this.addChild(gameWinScreen);
+    gameWinScreen.hide(true);
+
+    this.screens[ScreenType.GameWin] = gameWinScreen;
+  }
+
   private initSignals(): void {
     const gameplayScreen = this.screens[ScreenType.Gameplay] as GameplayScreen;
     const levelWinScreen = this.screens[ScreenType.LevelWin] as LevelWinScreen;
     const introScreen = this.screens[ScreenType.Intro] as IntroScreen;
+    const loseScreen = this.screens[ScreenType.Lose] as LoseScreen;
+    const gameWinScreen = this.screens[ScreenType.GameWin] as GameWinScreen;
 
     levelWinScreen.emitter.on('onNextLevelClick', () => {
       this.emitter.emit('onNextLevelClick');
@@ -91,6 +146,18 @@ export default class ScreensController extends PIXI.Container {
     introScreen.emitter.on('onStartClick', () => {
       this.emitter.emit('onStartClick');
       introScreen.hide();
+      gameplayScreen.show();
+    });
+
+    loseScreen.emitter.on('onStartAgain', () => {
+      this.emitter.emit('onStartAgain');
+      loseScreen.hide();
+      gameplayScreen.show();
+    });
+
+    gameWinScreen.emitter.on('onStartAgain', () => {
+      this.emitter.emit('onStartAgain');
+      gameWinScreen.hide();
       gameplayScreen.show();
     });
   }

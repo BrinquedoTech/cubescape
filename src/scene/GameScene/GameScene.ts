@@ -26,11 +26,19 @@ import { IWallSpikeConfig } from '../Interfaces/IEnemyConfig';
 import { GameState } from '../Enums/GameState';
 import mitt, { Emitter } from 'mitt';
 import { LightController } from './LightController';
-import Coins from './Coins/Coins';
+import CoinsController from './Coins/CoinsController';
+import { ScoreConfig } from '../Configs/ScoreConfig';
+import { ILevelScore } from '../Interfaces/IScore';
+import GameplayConfig from '../Configs/Main/GameplayConfig';
 
 type Events = {
-  onWinLevel: string;
-  onPressStart: string;
+  onWinLevel: { levelTime: number; levelScore: ILevelScore };
+  onPressStart: void;
+  updateLevelOnStartLevel: number;
+  updateScore: number;
+  updateLives: number;
+  onLoseGame: void;
+  onWinGame: number;
 };
 
 export default class GameScene extends THREE.Group {
@@ -41,7 +49,7 @@ export default class GameScene extends THREE.Group {
   private mapController: MapController;
   private cameraController: CameraController;
   private enemiesController: EnemiesController;
-  private coins: Coins;
+  private coinsController: CoinsController;
 
   private camera: THREE.PerspectiveCamera;
   private state: GameState = GameState.Paused;
@@ -55,6 +63,12 @@ export default class GameScene extends THREE.Group {
   private waitingForEndLevel: boolean = false;
   private nextMoveDirection: MoveDirection = null;
   private wallSpikeOnTargetPosition: string = '';
+
+  private score: number = 0;
+  private levelScore: ILevelScore;
+  private levelTime: number = 0;
+
+  private lives: number = GameplayConfig.lives;
 
   public emitter: Emitter<Events> = mitt<Events>();
 
@@ -72,59 +86,37 @@ export default class GameScene extends THREE.Group {
     this.cameraController.update(dt);
     this.finishLevelObject.update(dt);
     this.enemiesController.update(dt);
-    this.coins.update(dt);
+    this.coinsController.update(dt);
 
     this.updateCollisions();
-  }
-
-  private updateCollisions(): void {
-    if (this.playerCharacter.isActivated()) {
-      this.updateCoinsCollisions();
-      this.updateFloorSpikesCollisions();
-    }
-  }
-
-  private updateCoinsCollisions(): void {
-    const playerCharacterBody: THREE.Mesh = this.playerCharacter.getBody();
-    const currentSide: CubeSide = this.cube.getCurrentSide();
-    const coinsBodies: THREE.Mesh[] = this.coins.getBodiesForSide(currentSide);
-
-    if (coinsBodies.length > 0) {
-      for (let i = 0; i < coinsBodies.length; i++) {
-        const coinBody: THREE.Mesh = coinsBodies[i];
-  
-        if (coinBody.userData.config.isActive && playerCharacterBody.userData.obb.intersectsOBB(coinBody.userData.obb)) {
-          const id: number = coinBody.userData.config.instanceId;
-          this.coins.hideCoin(id);
-          this.coins.deactivateCoin(id);
-        }
-      }
-    }
-  }
-
-  private updateFloorSpikesCollisions(): void {
-    const playerCharacterBody: THREE.Mesh = this.playerCharacter.getBody();
-    const currentSide: CubeSide = this.cube.getCurrentSide();
-    const floorSpikesBodies: THREE.Mesh[] = this.enemiesController.getFloorSpikesBodiesForSide(currentSide);
-
-    if (floorSpikesBodies && floorSpikesBodies.length > 0) {
-      for (let i = 0; i < floorSpikesBodies.length; i++) {
-        const floorSpikeBody: THREE.Mesh = floorSpikesBodies[i];
-
-        if (floorSpikeBody.userData.config.isActive && playerCharacterBody.userData.obb.intersectsOBB(floorSpikeBody.userData.obb)) {
-          this.playerCharacter.death();
-        }
-      }
-    }
+    this.updateLevelTime(dt);
   }
 
   public startGame(): void {
+    this.resetScoreForLevel();
+    this.emitter.emit('updateLevelOnStartLevel', this.levelIndex);
+
     if (!this.cube.getIntroActive()) {
       this.isIntroActive = false;
       this.activateGame();
     } else {
       this.cube.stopIntroAnimation();
     }
+  }
+
+  public startGameAgain(): void {
+    this.removeLevel();
+    this.reset();
+
+    this.levelIndex = 0;
+    this.score = 0;
+    this.lives = GameplayConfig.lives;
+
+    this.emitter.emit('updateLevelOnStartLevel', this.levelIndex);
+    this.emitter.emit('updateScore', this.score);
+    this.emitter.emit('updateLives', this.lives);
+
+    this.startGameWithoutIntro();
   }
 
   public startIntro(): void {
@@ -155,7 +147,7 @@ export default class GameScene extends THREE.Group {
     this.playerCharacter.init(levelConfig);
     this.finishLevelObject.init(levelConfig);
     this.enemiesController.init(levelConfig);
-    this.coins.init(levelConfig);
+    this.coinsController.init(levelConfig);
   }
 
   public rotateCube(rotateDirection: RotateDirection): void {
@@ -167,13 +159,66 @@ export default class GameScene extends THREE.Group {
   }
 
   public startNextLevel(): void {
+    this.emitter.emit('updateLevelOnStartLevel', this.levelIndex + 1);
+    this.emitter.emit('updateScore', this.score);
+
+    this.resetScoreForLevel();
     this.cube.winLevelAnimation();
+  }
+
+  private updateCollisions(): void {
+    if (this.playerCharacter.isActivated()) {
+      this.updateCoinsCollisions();
+      this.updateFloorSpikesCollisions();
+    }
+  }
+
+  private updateCoinsCollisions(): void {
+    const playerCharacterBody: THREE.Mesh = this.playerCharacter.getBody();
+    const currentSide: CubeSide = this.cube.getCurrentSide();
+    const coinsBodies: THREE.Mesh[] = this.coinsController.getBodiesForSide(currentSide);
+
+    if (coinsBodies.length > 0) {
+      for (let i = 0; i < coinsBodies.length; i++) {
+        const coinBody: THREE.Mesh = coinsBodies[i];
+  
+        if (coinBody.userData.config.isActive && playerCharacterBody.userData.obb.intersectsOBB(coinBody.userData.obb)) {
+          const id: number = coinBody.userData.config.instanceId;
+          this.coinsController.hideCoin(id);
+          this.coinsController.deactivateCoin(id);
+
+          this.updateScoreForCoins();
+        }
+      }
+    }
+  }
+
+  private updateFloorSpikesCollisions(): void {
+    const playerCharacterBody: THREE.Mesh = this.playerCharacter.getBody();
+    const currentSide: CubeSide = this.cube.getCurrentSide();
+    const floorSpikesBodies: THREE.Mesh[] = this.enemiesController.getFloorSpikesBodiesForSide(currentSide);
+
+    if (floorSpikesBodies && floorSpikesBodies.length > 0) {
+      for (let i = 0; i < floorSpikesBodies.length; i++) {
+        const floorSpikeBody: THREE.Mesh = floorSpikesBodies[i];
+
+        if (floorSpikeBody.userData.config.isActive && playerCharacterBody.userData.obb.intersectsOBB(floorSpikeBody.userData.obb)) {
+          this.onPlayerDeath();
+        }
+      }
+    }
+  }
+
+  private updateLevelTime(dt: number): void {
+    if (this.state === GameState.Active) {
+      this.levelTime += dt;
+    }
   }
 
   private activateGame(): void {
     this.state = GameState.Active;
     this.playerCharacter.showAnimation();
-    this.coins.activateCoins();
+    this.coinsController.activateCoins();
   }
 
   private moveCharacter(moveDirection: MoveDirection): void {
@@ -212,7 +257,7 @@ export default class GameScene extends THREE.Group {
         const isCollideWallSpikes: boolean = this.checkCollideWallSpikes(); 
   
         if (isCollideWallSpikes) {
-          this.playerCharacter.death();
+          this.onPlayerDeath();
           return;
         }
       }
@@ -280,6 +325,21 @@ export default class GameScene extends THREE.Group {
     return cellX === -1 || cellY === -1 || cellX === mapSize.x - 2 || cellY === mapSize.y - 2;
   }
 
+  private updateScoreForCoins(): void {
+    this.score += ScoreConfig.coin;
+    this.levelScore.coinsCollected += 1;
+
+    this.emitter.emit('updateScore', this.score);
+  }
+
+  private resetScoreForLevel(): void {
+    this.levelScore = {
+      coinsCollected: 0,
+      bonusAllCoins: false,
+      timeBonus: 0,
+    };
+  }
+
   private init(): void {
     this.initMapController();
     
@@ -328,8 +388,8 @@ export default class GameScene extends THREE.Group {
   }
 
   private initCoinsController(): void {
-    const coins = this.coins = new Coins();
-    this.cube.add(coins);
+    const coinsController = this.coinsController = new CoinsController();
+    this.cube.add(coinsController);
   }
 
   private initCameraController(): void {
@@ -394,7 +454,7 @@ export default class GameScene extends THREE.Group {
       const isCollideWallSpikes: boolean = this.checkCollideWallSpikes(); 
 
       if (isCollideWallSpikes) {
-        this.playerCharacter.death();
+        this.onPlayerDeath();
         return;
       }
     }
@@ -406,6 +466,18 @@ export default class GameScene extends THREE.Group {
     if (this.nextMoveDirection && !this.waitingForCubeRotation) {
       this.moveCharacter(this.nextMoveDirection);
       this.nextMoveDirection = null;
+    }
+  }
+
+  private onPlayerDeath(): void {
+    this.lives--;
+    this.emitter.emit('updateLives', this.lives);
+
+    if (this.lives === 0) {
+      this.playerCharacter.death(false);
+      this.emitter.emit('onLoseGame');
+    } else {
+      this.playerCharacter.death();
     }
   }
 
@@ -442,10 +514,35 @@ export default class GameScene extends THREE.Group {
   private onLevelEnd(): void {
     this.state = GameState.Paused;
     this.playerCharacter.setActiveState(false);
-
     this.playerCharacter.hideAnimation();
 
-    this.emitter.emit('onWinLevel');
+    this.calculateLevelScore();
+
+    if (this.levelIndex === LevelsQueue.length - 1) {
+      this.emitter.emit('onWinGame', this.score);
+    } else {
+      this.emitter.emit('onWinLevel', { levelTime: this.levelTime, levelScore: this.levelScore });
+    }
+  }
+
+  private calculateLevelScore(): void {
+    const allCoinsInLevel: number = this.coinsController.getCoinsCount();
+    const collectedCoins: number = this.levelScore.coinsCollected;
+    this.levelScore.bonusAllCoins = allCoinsInLevel === collectedCoins;
+
+    if (this.levelScore.bonusAllCoins) {
+      this.score += ScoreConfig.allCoinsBonus;
+    }
+
+    const currentLevelType: LevelType = LevelsQueue[this.levelIndex];
+    const timeForScore: number = ScoreConfig.timeForLevel[currentLevelType];
+
+    if (this.levelTime < timeForScore) {
+      const bonusScoreTime: number = Math.ceil(timeForScore - this.levelTime) * ScoreConfig.bonusForSecond;
+      this.score += bonusScoreTime;
+
+      this.levelScore.timeBonus = bonusScoreTime;
+    }
   }
 
   private onCubeWinLevelAnimationEnd(): void {
@@ -474,6 +571,7 @@ export default class GameScene extends THREE.Group {
     this.nextCubeRotationDirection = null;
     this.wallSpikeOnTargetPosition = '';
     this.currentMoveDirection = null;
+    this.levelTime = 0;
   }
 
   private removeLevel(): void {
@@ -481,7 +579,7 @@ export default class GameScene extends THREE.Group {
     this.cube.reset();
     this.cube.removeCube();
     this.enemiesController.removeEnemies();
-    this.coins.removeCoins();
+    this.coinsController.removeCoins();
   }
 
   private hideLevel(): void {

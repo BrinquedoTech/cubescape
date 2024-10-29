@@ -4,6 +4,7 @@ import RotateButtons from './RotateButtons';
 import DebugConfig from '../scene/Configs/Main/DebugConfig';
 import ScreensController from './ScreensController';
 import { ScreenType } from '../scene/Enums/UI/ScreenType';
+import { ILevelScore } from '../scene/Interfaces/IScore';
 
 type Events = {
   rotateRight: string;
@@ -14,6 +15,7 @@ type Events = {
   rotateCounterClockwise: string;
   onStartClick: string;
   onNextLevelClick: string;
+  onStartAgain: string;
 };
 
 export default class UI extends PIXI.Container {
@@ -54,6 +56,30 @@ export default class UI extends PIXI.Container {
     return this.screensController.getActiveScreen();
   }
 
+  public updateLevelText(level: number): void {
+    this.screensController.updateLevelText(level);
+  }
+
+  public updateScore(score: number): void {
+    this.screensController.updateScore(score);
+  }
+
+  public updateLives(lives: number): void {
+    this.screensController.updateLives(lives);
+  }
+
+  public setLevelTime(time: number): void {
+    this.screensController.setLevelTime(time);
+  }
+
+  public setScoreForLevel(score: ILevelScore): void {
+    this.screensController.setScoreForLevel(score);
+  }
+
+  public setOverallScore(score: number): void {
+    this.screensController.setOverallScore(score);
+  }
+
   private init(): void {
     this.initScreensController();
     this.initDebugRotateButtons();
@@ -79,5 +105,6 @@ export default class UI extends PIXI.Container {
 
     this.screensController.emitter.on('onStartClick', () => this.emitter.emit('onStartClick'));
     this.screensController.emitter.on('onNextLevelClick', () => this.emitter.emit('onNextLevelClick'));
+    this.screensController.emitter.on('onStartAgain', () => this.emitter.emit('onStartAgain'));
   }
 }

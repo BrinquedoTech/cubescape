@@ -13,7 +13,7 @@ import { CoinsConfig } from '../../Configs/CoinsConfig';
 import { OBB } from 'three/addons/math/OBB.js';
 import DebugConfig from '../../Configs/Main/DebugConfig';
 
-export default class Coins extends THREE.Group {
+export default class CoinsController extends THREE.Group {
   private levelConfig: ILevelConfig;
   private coinsInstanced: THREE.InstancedMesh;
   private coinsConfig = [];
@@ -154,6 +154,10 @@ export default class Coins extends THREE.Group {
     return this.bodies.filter((body) => {
       return body.userData.config.mapConfig.side === side;
     });
+  }
+
+  public getCoinsCount(): number {
+    return this.coinsConfig.length;
   }
 
   private initBodies(coinsObjects: THREE.Object3D[]): void {

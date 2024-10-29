@@ -4,7 +4,7 @@ const SCENE_CONFIG = {
   fxaaPass: false,
   maxPixelRatio: 2,
   fog: {
-    enabled: true,
+    enabled: false,
     desktop: { near: 18, far: 24 },
     mobile: { 
       portrait: { near: 21, far: 25.5 },
