@@ -9,12 +9,6 @@ const textures = [
 ];
 
 const models = [
-  'spikes_01.glb',
-  'spikes_02.glb',
-  'spikes_03.glb',
-  'spikes_04.glb',
-  'spikes_05.glb',
-
   'wall_01.glb',
   'wall_02.glb',
   'wall_03.glb',
@@ -56,6 +50,8 @@ const models = [
   'floor_spikes_base.glb',
 
   'coin.glb',
+
+  'wall_spikes.glb',
 ];
 
 const pixiAssets = [

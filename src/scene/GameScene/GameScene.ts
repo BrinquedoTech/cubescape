@@ -112,7 +112,6 @@ export default class GameScene extends THREE.Group {
         const floorSpikeBody: THREE.Mesh = floorSpikesBodies[i];
 
         if (floorSpikeBody.userData.config.isActive && playerCharacterBody.userData.obb.intersectsOBB(floorSpikeBody.userData.obb)) {
-          console.log('Death');
           this.playerCharacter.death();
         }
       }
@@ -201,6 +200,15 @@ export default class GameScene extends THREE.Group {
       if (this.isCellOnEdge(targetGridPosition.x, targetGridPosition.y)) {
         this.waitingForCubeRotation = true;
         this.nextCubeRotationDirection = MovementDirectionByCubeRotationConfig[movingDirection][currentRotationDirection].cubeRotationDirection;
+      }
+    } else {
+      if (this.wallSpikeOnTargetPosition) {
+        const isCollideWallSpikes: boolean = this.checkCollideWallSpikes(); 
+  
+        if (isCollideWallSpikes) {
+          this.playerCharacter.death();
+          return;
+        }
       }
     }
 
@@ -377,14 +385,10 @@ export default class GameScene extends THREE.Group {
     }
 
     if (this.wallSpikeOnTargetPosition) {
-      const wallSpikeConfig: IWallSpikeConfig = CubeHelper.getEnemyConfigBySymbol(this.levelConfig, this.wallSpikeOnTargetPosition) as unknown as IWallSpikeConfig;
-      const dangerCells: THREE.Vector2[] = CubeHelper.getDangerCellsForWallSpike(wallSpikeConfig);
-      const playerCharacterGridPosition: THREE.Vector2 = this.playerCharacter.getGridPosition();
-      this.wallSpikeOnTargetPosition = '';
+      const isCollideWallSpikes: boolean = this.checkCollideWallSpikes(); 
 
-      if (dangerCells.some((dangerCell: THREE.Vector2) => CubeHelper.isGridCellsEqual(dangerCell, playerCharacterGridPosition))) {
+      if (isCollideWallSpikes) {
         this.playerCharacter.death();
-      
         return;
       }
     }
@@ -397,6 +401,15 @@ export default class GameScene extends THREE.Group {
       this.moveCharacter(this.nextMoveDirection);
       this.nextMoveDirection = null;
     }
+  }
+
+  private checkCollideWallSpikes(): boolean {
+    const wallSpikeConfig: IWallSpikeConfig = CubeHelper.getEnemyConfigBySymbol(this.levelConfig, this.wallSpikeOnTargetPosition) as unknown as IWallSpikeConfig;
+    const dangerCells: THREE.Vector2[] = CubeHelper.getDangerCellsForWallSpike(wallSpikeConfig);
+    const playerCharacterGridPosition: THREE.Vector2 = this.playerCharacter.getGridPosition();
+    this.wallSpikeOnTargetPosition = '';
+
+    return dangerCells.some((dangerCell: THREE.Vector2) => CubeHelper.isGridCellsEqual(dangerCell, playerCharacterGridPosition))
   }
 
   private onCubeRotatingEnd(): void {
@@ -481,7 +494,6 @@ export default class GameScene extends THREE.Group {
 
   private resetLevelOnDeath(): void {
     this.reset();
-    this.coins.respawnCoins();
     this.cube.rotateToStartSide();
   }
 

@@ -17,15 +17,15 @@ const Level05: ILevelConfig = {
     sides: {
       [CubeSide.Front]: [
         ['  ', 'ST', '  ', 'X1', 'CC', 'CC', '  '],
-        ['  ', '  ', '  ', 'WW', 'CC', 'CC', '  '],
-        ['  ', '  ', '  ', 'WW', 'CC', 'CC', '  '],
+        ['  ', '  ', '  ', 'X8', 'CC', 'CC', '  '],
+        ['  ', '  ', '  ', 'X9', 'CC', 'CC', '  '],
         ['  ', '  ', 'WW', 'WW', 'WW', '  ', '  '],
         ['  ', '  ', '  ', 'WW', '  ', '  ', '  '],
-        ['  ', 'CC', '  ', '  ', '  ', '  ', '  '],
+        ['  ', 'CC', '  ', '  ', '  ', 'I1', 'I2'],
         ['CC', '  ', '  ', '  ', '  ', '  ', '  '],
       ],
       [CubeSide.Left]: [
-        ['X3', '  ', '  ', '  ', '  ', '  ', '  '],
+        ['X3', 'X7', '  ', '  ', '  ', '  ', '  '],
         ['  ', '  ', '  ', '  ', '  ', '  ', '  '],
         ['  ', 'C', '  ', '  ', '  ', '  ', '  '],
         ['  ', '  ', '  ', '  ', '  ', '  ', '  '],
@@ -93,6 +93,13 @@ const Level05: ILevelConfig = {
       { id: 4, directions: [Direction.Right] },
       { id: 5, directions: [Direction.Left] },
       { id: 6, directions: [Direction.Left] },
+      { id: 7, directions: [Direction.Down] },
+      { id: 8, directions: [Direction.Right, Direction.Left] },
+      { id: 9, directions: [Direction.Right] },
+    ],
+    [EnemyType.FloorSpike]: [
+      { id: 1, inactiveTime: 1, activeTime: 2 },
+      { id: 2, inactiveTime: 2, activeTime: 1 },
     ],
   }
 };

@@ -6,7 +6,6 @@ import { ILevelConfig } from '../../../Interfaces/ILevelConfig';
 import InstancesHelper from '../../../Helpers/InstancesHelper';
 import ThreeJSHelper from '../../../Helpers/ThreeJSHelper';
 import { Direction } from '../../../Enums/Direction';
-import { WallSpikeType } from '../../../Enums/WallSpikeType';
 import MapHelper from '../../../Helpers/MapHelper';
 import { CellType } from '../../../Enums/CellType';
 import GameplayConfig from '../../../Configs/Main/GameplayConfig';
@@ -15,13 +14,13 @@ import { CubeSideAxisConfig, SideVectorConfig } from '../../../Configs/SideConfi
 import { WallCellGeometryConfig, WallModelsConfig } from '../../../Configs/Cells/WallCellsConfig';
 import Materials from '../../../../core/Materials';
 import { MaterialType } from '../../../Enums/MaterialType';
-
-// type ConfigByType = { [key in WallSpikeType]?: IWallSpikeConfig[] };
+import { WallSpikesGeneralConfig } from '../../../Configs/Enemies/WallSpikesConfig';
 
 export default class WallSpikes extends THREE.Group {
   private configs: IWallSpikeConfig[];
   private levelMap: ILevelConfig;
-  private wallSpikesInstancedByType: { [key in WallSpikeType]?: THREE.InstancedMesh } = {};
+  private wallCellsInstanced: THREE.InstancedMesh;
+  private spikesInstanced: THREE.InstancedMesh;
 
   constructor(configs: IWallSpikeConfig[]) {
     super();
@@ -29,51 +28,13 @@ export default class WallSpikes extends THREE.Group {
     this.configs = configs;
   }
 
-  public update(_dt: number): void {
-
-  }
+  public update(_dt: number): void { }
 
   public init(levelConfig: ILevelConfig): void {
-
     this.createMap(levelConfig);
 
     this.initWalls();
-
-
-
-    // const material: THREE.MeshStandardMaterial = new THREE.MeshStandardMaterial({ color: 0xffaa00 });
-
-    // const configByType: ConfigByType = this.createConfigByType();
-
-    // for (let wallSpikeType in configByType) {
-    //   const wallSpikeObjects: THREE.Object3D[] = [];
-    //   const configsByType: IWallSpikeConfig[] = configByType[wallSpikeType];
-
-    //   const modelName: string = WallSpikesTypeConfig[wallSpikeType].model;
-    //   const geometry: THREE.BufferGeometry = ThreeJSHelper.getGeometryFromModel(modelName);
-    //   ThreeJSHelper.setGeometryRotation(geometry, WallSpikesGeneralConfig.modelStartRotation);
-
-    //   for (let i = 0; i < configsByType.length; i++) {
-    //     const config: IWallSpikeConfig = configsByType[i];
-    //     const sidePosition: THREE.Vector2 = config.position;
-    //     const side: CubeSide = config.side;
-
-    //     const wallSpike: THREE.Object3D = new THREE.Object3D();
-
-    //     const position: THREE.Vector3 = CubeHelper.getPositionByGridAndSide(this.levelConfig.size, side, sidePosition.x, sidePosition.y);
-    //     wallSpike.position.copy(position);
-
-    //     const wallsSpikeModelDirection: Direction = this.getWallSpikeModelDirection(config.directions);
-    //     CubeHelper.setSideRotation(wallSpike, side);
-    //     CubeHelper.setRotationByDirection(wallSpike, side, wallsSpikeModelDirection);
-
-    //     wallSpikeObjects.push(wallSpike);
-    //   }
-
-    //   const wallSpikesInstanced = InstancesHelper.createStaticInstancedMesh(wallSpikeObjects, material, geometry);
-    //   this.add(wallSpikesInstanced);
-    //   this.wallSpikesInstancedByType[wallSpikeType] = wallSpikesInstanced;
-    // }
+    this.initSpikes();
   }
 
   private createMap(levelConfig: ILevelConfig): void {
@@ -92,72 +53,42 @@ export default class WallSpikes extends THREE.Group {
 
     for (let i = 0; i < this.configs.length; i++) {
       const config: IWallSpikeConfig = this.configs[i];
-
       const { x, y }: THREE.Vector2 = config.position;
       const cubeSide: CubeSide = config.side;
-
       const sideMap: string[][] = this.levelMap.map.sides[cubeSide];
 
       if (y > 0 && sideMap[y - 1][x] && !config.directions.includes(Direction.Up)) {
-        const direction: Direction = Direction.Up;
         const cellType: CellType = CubeHelper.getCellTypeBySymbol(this.levelMap.map.sides[cubeSide][y - 1][x]);
+        const wall = this.checkToCreateWall(cellType, cubeSide, x, y, Direction.Up);
 
-        if (cellType === CellType.Empty) {
-          const wall = new THREE.Object3D();
-
-          this.setCellPosition(wall, cubeSide, y, x);
-          CubeHelper.setSideRotation(wall, cubeSide);
-          CubeHelper.setRotationByDirection(wall, cubeSide, direction);
-          wall.scale.set(GameplayConfig.grid.scale, GameplayConfig.grid.scale, GameplayConfig.grid.scale);
-
+        if (wall) {
           wallCells.push(wall);
         }
       }
 
       if (y < this.levelMap.size.y - 1 && sideMap[y + 1][x] && !config.directions.includes(Direction.Down)) {
-        const direction: Direction = Direction.Down;
         const cellType: CellType = CubeHelper.getCellTypeBySymbol(this.levelMap.map.sides[config.side][y + 1][x]);
+        const wall = this.checkToCreateWall(cellType, cubeSide, x, y, Direction.Down);
 
-        if (cellType === CellType.Empty) {
-          const wall = new THREE.Object3D();
-
-          this.setCellPosition(wall, cubeSide, y, x);
-          CubeHelper.setSideRotation(wall, cubeSide);
-          CubeHelper.setRotationByDirection(wall, cubeSide, direction);
-          wall.scale.set(GameplayConfig.grid.scale, GameplayConfig.grid.scale, GameplayConfig.grid.scale);
-
+        if (wall) {
           wallCells.push(wall);
         }
       }
 
       if (x > 0 && sideMap[y][x - 1] && !config.directions.includes(Direction.Left)) {
-        const direction: Direction = Direction.Left;
         const cellType: CellType = CubeHelper.getCellTypeBySymbol(this.levelMap.map.sides[config.side][y][x - 1]);
+        const wall = this.checkToCreateWall(cellType, cubeSide, x, y, Direction.Left);
 
-        if (cellType === CellType.Empty) {
-          const wall = new THREE.Object3D();
-
-          this.setCellPosition(wall, cubeSide, y, x);
-          CubeHelper.setSideRotation(wall, cubeSide);
-          CubeHelper.setRotationByDirection(wall, cubeSide, direction);
-          wall.scale.set(GameplayConfig.grid.scale, GameplayConfig.grid.scale, GameplayConfig.grid.scale);
-
+        if (wall) {
           wallCells.push(wall);
         }
       }
 
       if (x < this.levelMap.size.x - 1 && sideMap[y][x + 1] && !config.directions.includes(Direction.Right)) {
-        const direction: Direction = Direction.Right;
         const cellType: CellType = CubeHelper.getCellTypeBySymbol(this.levelMap.map.sides[config.side][y][x + 1]);
+        const wall = this.checkToCreateWall(cellType, cubeSide, x, y, Direction.Right);
 
-        if (cellType === CellType.Empty) {
-          const wall = new THREE.Object3D();
-
-          this.setCellPosition(wall, cubeSide, y, x);
-          CubeHelper.setSideRotation(wall, cubeSide);
-          CubeHelper.setRotationByDirection(wall, cubeSide, direction);
-          wall.scale.set(GameplayConfig.grid.scale, GameplayConfig.grid.scale, GameplayConfig.grid.scale);
-
+        if (wall) {
           wallCells.push(wall);
         }
       }
@@ -169,11 +100,60 @@ export default class WallSpikes extends THREE.Group {
     const geometry: THREE.BufferGeometry = ThreeJSHelper.getGeometryFromModel(modelName);
     ThreeJSHelper.setGeometryRotation(geometry, WallCellGeometryConfig.rotation);
 
-    const wallCellsInstanced = InstancesHelper.createStaticInstancedMesh(wallCells, material, geometry);
+    const wallCellsInstanced = this.wallCellsInstanced = InstancesHelper.createStaticInstancedMesh(wallCells, material, geometry);
     this.add(wallCellsInstanced);
 
     wallCellsInstanced.receiveShadow = true;
     wallCellsInstanced.castShadow = true;
+  }
+
+  private initSpikes(): void {
+    const spikeObjects = [];
+
+    for (let i = 0; i < this.configs.length; i++) {
+      const config: IWallSpikeConfig = this.configs[i];
+      const { x, y }: THREE.Vector2 = config.position;
+      const cubeSide: CubeSide = config.side;
+
+      for (let i = 0; i < config.directions.length; i++) {
+        const direction: Direction = config.directions[i];
+
+        const spike = new THREE.Object3D();
+
+        this.setCellPosition(spike, cubeSide, y, x);
+        CubeHelper.setSideRotation(spike, cubeSide);
+        CubeHelper.setRotationByDirection(spike, cubeSide, direction);
+        spike.scale.set(GameplayConfig.grid.scale, GameplayConfig.grid.scale, GameplayConfig.grid.scale);
+
+        spikeObjects.push(spike);
+      }
+    }
+
+    const material: THREE.Material = Materials.getInstance().materials[MaterialType.Main];
+
+    const geometry: THREE.BufferGeometry = ThreeJSHelper.getGeometryFromModel('wall_spikes');
+    ThreeJSHelper.setGeometryRotation(geometry, WallSpikesGeneralConfig.modelStartRotation);
+
+    const spikesInstanced = this.spikesInstanced = InstancesHelper.createStaticInstancedMesh(spikeObjects, material, geometry);
+    this.add(spikesInstanced);
+
+    spikesInstanced.receiveShadow = true;
+    spikesInstanced.castShadow = true;
+  }
+
+  private checkToCreateWall(cellType: CellType, cubeSide: CubeSide, x: number, y: number, direction: Direction): THREE.Object3D | null {
+    if (cellType === CellType.Empty) {
+      const wall = new THREE.Object3D();
+
+      this.setCellPosition(wall, cubeSide, y, x);
+      CubeHelper.setSideRotation(wall, cubeSide);
+      CubeHelper.setRotationByDirection(wall, cubeSide, direction);
+      wall.scale.set(GameplayConfig.grid.scale, GameplayConfig.grid.scale, GameplayConfig.grid.scale);
+
+      return wall;
+    }
+
+    return null;
   }
 
   private setCellPosition(cell: THREE.Object3D, cubeSide: CubeSide, x: number, y: number): void {
@@ -192,73 +172,12 @@ export default class WallSpikes extends THREE.Group {
   }
 
   public kill(): void {
-    for (let wallSpikeType in this.wallSpikesInstancedByType) {
-      const instancedMesh: THREE.InstancedMesh = this.wallSpikesInstancedByType[wallSpikeType];
-      ThreeJSHelper.killInstancedMesh(instancedMesh, this);
+    if (this.wallCellsInstanced) {
+      ThreeJSHelper.disposeInstancedMesh(this.wallCellsInstanced);
+    }
+
+    if (this.spikesInstanced) {
+      ThreeJSHelper.disposeInstancedMesh(this.spikesInstanced);
     }
   }
-
-  // private createConfigByType(): ConfigByType {
-  //   const configByType: ConfigByType = {};
-
-  //   for (let i = 0; i < this.configs.length; i++) {
-  //     const config: IWallSpikeConfig = this.configs[i];
-  //     const wallSpikeType: WallSpikeType = this.getWallSpikeType(config.directions);
-
-  //     if (configByType[wallSpikeType]) {
-  //       configByType[wallSpikeType].push(config);
-  //     } else {
-  //       configByType[wallSpikeType] = [config];
-  //     }
-  //   }
-
-  //   return configByType;
-  // }
-
-  // private getWallSpikeModelDirection(directions: Direction[]): Direction {
-  //   const wallSpikeType: WallSpikeType = this.getWallSpikeType(directions);
-  //   const wallSpikeTypeConfig: IWallSpikesTypesConfig = WallSpikesTypeConfig[wallSpikeType];
-
-  //   for (let i = 0; i < wallSpikeTypeConfig.mainDirection.length; i++) {
-  //     const directionConfig: IWallSpikeByTypeDirections = wallSpikeTypeConfig.mainDirection[i];
-
-  //     if (ArrayHelper.isArraysHasSameValues(directionConfig.type, directions)) {
-  //       return directionConfig.modelDirection;
-  //     }
-  //   }
-
-  //   return null;
-  // }
-
-  // private getWallSpikeType(directions: Direction[]): WallSpikeType {
-  //   for (let type in WallSpikeType) {
-  //     const wallSpikeType: WallSpikeType = WallSpikeType[type];
-  //     const wallSpikeConfig: IWallSpikesTypesConfig = WallSpikesTypeConfig[wallSpikeType];
-  //     const rule: IWallSpikeTypeRule = wallSpikeConfig.rule;
-
-  //     if (rule.directionsCount === directions.length) {
-  //       let isMatch: boolean = true;
-
-  //       if (rule.directions) {
-  //         let isDirectionsMatch: boolean = false;
-  //         for (let i = 0; i < rule.directions.length; i++) {
-  //           const ruleDirections: Direction[] = rule.directions[i];
-
-  //           if (ArrayHelper.isArraysHasSameValues(ruleDirections, directions)) {
-  //             isDirectionsMatch = true;
-  //             break;
-  //           }
-  //         }
-
-  //         isMatch = isDirectionsMatch;
-  //       }
-
-  //       if (isMatch) {
-  //         return wallSpikeType;
-  //       }
-  //     }
-  //   }
-
-  //   return null;
-  // }
 }
