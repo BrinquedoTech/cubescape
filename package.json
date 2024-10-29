@@ -1,7 +1,7 @@
 {
-  "name": "template-three-pixi",
+  "name": "cubescape",
   "version": "0.1.0",
-  "description": "Template Three.js and Pixi.js",
+  "description": "CubeScape game",
   "license": "UNLICENSED",
   "type": "module",
   "scripts": {

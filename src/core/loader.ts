@@ -61,6 +61,8 @@ const pixiAssets = [
   'assets/arrow-down.png',
   'assets/arrow-clockwise.png',
   'assets/arrow-counter-clockwise.png',
+  'fonts/casper.ttf',
+  'fonts/riky.ttf',
 ];
 
 const loadingPercentElement = document.querySelector('.loading-percent');
@@ -93,20 +95,19 @@ export default class Loader {
   _loadPixiAssets() {
     const texturesNames = [];
 
-    pixiAssets.forEach((textureFilename) => {
-      const textureName = textureFilename.replace(/\.[^/.]+$/, "");
+    pixiAssets.forEach((assetFilename) => {
+      const assetName = assetFilename.replace(/\.[^/.]+$/, "");
       // console.log(textureName, textureFilename);
 
-      PIXI.Assets.add({ alias: textureName, src: textureFilename });
+      PIXI.Assets.add({ alias: assetName, src: assetFilename });
 
-      texturesNames.push(textureName);
+      texturesNames.push(assetName);
     });
 
     const texturesPromise = PIXI.Assets.load(texturesNames);
 
     texturesPromise.then((textures) => {
       texturesNames.forEach((name) => {
-        // console.log(name, textures[name]);
         this._onAssetLoad(textures[name], name);
       });
 
