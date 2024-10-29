@@ -6,6 +6,8 @@ const CameraConfig = {
   },
   lookAtPlayer: {
     enabled: false,
+    lerpFactor: 0.03,
+    lerpFactorCubeRotating: 0.5,
   },
 }
 
