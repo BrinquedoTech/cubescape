@@ -39,6 +39,10 @@ export default class CubeIntroRotationController {
     this.isActive = true;
   }
 
+  public getActive(): boolean {
+    return this.isActive;
+  }
+
   public stop(): void {
     this.isActive = false;
 

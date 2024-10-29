@@ -10,6 +10,7 @@ type Events = {
 export default class IntroScreen extends AbstractScreen {
   private startGameText: PIXI.Text;
   private gameNameText: PIXI.Text;
+  private tutorialText: PIXI.Text;
 
   public emitter: Emitter<Events> = mitt<Events>();
 
@@ -21,15 +22,19 @@ export default class IntroScreen extends AbstractScreen {
 
   public onResize(width: number, height: number): void {
     this.gameNameText.x = width * 0.5;
-    this.gameNameText.y = 150;
+    this.gameNameText.y = 100;
 
     this.startGameText.x = width * 0.5;
-    this.startGameText.y = height - 150;
+    this.startGameText.y = height - 300;
+
+    this.tutorialText.x = width * 0.5;
+    this.tutorialText.y = height - 60;
   }
 
   private init(): void {
     this.initGameNameText();
     this.initStartGameText();
+    this.initTutorialText();
   }
 
   private initGameNameText(): void {
@@ -55,8 +60,8 @@ export default class IntroScreen extends AbstractScreen {
       text: 'Start Game',
       style: {
         fontFamily: 'riky',
-        fill: 0x00ff00,
-        fontSize: 70,
+        fill: 0xffffff,
+        fontSize: 100,
         align: 'center',
       },
     });
@@ -71,5 +76,21 @@ export default class IntroScreen extends AbstractScreen {
     startGameText.on('pointerdown', () => {
       this.emitter.emit('onStartClick');
     });
+  }
+
+  private initTutorialText(): void {
+    const tutorialText = this.tutorialText = new Text({
+      text: 'Press w, a, s, d or arrows to move',
+      style: {
+        fontFamily: 'riky',
+        fill: 0xffffff,
+        fontSize: 40,
+        align: 'center',
+      },
+    });
+
+    tutorialText.anchor.set(0.5);
+
+    this.addChild(tutorialText);
   }
 }

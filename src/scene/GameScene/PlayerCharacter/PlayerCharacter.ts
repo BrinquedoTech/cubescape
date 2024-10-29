@@ -175,6 +175,10 @@ export default class PlayerCharacter extends THREE.Group {
     this.sidePosition.set(gridX * GameplayConfig.grid.size, gridY * GameplayConfig.grid.size);
   }
 
+  public getGridPositionBySide(): THREE.Vector2 {
+    return this.gridPosition;
+  }
+
   public updatePositionOnRealPosition(): void {
     const gridPosition: THREE.Vector2 = this.getGridPositionFromRealPosition();
     this.setGridPositionOnActiveSide(gridPosition.x, gridPosition.y);

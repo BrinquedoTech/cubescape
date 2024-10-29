@@ -1,7 +1,7 @@
 
 const DebugConfig = {
   fpsMeter: true,
-  rendererStats: true,
+  rendererStats: false,
   orbitControls: true,
   gui: false,
   gameplay: {

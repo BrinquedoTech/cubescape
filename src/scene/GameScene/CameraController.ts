@@ -4,6 +4,9 @@ import Cube from './Cube/Cube';
 import { CubeState } from '../Enums/CubeState';
 import ThreeJSHelper from '../Helpers/ThreeJSHelper';
 import CameraConfig from '../Configs/Main/CameraConfig';
+import { CubeSide } from '../Enums/CubeSide';
+import { CubeSideAxisConfig } from '../Configs/SideConfig';
+import { CubeRotationDirection } from '../Enums/CubeRotationDirection';
 
 export class CameraController extends THREE.Group {
   private camera: THREE.PerspectiveCamera;
@@ -27,6 +30,10 @@ export class CameraController extends THREE.Group {
 
     if (CameraConfig.lookAtPlayer.enabled) {
       this.lookAtPlayerCharacter(dt);
+    }
+
+    if (CameraConfig.rotationByPlayerPosition.enabled) {
+      this.rotateByPlayerPosition(dt);
     }
   }
 
@@ -71,6 +78,32 @@ export class CameraController extends THREE.Group {
       this.lookAtPosition.lerp(targetPosition, lerpFactor * dt);
 
       this.camera.lookAt(this.lookAtPosition);
+    }
+  }
+
+  private rotateByPlayerPosition(dt: number): void {
+    const axisByRotationDirection = {
+      [CubeRotationDirection.Top]: (x: number, y: number) => { return { x: x, y: y } },
+      [CubeRotationDirection.Right]: (x: number, y: number) => { return { x: y, y: -x } },
+      [CubeRotationDirection.Bottom]: (x: number, y: number) => { return { x: -x, y: -y } },
+      [CubeRotationDirection.Left]: (x: number, y: number) => { return { x: -y, y: x } },
+    }
+
+    if (this.playerCharacter.isActivated()) {
+      const cubeSide: CubeSide = this.cube.getCurrentSide();
+      const cubeSideAxisConfig = CubeSideAxisConfig[cubeSide];
+      const cubeRotationDirection: CubeRotationDirection = this.cube.getCurrentRotationDirection();
+
+      const positionX: number = this.playerCharacter.position[cubeSideAxisConfig.xAxis] * cubeSideAxisConfig.xFactor;
+      const positionY: number = this.playerCharacter.position[cubeSideAxisConfig.yAxis] * cubeSideAxisConfig.yFactor;
+
+      const { x, y } = axisByRotationDirection[cubeRotationDirection](positionX, positionY);
+      let lerpFactor = CameraConfig.rotationByPlayerPosition.lerpFactor * 60 * dt;
+
+      this.camera.position.x = ThreeJSHelper.lerp(this.camera.position.x, x * CameraConfig.rotationByPlayerPosition.distanceCoefficient, lerpFactor);
+      this.camera.position.y = ThreeJSHelper.lerp(this.camera.position.y, -y * CameraConfig.rotationByPlayerPosition.distanceCoefficient, lerpFactor);
+
+      this.camera.lookAt(0, 0, 0);
     }
   }
 }

@@ -119,11 +119,17 @@ export default class GameScene extends THREE.Group {
   }
 
   public startGame(): void {
-    this.cube.stopIntroAnimation();
+    if (!this.cube.getIntroActive()) {
+      this.isIntroActive = false;
+      this.activateGame();
+    } else {
+      this.cube.stopIntroAnimation();
+    }
   }
 
   public startIntro(): void {
     this.isIntroActive = true;
+
     const currentLevelType: LevelType = LevelsQueue[this.levelIndex];
     this.createLevel(currentLevelType);
 
@@ -456,7 +462,9 @@ export default class GameScene extends THREE.Group {
       return;
     }
 
-    this.activateGame();
+    if (this.state !== GameState.Active) {
+      this.activateGame();
+    }
   }
 
   private reset(): void {

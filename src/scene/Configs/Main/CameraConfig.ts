@@ -9,6 +9,11 @@ const CameraConfig = {
     lerpFactor: 0.03,
     lerpFactorCubeRotating: 0.5,
   },
+  rotationByPlayerPosition: {
+    enabled: true,
+    lerpFactor: 0.015,
+    distanceCoefficient: 0.6,
+  }
 }
 
 export default CameraConfig;

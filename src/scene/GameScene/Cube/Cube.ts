@@ -137,6 +137,10 @@ export default class Cube extends THREE.Group {
     this.cubeIntroRotationController.stop();
   }
 
+  public getIntroActive(): boolean {
+    return this.cubeIntroRotationController.getActive();
+  }
+
   private initCubeViewBuilder(): void {
     const cubeViewBuilder = this.cubeViewBuilder = new CubeViewBuilder();
     this.add(cubeViewBuilder);

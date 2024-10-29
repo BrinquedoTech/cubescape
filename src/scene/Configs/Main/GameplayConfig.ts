@@ -9,8 +9,8 @@ const GameplayConfig = {
   cube: {
     rotationSpeed: {
       [CubeRotationType.Regular]: {
-        [CubeRotationAngleType.Angle90]: 2.5,
-        [CubeRotationAngleType.Angle180]: 1.8,
+        [CubeRotationAngleType.Angle90]: 1.8,
+        [CubeRotationAngleType.Angle180]: 1.5,
       },
       [CubeRotationType.ForRespawn]: {
         [CubeRotationAngleType.Angle90]: 3.4,
