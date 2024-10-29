@@ -40,6 +40,13 @@ const CharacterSideConfig: { [key in CubeSide]: (x: number, y: number) => IChara
   [CubeSide.Back]: (x: number, y: number) => { return { xFactor: -1, yFactor: -1, zFactor: -1, x: x, y: y, z: null }},
 }
 
+const AxisByRotationDirection: { [key in CubeRotationDirection]: (x: number, y: number) => { x: number, y: number } } = {
+  [CubeRotationDirection.Top]: (x: number, y: number) => { return { x: x, y: y } },
+  [CubeRotationDirection.Right]: (x: number, y: number) => { return { x: y, y: -x } },
+  [CubeRotationDirection.Bottom]: (x: number, y: number) => { return { x: -x, y: -y } },
+  [CubeRotationDirection.Left]: (x: number, y: number) => { return { x: -y, y: x } },
+}
+
 const LocalEdgeDirections: ILocalEdgeDirections = {
   [CubeSide.Front]: {
     [CubeRotationDirection.Top]: new THREE.Vector3(0, 1, 0),
@@ -143,4 +150,5 @@ export {
   Direction2DVectorConfig,
   NeighboringSidesConfig,
   OppositeSideConfig,
+  AxisByRotationDirection,
 };

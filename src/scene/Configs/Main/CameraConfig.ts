@@ -12,7 +12,7 @@ const CameraConfig = {
   rotationByPlayerPosition: {
     enabled: true,
     lerpFactor: 0.015,
-    distanceCoefficient: 0.6,
+    distanceCoefficient: 0.5,
   }
 }
 
