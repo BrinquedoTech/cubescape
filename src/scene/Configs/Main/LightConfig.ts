@@ -8,11 +8,11 @@ const LightConfig = {
     intensity: 1.3,
   },
   darkMode: {
-    duration: 600,
+    duration: 400,
     backgroundColor: 0x000000,
   },
   lightMode: {
-    duration: 600,
+    duration: 400,
     backgroundColor: 0x666666,
   }
 }

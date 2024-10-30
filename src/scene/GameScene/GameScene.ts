@@ -31,6 +31,7 @@ import { ScoreConfig } from '../Configs/ScoreConfig';
 import { ILevelScore } from '../Interfaces/IScore';
 import GameplayConfig from '../Configs/Main/GameplayConfig';
 import { ILibrariesData } from '../Interfaces/ILibrariesData';
+import { SceneType } from '../Enums/SceneType';
 
 type Events = {
   onWinLevel: { levelTime: number; levelScore: ILevelScore };
@@ -51,7 +52,7 @@ export default class GameScene extends THREE.Group {
   private cameraController: CameraController;
   private enemiesController: EnemiesController;
   private coinsController: CoinsController;
-  // private lightController: LightController;
+  private lightController: LightController;
 
   private camera: THREE.PerspectiveCamera;
   private scene: THREE.Scene;
@@ -73,8 +74,8 @@ export default class GameScene extends THREE.Group {
   private score: number = 0;
   private levelScore: ILevelScore;
   private levelTime: number = 0;
-
   private lives: number = GameplayConfig.lives;
+  private sceneType: SceneType = SceneType.Light;
 
   public emitter: Emitter<Events> = mitt<Events>();
 
@@ -152,6 +153,11 @@ export default class GameScene extends THREE.Group {
 
   public createLevel(levelType: LevelType): void {
     const levelConfig: ILevelConfig = this.levelConfig = LevelsConfig[levelType];
+
+    if (this.sceneType !== levelConfig.sceneType) {
+      this.sceneType = levelConfig.sceneType;
+      this.setSceneType(this.sceneType);
+    }
 
     this.mapController.init(levelConfig);
     this.cube.init(levelConfig);
@@ -392,7 +398,7 @@ export default class GameScene extends THREE.Group {
   }
 
   private initLightController(): void {
-    const lightController = new LightController(this.scene, this.ambientLight, this.directionalLight);
+    const lightController = this.lightController = new LightController(this.scene, this.ambientLight, this.directionalLight);
     this.add(lightController);
 
     // lightController.addPlayerCharacter(this.playerCharacter);
@@ -605,7 +611,10 @@ export default class GameScene extends THREE.Group {
     if (this.levelIndex < LevelsQueue.length) {
       const currentLevelType: LevelType = LevelsQueue[this.levelIndex];
       this.createLevel(currentLevelType);
-      this.cube.showStartLevelAnimation();
+
+      setTimeout(() => {
+        this.cube.showStartLevelAnimation();
+      }, 300);
     }
   }
 
@@ -618,13 +627,13 @@ export default class GameScene extends THREE.Group {
     this.playerCharacter.respawn();
   }
 
-  // private enableDarkScene(): void {
-  //   this.lightController.setDarkScene();
-  //   this.playerCharacter.enableGlow();
-  // }
-
-  // private enableLightScene(): void {
-  //   this.lightController.setLightScene();
-  //   this.playerCharacter.disableGlow();
-  // }
+  private setSceneType(sceneType: SceneType): void {
+    if (sceneType === SceneType.Dark) {
+      this.lightController.setDarkScene();
+      this.playerCharacter.enableGlow();
+    } else {
+      this.lightController.setLightScene();
+      this.playerCharacter.disableGlow();
+    }
+  }
 }

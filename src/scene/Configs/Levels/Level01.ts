@@ -5,10 +5,13 @@ import { ILevelConfig } from "../../Interfaces/ILevelConfig";
 import { EnemyType } from '../../Enums/EnemyType';
 import { Direction } from '../../Enums/Direction';
 
-// Empty = ' ',
-// Wall = 'W',
-// Start = 'S',
-// Finish = 'F',
+// Empty = ' ', '  '
+// Wall = 'W', 'WW'
+// Start = 'S', 'ST'
+// Finish = 'F', 'FI'
+// WallSpike = 'X{id}'
+// FloorSpike = 'I{id}'
+// Coin = 'C', 'CC'
 
 const Level01: ILevelConfig = {
   size: new THREE.Vector3(7, 7, 7),

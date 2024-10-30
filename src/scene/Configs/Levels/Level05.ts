@@ -4,6 +4,7 @@ import { CubeSide } from "../../Enums/CubeSide";
 import { ILevelConfig } from "../../Interfaces/ILevelConfig";
 import { EnemyType } from '../../Enums/EnemyType';
 import { Direction } from '../../Enums/Direction';
+import { SceneType } from '../../Enums/SceneType';
 
 // Empty = ' ', '  ',
 // Wall = 'W', 'WW',
@@ -13,6 +14,7 @@ import { Direction } from '../../Enums/Direction';
 
 const Level05: ILevelConfig = {
   size: new THREE.Vector3(7, 7, 7),
+  sceneType: SceneType.Light,
   map: {
     sides: {
       [CubeSide.Front]: [

@@ -4,6 +4,7 @@ import { CubeRotationDirection } from '../Enums/CubeRotationDirection';
 import { CubeEdge } from '../Enums/CubeEdge';
 import { EnemyType } from '../Enums/EnemyType';
 import { EnemyConfigMap } from './IEnemyConfig';
+import { SceneType } from '../Enums/SceneType';
 
 export interface ILevelConfig {
   size?: THREE.Vector3;
@@ -16,6 +17,7 @@ export interface ILevelConfig {
     edges: ILevelEdgeConfig;
   };
   enemies?: IEnemiesConfig;
+  sceneType?: SceneType;
 }
 
 export type ILevelSideConfig = {
