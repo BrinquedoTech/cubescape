@@ -143,6 +143,8 @@ export default class GameScene extends THREE.Group {
   }
 
   public startGameWithoutIntro(): void {
+    this.resetScoreForLevel();
+
     const currentLevelType: LevelType = LevelsQueue[this.levelIndex];
     this.createLevel(currentLevelType);
     this.activateGame();
@@ -537,7 +539,7 @@ export default class GameScene extends THREE.Group {
   private calculateLevelScore(): void {
     const allCoinsInLevel: number = this.coinsController.getCoinsCount();
     const collectedCoins: number = this.levelScore.coinsCollected;
-    this.levelScore.bonusAllCoins = allCoinsInLevel === collectedCoins;
+    this.levelScore.bonusAllCoins = allCoinsInLevel > 0 && allCoinsInLevel === collectedCoins;
 
     if (this.levelScore.bonusAllCoins) {
       this.score += ScoreConfig.allCoinsBonus;

@@ -124,4 +124,27 @@ export default class MapHelper {
       }
     }
   }
+
+  public static removeEnemiesIndexesFromMap(levelConfig: ILevelConfig): void {
+    for (const cubeSide in CubeSide) {
+      const side: CubeSide = CubeSide[cubeSide] as CubeSide;
+
+      const mapSizeX: number = levelConfig.size[CubeSideAxisConfig[side].xAxis];
+      const mapSizeY: number = levelConfig.size[CubeSideAxisConfig[side].yAxis];
+
+      for (let i = 0; i < mapSizeX; i++) {
+        for (let j = 0; j < mapSizeY; j++) {
+          const cellType: CellType = CubeHelper.getCellTypeBySymbol(levelConfig.map.sides[side][j][i]);
+
+          if (cellType === CellType.FloorSpike) {
+            levelConfig.map.sides[side][j][i] = CubeHelper.getCellSymbolByType(CellType.FloorSpike);
+          }
+
+          if (cellType === CellType.WallSpike) {
+            levelConfig.map.sides[side][j][i] = CubeHelper.getCellSymbolByType(CellType.WallSpike);
+          }
+        }
+      }
+    }
+  }
 }

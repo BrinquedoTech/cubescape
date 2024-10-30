@@ -73,6 +73,7 @@ export default class CubeViewBuilder extends THREE.Group {
     };
 
     MapHelper.replaceExtraSymbolsInMap(this.levelMap);
+    MapHelper.removeEnemiesIndexesFromMap(this.levelMap);
   }
 
   private createFullLevelMap(levelMap: ILevelConfig): void {
@@ -431,7 +432,7 @@ export default class CubeViewBuilder extends THREE.Group {
   }
 
   private checkCellForWallInFullMap(checkCellType: CellType, cubeSide: CubeSide, row: number, column: number, direction: Direction): THREE.Object3D | null {
-    if (checkCellType === CellType.Empty) {
+    if (checkCellType === CellType.Empty || checkCellType === CellType.FloorSpike) {
       const wall = new THREE.Object3D();
 
       this.setCellPosition(wall, cubeSide, row - 1, column - 1);
@@ -462,22 +463,26 @@ export default class CubeViewBuilder extends THREE.Group {
 
   private getWallDirections(map: string[][], row: number, column: number): Direction[] {
     const neighboursCells: Direction[] = [];
-    const cellTypeToCheck: CellType = CellType.Empty;
-    const cellTypeToCheckSymbol: string = CubeHelper.getCellSymbolByType(cellTypeToCheck);
+    const cellTypesToCheck: CellType[] = [CellType.Empty, CellType.FloorSpike];
+    const cellTypesToCheckSymbol: string[] = [];
 
-    if (row > 0 && map[row - 1][column] === cellTypeToCheckSymbol) {
+    for (let i = 0; i < cellTypesToCheck.length; i++) {
+        cellTypesToCheckSymbol.push(CubeHelper.getCellSymbolByType(cellTypesToCheck[i]));
+    }
+
+    if (row > 0 && cellTypesToCheckSymbol.includes(map[row - 1][column])) {
       neighboursCells.push(Direction.Up);
     }
 
-    if (row < map.length - 1 && map[row + 1][column] === cellTypeToCheckSymbol) {
+    if (row < map.length - 1 && cellTypesToCheckSymbol.includes(map[row + 1][column])) {
       neighboursCells.push(Direction.Down);
     }
 
-    if (column > 0 && map[row][column - 1] === cellTypeToCheckSymbol) {
+    if (column > 0 && cellTypesToCheckSymbol.includes(map[row][column - 1])) {
       neighboursCells.push(Direction.Left);
     }
 
-    if (column < map[0].length - 1 && map[row][column + 1] === cellTypeToCheckSymbol) {
+    if (column < map[0].length - 1 && cellTypesToCheckSymbol.includes(map[row][column + 1])) {
       neighboursCells.push(Direction.Right);
     }
 
