@@ -6,6 +6,7 @@ import UI from "../UI/UI";
 import { ScreenType } from '../scene/Enums/UI/ScreenType';
 import DebugConfig from '../scene/Configs/Main/DebugConfig';
 import { ILevelScore } from '../scene/Interfaces/IScore';
+import AudioController from '../scene/GameScene/AudioController';
 
 export default class MainScene {
   private data: ILibrariesData;
@@ -99,6 +100,10 @@ export default class MainScene {
       this.ui.hideScreen(ScreenType.Intro);
       this.ui.showScreen(ScreenType.Gameplay);
       this.scene3D.startGame();
+
+      setTimeout(() => {
+        AudioController.getInstance().playMusic();
+      }, 200);
     }
 
     if (this.ui.getActiveScreen() === ScreenType.LevelWin) {

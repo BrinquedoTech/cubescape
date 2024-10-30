@@ -5,6 +5,7 @@ import DebugConfig from '../scene/Configs/Main/DebugConfig';
 import ScreensController from './ScreensController';
 import { ScreenType } from '../scene/Enums/UI/ScreenType';
 import { ILevelScore } from '../scene/Interfaces/IScore';
+import MuteButton from './MuteButton';
 
 type Events = {
   rotateRight: string;
@@ -21,6 +22,7 @@ type Events = {
 export default class UI extends PIXI.Container {
   private screensController: ScreensController;
   private rotateButtons: RotateButtons;
+  private muteButton: MuteButton;
 
   public emitter: Emitter<Events> = mitt<Events>();
 
@@ -33,6 +35,9 @@ export default class UI extends PIXI.Container {
   public onResize(): void {
     const width = window.innerWidth;
     const height = window.innerHeight;
+
+    this.muteButton.x = 50;
+    this.muteButton.y = 50;
 
     this.screensController.onResize(width, height);
 
@@ -81,8 +86,14 @@ export default class UI extends PIXI.Container {
   }
 
   private init(): void {
+    this.initMuteButton();
     this.initScreensController();
     this.initDebugRotateButtons();
+  }
+
+  private initMuteButton(): void {
+    const muteButton = this.muteButton = new MuteButton();
+    this.addChild(muteButton);
   }
 
   private initScreensController(): void {

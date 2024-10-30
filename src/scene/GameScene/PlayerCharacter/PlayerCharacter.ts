@@ -20,6 +20,7 @@ import { OBB } from 'three/addons/math/OBB.js';
 import Materials from '../../../core/Materials';
 import { MaterialType } from '../../Enums/MaterialType';
 import DebugConfig from '../../Configs/Main/DebugConfig';
+import AudioController from '../AudioController';
 
 type Events = {
   onMovingEnd: string;
@@ -108,6 +109,8 @@ export default class PlayerCharacter extends THREE.Group {
   }
 
   public moveToGridCell(gridX: number, gridY: number): void {
+    AudioController.getInstance().playSound('swoosh');
+
     this.setState(PlayerCharacterState.Moving);
     this.disableIdleRotationAnimation();
 
@@ -201,6 +204,8 @@ export default class PlayerCharacter extends THREE.Group {
     if (this.stopTiltTween) {
       this.stopTiltTween.stop();
     }
+
+    AudioController.getInstance().playSound('death');
 
     const duration: number = 800;
     this.view.castShadow = false;

@@ -8,6 +8,7 @@ import Scene3DDebugMenu from './helpers/gui-helper/scene-3d-debug-menu';
 import LoadingOverlay from './loading-overlay';
 import { ILibrariesData } from '../scene/Interfaces/ILibrariesData';
 import { LightConfig } from '../scene/Configs/Main/LightConfig';
+import AudioController from '../scene/GameScene/AudioController';
 
 export default class BaseScene {
   private scene: any;
@@ -57,10 +58,18 @@ export default class BaseScene {
   afterAssetsLoaded() {
     this.isAssetsLoaded = true;
 
+    this._initAudioAssets();
     this.loadingOverlay.hide();
     this.scene3DDebugMenu.showAfterAssetsLoad();
     this.mainScene.afterAssetsLoad();
     this._setupBackgroundColor();
+  }
+
+  _initAudioAssets() {
+    const audioController = AudioController.getInstance();
+    audioController.initSounds(['death', 'swoosh']);
+    audioController.initCoinsSound();
+    audioController.initMusic('music');
   }
 
   _initMainSceneSignals() {
@@ -97,6 +106,7 @@ export default class BaseScene {
     this._initLights();
     this._initFog();
     this._initLoadingOverlay();
+    this._initAudioController();
     this.initAxesHelper();
     this._initOnResize();
 
@@ -179,6 +189,11 @@ export default class BaseScene {
   _initLoadingOverlay() {
     const loadingOverlay = this.loadingOverlay = new LoadingOverlay();
     this.scene.add(loadingOverlay);
+  }
+
+  _initAudioController() {
+    const audioController = AudioController.getInstance();
+    audioController.initListener(this.camera);
   }
 
   initAxesHelper() {

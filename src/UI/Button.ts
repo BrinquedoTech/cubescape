@@ -31,7 +31,7 @@ export default class Button extends PIXI.Container {
     view.anchor.set(0.5);
 
     view.eventMode = 'static';
-    view.cursor  = 'pointer';
+    view.cursor = 'pointer';
 
     view.on('pointerdown', () => {
       this.isPressed = true;

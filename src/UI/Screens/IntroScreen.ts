@@ -3,6 +3,7 @@ import { Text } from 'pixi.js';
 import AbstractScreen from './AbstractScreen';
 import mitt, { Emitter } from 'mitt';
 import SCENE_CONFIG from '../../core/configs/scene-config';
+import AudioController from '../../scene/GameScene/AudioController';
 
 type Events = {
   onStartClick: string;
@@ -95,6 +96,10 @@ export default class IntroScreen extends AbstractScreen {
 
     startGameText.on('pointerdown', () => {
       this.emitter.emit('onStartClick');
+
+      setTimeout(() => {
+        AudioController.getInstance().playMusic();
+      }, 200);
     });
   }
 

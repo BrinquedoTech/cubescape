@@ -61,9 +61,18 @@ const pixiAssets = [
   'assets/arrow-down.png',
   'assets/arrow-clockwise.png',
   'assets/arrow-counter-clockwise.png',
+  'assets/sound-icon.png',
+  'assets/sound-icon-mute.png',
   'fonts/casper.ttf',
   'fonts/riky.ttf',
 ];
+
+const audio = [
+  'death.mp3',
+  'swoosh.mp3',
+  'coin_pickup.mp3',
+  'music.mp3',
+]
 
 const loadingPercentElement = document.querySelector('.loading-percent');
 
@@ -118,6 +127,7 @@ export default class Loader {
   _loadThreeJSAssets() {
     this._loadTextures();
     this._loadModels();
+    this._loadAudio();
 
     if (textures.length === 0 && models.length === 0) {
       this._onThreeJSAssetsLoaded();
@@ -167,6 +177,18 @@ export default class Loader {
       const modelFullPath = `${modelsBasePath}${modelFilename}`;
       const modelName = modelFilename.replace(/\.[^/.]+$/, "");
       gltfLoader.load(modelFullPath, (gltfModel) => this._onAssetLoad(gltfModel, modelName));
+    });
+  }
+
+  _loadAudio() {
+    const audioLoader = new THREE.AudioLoader(this.threeJSManager);
+
+    const audioBasePath = '/audio/';
+
+    audio.forEach((audioFilename) => {
+      const audioFullPath = `${audioBasePath}${audioFilename}`;
+      const audioName = audioFilename.replace(/\.[^/.]+$/, "");
+      audioLoader.load(audioFullPath, (audioBuffer) => this._onAssetLoad(audioBuffer, audioName));
     });
   }
 

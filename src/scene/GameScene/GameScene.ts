@@ -32,6 +32,7 @@ import { ILevelScore } from '../Interfaces/IScore';
 import GameplayConfig from '../Configs/Main/GameplayConfig';
 import { ILibrariesData } from '../Interfaces/ILibrariesData';
 import { SceneType } from '../Enums/SceneType';
+import AudioController from './AudioController';
 
 type Events = {
   onWinLevel: { levelTime: number; levelScore: ILevelScore };
@@ -205,6 +206,7 @@ export default class GameScene extends THREE.Group {
           this.coinsController.deactivateCoin(id);
 
           this.updateScoreForCoins();
+          AudioController.getInstance().playCoinsSound();
         }
       }
     }
