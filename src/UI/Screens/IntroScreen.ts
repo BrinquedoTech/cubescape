@@ -79,7 +79,7 @@ export default class IntroScreen extends AbstractScreen {
       text: 'Start Game',
       style: {
         fontFamily: 'riky',
-        fill: 0xffffff,
+        fill: 0xfa3240,
         fontSize: 100,
         align: 'center',
       },

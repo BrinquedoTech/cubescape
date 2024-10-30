@@ -68,7 +68,7 @@ export default class LoseScreen extends AbstractScreen {
       text: 'Start again',
       style: {
         fontFamily: 'riky',
-        fill: 0xffffff,
+        fill: 0xfa3240,
         fontSize: 70,
         align: 'center',
       },

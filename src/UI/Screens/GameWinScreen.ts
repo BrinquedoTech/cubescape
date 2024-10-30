@@ -65,7 +65,7 @@ export default class GameWinScreen extends AbstractScreen {
       text: 'Congratulations !',
       style: {
         fontFamily: 'riky',
-        fill: 0xffffff,
+        fill: 0xffd700,
         fontSize: 100,
         align: 'center',
       },
@@ -79,7 +79,7 @@ export default class GameWinScreen extends AbstractScreen {
 
   private initWinAllLevelsText(): void {
     const winAllLevelsText = this.winAllLevelsText = new Text({
-      text: 'You win all levels !',
+      text: "You've completed all levels !",
       style: {
         fontFamily: 'riky',
         fill: 0xffffff,
@@ -116,7 +116,7 @@ export default class GameWinScreen extends AbstractScreen {
       text: 'Start again',
       style: {
         fontFamily: 'riky',
-        fill: 0xffffff,
+        fill: 0xfa3240,
         fontSize: 70,
         align: 'center',
       },

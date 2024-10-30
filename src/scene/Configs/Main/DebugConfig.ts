@@ -2,7 +2,7 @@
 const DebugConfig = {
   fpsMeter: true,
   rendererStats: false,
-  orbitControls: true,
+  orbitControls: false,
   gui: false,
   gameplay: {
     disableIntro: false,

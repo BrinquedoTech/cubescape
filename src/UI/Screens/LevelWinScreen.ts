@@ -84,10 +84,10 @@ export default class LevelWinScreen extends AbstractScreen {
 
   private initLevelWinText(): void {
     const levelWinText = this.levelWinText = new Text({
-      text: 'You win level',
+      text: 'Level completed',
       style: {
         fontFamily: 'riky',
-        fill: 0xffffff,
+        fill: 0xffd700,
         fontSize: 100,
         align: 'center',
       },
@@ -172,7 +172,7 @@ export default class LevelWinScreen extends AbstractScreen {
       text: 'Next Level',
       style: {
         fontFamily: 'riky',
-        fill: 0xffffff,
+        fill: 0xfa3240,
         fontSize: 70,
         align: 'center',
       },
