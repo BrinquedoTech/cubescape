@@ -10,7 +10,7 @@ const CameraConfig = {
     lerpFactorCubeRotating: 0.5,
   },
   rotationByPlayerPosition: {
-    enabled: true,
+    enabled: false,
     lerpFactor: 0.015,
     distanceCoefficient: 0.5,
   }

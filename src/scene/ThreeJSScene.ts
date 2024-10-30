@@ -16,9 +16,7 @@ type Events = {
 };
 
 export default class ThreeJSScene extends THREE.Group {
-  // private data: any;
-  // private scene: any;
-  private camera: THREE.PerspectiveCamera;
+  private data: ILibrariesData;
   private gameScene: GameScene;
 
   public emitter: Emitter<Events> = mitt<Events>();
@@ -26,9 +24,7 @@ export default class ThreeJSScene extends THREE.Group {
   constructor(data: ILibrariesData) {
     super();
 
-    // this.data = data,
-    // this.scene = data.scene,
-    this.camera = data.camera,
+    this.data = data,
 
     this.init();
   }
@@ -79,7 +75,7 @@ export default class ThreeJSScene extends THREE.Group {
   }
 
   private init(): void {
-    const gameScene = this.gameScene = new GameScene(this.camera);
+    const gameScene = this.gameScene = new GameScene(this.data);
     this.add(gameScene);
 
     gameScene.emitter.on('onPressStart', () => this.emitter.emit('onPressStart'));

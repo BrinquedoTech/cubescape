@@ -51,7 +51,10 @@ export default class PlayerCharacter extends THREE.Group {
   private enableIdleRotationAnimation: boolean = true;
 
   private startTiltTween;
-  private stopTiltTween
+  private stopTiltTween;
+
+  private glowLight: THREE.PointLight;
+  private isGlowEnabled: boolean = false;
 
   private isActive: boolean = false;
 
@@ -219,7 +222,10 @@ export default class PlayerCharacter extends THREE.Group {
       .onComplete(() => {
         this.hide();
         (<THREE.Material>this.view.material).opacity = 1;
-        this.view.castShadow = true;
+
+        if (!this.isGlowEnabled) {
+          this.view.castShadow = true;
+        }
 
         if (sendSignal) {
           this.emitter.emit('onDeathAnimationEnd');
@@ -315,6 +321,30 @@ export default class PlayerCharacter extends THREE.Group {
 
   public getSidePosition(): THREE.Vector2 {
     return this.sidePosition;
+  }
+
+  public enableGlow(): void {
+    this.isGlowEnabled = true;
+
+    (<THREE.MeshStandardMaterial>this.view.material).emissive = new THREE.Color(0xffffff);
+    (<THREE.MeshStandardMaterial>this.view.material).emissiveIntensity = 1.5;
+
+    this.view.castShadow = false;
+    this.view.receiveShadow = false;
+
+    this.glowLight.visible = true;
+  }
+
+  public disableGlow(): void {
+    this.isGlowEnabled = false;
+
+    (<THREE.MeshStandardMaterial>this.view.material).emissive = new THREE.Color(0x000000);
+    (<THREE.MeshStandardMaterial>this.view.material).emissiveIntensity = 0;
+
+    this.view.castShadow = true;
+    this.view.receiveShadow = true;
+
+    this.glowLight.visible = false
   }
 
   private updateMovingState(dt: number): void {
@@ -432,10 +462,8 @@ export default class PlayerCharacter extends THREE.Group {
 
     const material = new THREE.MeshStandardMaterial({
       map: texture,
+      emissiveMap: texture,
       transparent: true,
-      // emissive: 0xffffff,
-      // emissiveMap: texture,
-      // emissiveIntensity: 1.5,
     });
 
     const normalMap = Loader.assets['Ghost_Normal'];
@@ -451,17 +479,19 @@ export default class PlayerCharacter extends THREE.Group {
     const viewScale: number = PlayerCharacterGeneralConfig.scale;
     view.scale.set(GameplayConfig.grid.scale * viewScale, GameplayConfig.grid.scale * viewScale, GameplayConfig.grid.scale * viewScale);
 
-    // const light = new THREE.PointLight(0xffffff, 5, 10, 2);
-    // light.position.set(0, 0, 0.3);
-    // this.viewGroup.add(light);
+    const glowLight = this.glowLight = new THREE.PointLight(0xffffff, 5, 10, 2);
+    glowLight.position.set(0, 0, 0.3);
+    this.viewGroup.add(glowLight);
 
-    // light.castShadow = true;
-    // light.shadow.mapSize.width = 128;
-    // light.shadow.mapSize.height = 128;
-    // light.shadow.camera.near = 0.1;
-    // light.shadow.camera.far = 5;
+    glowLight.castShadow = true;
+    glowLight.shadow.mapSize.width = 128;
+    glowLight.shadow.mapSize.height = 128;
+    glowLight.shadow.camera.near = 0.1;
+    glowLight.shadow.camera.far = 5;
 
-    // light.shadow.bias = -0.001;
+    glowLight.shadow.bias = -0.001;
+
+    glowLight.visible = false;
   }
 
   private initBody(): void {

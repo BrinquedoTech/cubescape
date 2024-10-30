@@ -7,6 +7,7 @@ import Loader from './loader';
 import Scene3DDebugMenu from './helpers/gui-helper/scene-3d-debug-menu';
 import LoadingOverlay from './loading-overlay';
 import { ILibrariesData } from '../scene/Interfaces/ILibrariesData';
+import { LightConfig } from '../scene/Configs/Main/LightConfig';
 
 export default class BaseScene {
   private scene: any;
@@ -17,6 +18,8 @@ export default class BaseScene {
   private scene3DDebugMenu: any;
   // private orbitControls: any;
   private pixiApp: any;
+  private ambientLight: THREE.AmbientLight;
+  private directionalLight: THREE.DirectionalLight;
 
   private windowSizes: any;
   private isAssetsLoaded: boolean;
@@ -41,6 +44,8 @@ export default class BaseScene {
     const librariesData: ILibrariesData = {
       scene: this.scene,
       camera: this.camera,
+      ambientLight: this.ambientLight,
+      directionalLight: this.directionalLight,
       pixiApp: this.pixiApp,
     };
 
@@ -134,10 +139,12 @@ export default class BaseScene {
   }
 
   _initLights() {
-    const ambientLight = new THREE.AmbientLight(0xffffff, 1); // 1
+    const ambientLightConfig = LightConfig.ambientLight
+    const ambientLight = this.ambientLight = new THREE.AmbientLight(ambientLightConfig.color, ambientLightConfig.intensity); // 1
     this.scene.add(ambientLight);
 
-    const directionalLight = new THREE.DirectionalLight(0xffffff, 1.3); // 1.3
+    const directionalLightConfig = LightConfig.directionalLight;
+    const directionalLight = this.directionalLight = new THREE.DirectionalLight(directionalLightConfig.color, directionalLightConfig.intensity); // 1.3
     directionalLight.position.set(-3, 3, 9);
     this.scene.add(directionalLight);
 

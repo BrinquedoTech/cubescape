@@ -99,4 +99,11 @@ export default class ThreeJSHelper {
       return split;
     });
   }
+
+  public static interpolateColors(color1: THREE.Color, color2: THREE.Color, factor: number): THREE.Color {
+    const resultColor = new THREE.Color();
+    resultColor.lerpColors(color1, color2, factor);
+
+    return resultColor;
+  }
 }

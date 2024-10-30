@@ -30,6 +30,7 @@ import CoinsController from './Coins/CoinsController';
 import { ScoreConfig } from '../Configs/ScoreConfig';
 import { ILevelScore } from '../Interfaces/IScore';
 import GameplayConfig from '../Configs/Main/GameplayConfig';
+import { ILibrariesData } from '../Interfaces/ILibrariesData';
 
 type Events = {
   onWinLevel: { levelTime: number; levelScore: ILevelScore };
@@ -50,8 +51,13 @@ export default class GameScene extends THREE.Group {
   private cameraController: CameraController;
   private enemiesController: EnemiesController;
   private coinsController: CoinsController;
+  // private lightController: LightController;
 
   private camera: THREE.PerspectiveCamera;
+  private scene: THREE.Scene;
+  private ambientLight: THREE.AmbientLight;
+  private directionalLight: THREE.DirectionalLight;
+
   private state: GameState = GameState.Paused;
   private isIntroActive: boolean = false;
 
@@ -72,10 +78,13 @@ export default class GameScene extends THREE.Group {
 
   public emitter: Emitter<Events> = mitt<Events>();
 
-  constructor(camera: THREE.PerspectiveCamera) {
+  constructor(data: ILibrariesData) {
     super();
 
-    this.camera = camera;
+    this.camera = data.camera;
+    this.scene = data.scene;
+    this.ambientLight = data.ambientLight;
+    this.directionalLight = data.directionalLight;
 
     this.init();
   }
@@ -381,10 +390,10 @@ export default class GameScene extends THREE.Group {
   }
 
   private initLightController(): void {
-    const lightController = new LightController();
+    const lightController = new LightController(this.scene, this.ambientLight, this.directionalLight);
     this.add(lightController);
 
-    lightController.addPlayerCharacter(this.playerCharacter);
+    // lightController.addPlayerCharacter(this.playerCharacter);
   }
 
   private initCoinsController(): void {
@@ -606,4 +615,14 @@ export default class GameScene extends THREE.Group {
   private respawnPlayerCharacter(): void {
     this.playerCharacter.respawn();
   }
+
+  // private enableDarkScene(): void {
+  //   this.lightController.setDarkScene();
+  //   this.playerCharacter.enableGlow();
+  // }
+
+  // private enableLightScene(): void {
+  //   this.lightController.setLightScene();
+  //   this.playerCharacter.disableGlow();
+  // }
 }
