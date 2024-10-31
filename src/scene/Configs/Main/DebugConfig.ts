@@ -2,15 +2,15 @@
 const DebugConfig = {
   fpsMeter: false,
   rendererStats: false,
-  orbitControls: true,
+  orbitControls: false,
   gui: false,
   gameplay: {
-    disableIntro: true,
+    disableIntro: false,
     grid: false,
-    cubeSideName: true,
-    cubeRotationName: true,
+    cubeSideName: false,
+    cubeRotationName: false,
     gridCoordinates: false,
-    cubeRotationButtons: true,
+    cubeRotationButtons: false,
     physicalBody: false,
   }
 };

@@ -2,12 +2,12 @@ import { LevelType } from "../Enums/LevelType";
 
 const ScoreConfig = {
   coin: 10,
-  allCoinsBonus: 100,
+  allCoinsBonus: 200,
   bonusForSecond: 10,
   timeForLevel: {
-    [LevelType.Level01]: 30,
-    [LevelType.Level02]: 30,
-    [LevelType.Level03]: 30,
+    [LevelType.Level01]: 50,
+    [LevelType.Level02]: 100,
+    [LevelType.Level03]: 60,
     [LevelType.Level04]: 30,
     [LevelType.Level05]: 30,
   }

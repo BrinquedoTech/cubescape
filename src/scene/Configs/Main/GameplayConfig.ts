@@ -6,7 +6,7 @@ const GameplayConfig = {
     size: 1,
     scale: 1,
   },
-  lives: 3,
+  lives: 5,
   cube: {
     rotationSpeed: {
       [CubeRotationType.Regular]: {
