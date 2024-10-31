@@ -4,6 +4,7 @@ import { CubeSide } from "../../Enums/CubeSide";
 import { ILevelConfig } from "../../Interfaces/ILevelConfig";
 import { EnemyType } from '../../Enums/EnemyType';
 import { Direction } from '../../Enums/Direction';
+import { SceneType } from '../../Enums/SceneType';
 
 // Empty = ' ', '  '
 // Wall = 'W', 'WW'
@@ -15,14 +16,15 @@ import { Direction } from '../../Enums/Direction';
 
 const Level01: ILevelConfig = {
   size: new THREE.Vector3(7, 7, 7),
+  sceneType: SceneType.Light,
   map: {
     sides: {
       [CubeSide.Front]: [
-        ['C', ' ', ' ', ' ', ' ', ' ', 'C'],
+        ['C', ' ', ' ', 'C', ' ', ' ', 'C'],
         [' ', 'W', 'W', 'W', 'W', 'W', ' '],
-        [' ', 'W', ' ', ' ', ' ', ' ', ' '],
+        [' ', 'W', 'C', ' ', ' ', ' ', 'C'],
         [' ', 'W', ' ', 'C', 'W', ' ', ' '],
-        [' ', 'W', ' ', ' ', 'W', ' ', ' '],
+        [' ', 'W', 'C', ' ', 'W', ' ', ' '],
         [' ', 'W', 'W', ' ', 'W', ' ', ' '],
         ['S', 'W', 'W', ' ', 'W', 'C', 'C'],
       ],
@@ -39,7 +41,7 @@ const Level01: ILevelConfig = {
         [' ', 'W', 'W', 'W', ' ', 'W', ' '],
         [' ', 'W', 'W', 'W', ' ', 'W', ' '],
         [' ', 'W', 'W', 'W', ' ', 'W', ' '],
-        [' ', 'W', 'C', ' ', 'C', ' ', ' '],
+        ['C', 'W', 'C', ' ', 'C', ' ', ' '],
         [' ', 'W', ' ', 'W', ' ', 'W', 'W'],
         [' ', 'W', ' ', 'W', ' ', 'W', 'W'],
         [' ', 'W', 'C', ' ', 'C', 'W', 'W'],
@@ -47,20 +49,20 @@ const Level01: ILevelConfig = {
       [CubeSide.Top]: [
         [' ', 'W', 'W', 'C', ' ', ' ', ' '],
         [' ', 'W', 'W', ' ', ' ', 'X1', 'W'],
-        [' ', ' ', ' ', 'C', ' ', 'X2', ' '],
+        ['C', ' ', ' ', 'C', ' ', 'X2', ' '],
         ['W', 'W', 'W', 'W', 'W', 'W', ' '],
-        ['C', ' ', ' ', ' ', ' ', ' ', 'C'],
+        ['C', ' ', ' ', 'C', ' ', ' ', 'C'],
         [' ', 'W', 'W', 'W', 'W', 'W', 'W'],
-        ['C', ' ', ' ', ' ', ' ', ' ', ' '],
+        ['C', ' ', ' ', 'C', ' ', ' ', ' '],
       ],
       [CubeSide.Bottom]: [
-        [' ', ' ', ' ', ' ', ' ', ' ', ' '],
+        [' ', ' ', ' ', 'C', ' ', ' ', ' '],
         [' ', 'W', 'W', ' ', 'W', 'W', 'W'],
         [' ', 'C', 'W', ' ', 'W', 'C', 'C'],
         ['C', ' ', 'W', 'C', 'W', 'C', 'C'],
         ['W', ' ', 'W', ' ', 'W', 'C', 'C'],
         [' ', ' ', 'W', ' ', 'W', 'C', 'C'],
-        [' ', ' ', ' ', ' ', ' ', ' ', ' '],
+        ['C', ' ', ' ', ' ', ' ', ' ', ' '],
       ],
       [CubeSide.Back]: [
         ['C', ' ', ' ', 'I3', ' ', ' ', 'C'],
