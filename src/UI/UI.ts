@@ -23,11 +23,14 @@ export default class UI extends PIXI.Container {
   private screensController: ScreensController;
   private rotateButtons: RotateButtons;
   private muteButton: MuteButton;
+  private isMobile: boolean;
 
   public emitter: Emitter<Events> = mitt<Events>();
 
   constructor() {
     super();
+
+    this.isMobile = PIXI.isMobile.any;
 
     this.init();
   }
@@ -36,8 +39,13 @@ export default class UI extends PIXI.Container {
     const width = window.innerWidth;
     const height = window.innerHeight;
 
-    this.muteButton.x = 50;
-    this.muteButton.y = 50;
+    if (this.isMobile) {
+      this.muteButton.x = 35;
+      this.muteButton.y = 35;
+    } else {
+      this.muteButton.x = 50;
+      this.muteButton.y = 50;
+    }
 
     this.screensController.onResize(width, height);
 

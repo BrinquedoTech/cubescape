@@ -8,22 +8,51 @@ export default class GameplayScreen extends AbstractScreen {
   private scoreText: PIXI.Text;
   private livesText: PIXI.Text;
   private currentLevelText: PIXI.Text;
+  private isMobile: boolean;
 
   constructor() {
     super();
 
+    this.isMobile = PIXI.isMobile.any;
+
     this.init();
   }
 
-  public onResize(width: number, _height?: number): void {
-    this.livesText.x = 300;
-    this.livesText.y = 70;
+  public onResize(width: number, height?: number): void {
+    if (this.isMobile) {
+      this.livesText.scale.set(0.6);
+      this.currentLevelText.scale.set(0.6);
+      this.scoreText.scale.set(0.6);
 
-    this.currentLevelText.x = width * 0.5;
-    this.currentLevelText.y = 70;
+      if (width < height) { // portrait
+        this.livesText.x = width * 0.5 - 80;
+        this.livesText.y = 90;
+  
+        this.currentLevelText.x = width * 0.5;
+        this.currentLevelText.y = 40;
+        
+        this.scoreText.x = width * 0.5 + 80;
+        this.scoreText.y = 90;
+      } else { // landscape
+        this.livesText.x = width * 0.5 - 240;
+        this.livesText.y = 35;
+  
+        this.currentLevelText.x = width * 0.5;
+        this.currentLevelText.y = 35;
+        
+        this.scoreText.x = width * 0.5 + 240;
+        this.scoreText.y = 35;
+      }
+    } else { // desktop
+      this.livesText.x = 300;
+      this.livesText.y = 70;
 
-    this.scoreText.x = width - 300;
-    this.scoreText.y = 70;
+      this.currentLevelText.x = width * 0.5;
+      this.currentLevelText.y = 70;
+
+      this.scoreText.x = width - 300;
+      this.scoreText.y = 70;
+    }
   }
 
   public updateLevelText(level: number): void {

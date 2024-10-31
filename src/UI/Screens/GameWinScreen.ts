@@ -14,27 +14,78 @@ export default class GameWinScreen extends AbstractScreen {
   private winAllLevelsText: PIXI.Text;
   private overallScoreText: PIXI.Text;
   private startAgainText: PIXI.Text;
+  private overlay: PIXI.Graphics;
+
+  private isMobile: boolean;
 
   public emitter: Emitter<Events> = mitt<Events>();
 
   constructor() {
     super();
 
+    this.isMobile = PIXI.isMobile.any;
+
     this.init();
   }
 
   public onResize(width: number, height: number): void {
-    this.congratulationsText.x = width * 0.5;
-    this.congratulationsText.y = height * 0.5 - 300;
+    if (this.isMobile) {
+      this.congratulationsText.scale.set(0.5);
+      this.winAllLevelsText.scale.set(0.55);
+      this.overallScoreText.scale.set(0.6);
+      this.startAgainText.scale.set(0.6);
 
-    this.winAllLevelsText.x = width * 0.5;
-    this.winAllLevelsText.y = height * 0.5 - 150;
+      if (width < height) { // portrait
+        this.overlay.clear();
+        this.overlay.rect(0, 0, width, height);
+        this.overlay.fill({ color: 0x000000, alpha: 0.4 });
 
-    this.overallScoreText.x = width * 0.5;
-    this.overallScoreText.y = height * 0.5;
+        this.congratulationsText.x = width * 0.5;
+        this.congratulationsText.y = 150;
+    
+        this.winAllLevelsText.text = "You've completed\nall levels !";
+        this.winAllLevelsText.x = width * 0.5;
+        this.winAllLevelsText.y = height * 0.5 - 150;
+    
+        this.overallScoreText.x = width * 0.5;
+        this.overallScoreText.y = height * 0.5;
+    
+        this.startAgainText.x = width * 0.5;
+        this.startAgainText.y = height - 130;
+      } else { // landscape
+        this.overlay.clear();
+        this.overlay.rect(0, 0, width, height);
+        this.overlay.fill({ color: 0x000000, alpha: 0.4 });
 
-    this.startAgainText.x = width * 0.5;
-    this.startAgainText.y = height - 200;
+        this.congratulationsText.x = width * 0.5;
+        this.congratulationsText.y = 70;
+    
+        this.winAllLevelsText.text = "You've completed all levels !";
+        this.winAllLevelsText.x = width * 0.5;
+        this.winAllLevelsText.y = height * 0.5 - 40;
+    
+        this.overallScoreText.x = width * 0.5;
+        this.overallScoreText.y = height * 0.5 + 40;
+    
+        this.startAgainText.x = width * 0.5;
+        this.startAgainText.y = height - 60;
+      }
+    } else { // desktop
+      this.overlay.clear();
+      this.overlay.rect(0, 0, width, height);
+      this.overlay.fill({ color: 0x000000, alpha: 0.4 });
+      this.congratulationsText.x = width * 0.5;
+      this.congratulationsText.y = height * 0.5 - 300;
+  
+      this.winAllLevelsText.x = width * 0.5;
+      this.winAllLevelsText.y = height * 0.5 - 150;
+  
+      this.overallScoreText.x = width * 0.5;
+      this.overallScoreText.y = height * 0.5;
+  
+      this.startAgainText.x = width * 0.5;
+      this.startAgainText.y = height - 200;
+    }
   }
 
   public setOverallScore(score: number): void {
@@ -50,7 +101,7 @@ export default class GameWinScreen extends AbstractScreen {
   }
 
   private initOverlay(): void {
-    const overlay = new Graphics();
+    const overlay = this.overlay = new Graphics();
     overlay.rect(0, 0, window.innerWidth, window.innerHeight);
     overlay.fill({
       color: 0x000000,

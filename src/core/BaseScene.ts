@@ -88,6 +88,7 @@ export default class BaseScene {
     
     await pixiApp.init({
       canvas: canvas,
+      autoDensity: true,
       width: window.innerWidth,
       height: window.innerHeight,
       resizeTo: window,

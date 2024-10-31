@@ -15,26 +15,64 @@ export default class IntroScreen extends AbstractScreen {
   private gameNameTextRight: PIXI.Text;
   private tutorialText: PIXI.Text;
 
+  private isMobile: boolean;
+
   public emitter: Emitter<Events> = mitt<Events>();
 
   constructor() {
     super();
 
+    this.isMobile = PIXI.isMobile.any;
+
     this.init();
   }
 
   public onResize(width: number, height: number): void {
-    this.gameNameTextLeft.x = width * 0.5;
-    this.gameNameTextLeft.y = 100;
+    if (this.isMobile) {
+      this.gameNameTextLeft.scale.set(0.6);
+      this.gameNameTextRight.scale.set(0.6);
+      this.startGameText.scale.set(0.6);
+      this.tutorialText.scale.set(0.6);
 
-    this.gameNameTextRight.x = width * 0.5;
-    this.gameNameTextRight.y = 100;
+      if (width < height) { // portrait
+        this.gameNameTextLeft.x = width * 0.5 - 15;
+        this.gameNameTextLeft.y = 130;
+    
+        this.gameNameTextRight.x = width * 0.5 - 15;
+        this.gameNameTextRight.y = 130;
+    
+        this.startGameText.x = width * 0.5;
+        this.startGameText.y = height - 250;
+    
+        this.tutorialText.x = width * 0.5;
+        this.tutorialText.y = height - 100;
+      } else { // landscape
+        this.gameNameTextLeft.x = width * 0.5 - 15;
+        this.gameNameTextLeft.y = 60;
+    
+        this.gameNameTextRight.x = width * 0.5 - 15;
+        this.gameNameTextRight.y = 60;
+    
+        this.startGameText.x = width * 0.5;
+        this.startGameText.y = height - 120;
+    
+        this.tutorialText.x = width * 0.5;
+        this.tutorialText.y = height - 50;
+      }
+    } else { // desktop
+      this.gameNameTextLeft.x = width * 0.5;
+      this.gameNameTextLeft.y = 100;
+  
+      this.gameNameTextRight.x = width * 0.5;
+      this.gameNameTextRight.y = 100;
+  
+      this.startGameText.x = width * 0.5;
+      this.startGameText.y = height - 300;
+  
+      this.tutorialText.x = width * 0.5;
+      this.tutorialText.y = height - 80;
+    }
 
-    this.startGameText.x = width * 0.5;
-    this.startGameText.y = height - 300;
-
-    this.tutorialText.x = width * 0.5;
-    this.tutorialText.y = height - 60;
   }
 
   private init(): void {
@@ -104,12 +142,18 @@ export default class IntroScreen extends AbstractScreen {
   }
 
   private initTutorialText(): void {
+    let tutorialTextString: string = 'Press w, a, s, d or arrows to move';
+
+    if (this.isMobile) {
+      tutorialTextString = 'Swipe to move';
+    }
+
     const tutorialText = this.tutorialText = new Text({
-      text: 'Press w, a, s, d or arrows to move',
+      text: tutorialTextString,
       style: {
         fontFamily: 'riky',
         fill: 0xffffff,
-        fontSize: 40,
+        fontSize: 50,
         align: 'center',
       },
     });

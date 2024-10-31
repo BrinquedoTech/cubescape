@@ -18,33 +18,97 @@ export default class LevelWinScreen extends AbstractScreen {
   private bonusAllScoreText: PIXI.Text;
   private bonusForTimeText: PIXI.Text;
   private timeText: PIXI.Text;
+  private overlay: PIXI.Graphics;
+
+  private isMobile: boolean;
 
   public emitter: Emitter<Events> = mitt<Events>();
 
   constructor() {
     super();
 
+    this.isMobile = PIXI.isMobile.any;
+
     this.init();
   }
 
   public onResize(width: number, height: number): void {
-    this.levelWinText.x = width * 0.5;
-    this.levelWinText.y = height * 0.5 - 350;
+    if (this.isMobile) {
+      this.levelWinText.scale.set(0.5);
+      this.timeText.scale.set(0.6);
+      this.coinsScoreText.scale.set(0.6);
+      this.bonusAllScoreText.scale.set(0.6);
+      this.bonusForTimeText.scale.set(0.6);
+      this.nextLevelText.scale.set(0.6);
 
-    this.timeText.x = width * 0.5;
-    this.timeText.y = height * 0.5 - 250;
+      if (width < height) { // portrait
+        this.overlay.clear();
+        this.overlay.rect(0, 0, width, height);
+        this.overlay.fill({ color: 0x000000, alpha: 0.4 });
 
-    this.coinsScoreText.x = width * 0.5;
-    this.coinsScoreText.y = height * 0.5 - 100;
+        this.levelWinText.x = width * 0.5;
+        this.levelWinText.y = 100;
+    
+        this.timeText.x = width * 0.5;
+        this.timeText.y = height * 0.5 - 180;
+    
+        this.coinsScoreText.x = width * 0.5;
+        this.coinsScoreText.y = height * 0.5 - 70;
+    
+        this.bonusAllScoreText.x = width * 0.5;
+        this.bonusAllScoreText.y = height * 0.5;
+    
+        this.bonusForTimeText.x = width * 0.5;
+        this.bonusForTimeText.y = height * 0.5 + 70;
+    
+        this.nextLevelText.x = width * 0.5;
+        this.nextLevelText.y = height - 130;
+      } else { // landscape
+        this.overlay.clear();
+        this.overlay.rect(0, 0, width, height);
+        this.overlay.fill({ color: 0x000000, alpha: 0.4 });
 
-    this.bonusAllScoreText.x = width * 0.5;
-    this.bonusAllScoreText.y = height * 0.5;
-
-    this.bonusForTimeText.x = width * 0.5;
-    this.bonusForTimeText.y = height * 0.5 + 100;
-
-    this.nextLevelText.x = width * 0.5;
-    this.nextLevelText.y = height - 200;
+        this.levelWinText.x = width * 0.5;
+        this.levelWinText.y = 40;
+    
+        this.timeText.x = width * 0.5;
+        this.timeText.y = height * 0.5 - 110;
+    
+        this.coinsScoreText.x = width * 0.5;
+        this.coinsScoreText.y = height * 0.5 - 50;
+    
+        this.bonusAllScoreText.x = width * 0.5;
+        this.bonusAllScoreText.y = height * 0.5;
+    
+        this.bonusForTimeText.x = width * 0.5;
+        this.bonusForTimeText.y = height * 0.5 + 50;
+    
+        this.nextLevelText.x = width * 0.5;
+        this.nextLevelText.y = height - 60;
+      }
+    } else { // desktop
+      this.overlay.clear();
+      this.overlay.rect(0, 0, width, height);
+      this.overlay.fill({ color: 0x000000, alpha: 0.4 });
+      
+      this.levelWinText.x = width * 0.5;
+      this.levelWinText.y = height * 0.5 - 350;
+  
+      this.timeText.x = width * 0.5;
+      this.timeText.y = height * 0.5 - 250;
+  
+      this.coinsScoreText.x = width * 0.5;
+      this.coinsScoreText.y = height * 0.5 - 100;
+  
+      this.bonusAllScoreText.x = width * 0.5;
+      this.bonusAllScoreText.y = height * 0.5;
+  
+      this.bonusForTimeText.x = width * 0.5;
+      this.bonusForTimeText.y = height * 0.5 + 100;
+  
+      this.nextLevelText.x = width * 0.5;
+      this.nextLevelText.y = height - 200;
+    }
   }
 
   public setLevelTime(time: number): void {
@@ -72,7 +136,7 @@ export default class LevelWinScreen extends AbstractScreen {
   }
 
   private initOverlay(): void {
-    const overlay = new Graphics();
+    const overlay = this.overlay = new Graphics();
     overlay.rect(0, 0, window.innerWidth, window.innerHeight);
     overlay.fill({
       color: 0x000000,
