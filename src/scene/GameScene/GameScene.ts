@@ -9,7 +9,7 @@ import { ButtonType } from '../Enums/ButtonType';
 import { MoveDirection } from '../Enums/MoveDirection';
 import { CubeSide } from '../Enums/CubeSide';
 import { CubeRotationDirection } from '../Enums/CubeRotationDirection';
-import { MovementDirectionByButtonConfig, MovementDirectionByCubeRotationConfig, MovementDirectionConfig } from '../Configs/PlayerCharacterConfig';
+import { ButtonTypeByDirection, MovementDirectionByButtonConfig, MovementDirectionByCubeRotationConfig, MovementDirectionConfig } from '../Configs/PlayerCharacterConfig';
 import { CubeState } from '../Enums/CubeState';
 import { PlayerCharacterState } from '../Enums/PlayerCharacterState';
 import CubeHelper from '../Helpers/CubeHelper';
@@ -33,6 +33,7 @@ import GameplayConfig from '../Configs/Main/GameplayConfig';
 import { ILibrariesData } from '../Interfaces/ILibrariesData';
 import { SceneType } from '../Enums/SceneType';
 import AudioController from './AudioController';
+import { Direction } from '../Enums/Direction';
 
 type Events = {
   onWinLevel: { levelTime: number; levelScore: ILevelScore };
@@ -182,6 +183,14 @@ export default class GameScene extends THREE.Group {
 
     this.resetScoreForLevel();
     this.cube.winLevelAnimation();
+  }
+
+  public onSwipe(direction: Direction): void {
+    const buttonType: ButtonType = ButtonTypeByDirection[direction];
+    
+    if (buttonType) {
+      this.onButtonPress(buttonType);
+    }
   }
 
   private updateCollisions(): void {

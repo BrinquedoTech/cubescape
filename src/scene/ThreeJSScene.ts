@@ -4,6 +4,7 @@ import { RotateDirection, TurnDirection } from './Enums/RotateDirection';
 import { ILibrariesData } from './Interfaces/ILibrariesData';
 import mitt, { Emitter } from 'mitt';
 import { ILevelScore } from './Interfaces/IScore';
+import { Direction } from './Enums/Direction';
 
 type Events = {
   onWinLevel: { levelTime: number; levelScore: ILevelScore };
@@ -72,6 +73,10 @@ export default class ThreeJSScene extends THREE.Group {
 
   public startGameWithoutIntro(): void {
     this.gameScene.startGameWithoutIntro();
+  }
+
+  public onSwipe(direction: Direction): void {
+    this.gameScene.onSwipe(direction);
   }
 
   private init(): void {

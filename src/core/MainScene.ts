@@ -7,6 +7,7 @@ import { ScreenType } from '../scene/Enums/UI/ScreenType';
 import DebugConfig from '../scene/Configs/Main/DebugConfig';
 import { ILevelScore } from '../scene/Interfaces/IScore';
 import AudioController from '../scene/GameScene/AudioController';
+import { Direction } from '../scene/Enums/Direction';
 
 export default class MainScene {
   private data: ILibrariesData;
@@ -67,6 +68,7 @@ export default class MainScene {
     this.ui.emitter.on('onStartClick', () => this.scene3D.startGame());
     this.ui.emitter.on('onNextLevelClick', () => this.scene3D.startNextLevel());
     this.ui.emitter.on('onStartAgain', () => this.scene3D.startGameAgain());
+    this.ui.emitter.on('onSwipe', (direction: Direction) => this.scene3D.onSwipe(direction));
 
     this.scene3D.emitter.on('onPressStart', () => this.onPressStart());
     this.scene3D.emitter.on('updateLevelOnStartLevel', (levelIndex: number) => this.ui.updateLevelText(levelIndex));

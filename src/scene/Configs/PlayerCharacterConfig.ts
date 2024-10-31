@@ -4,6 +4,7 @@ import { MoveDirection } from "../Enums/MoveDirection";
 import { IMovementDirectionByCubeRotationConfig, IMovementDirectionConfig } from "../Interfaces/ICharacterConfig";
 import { ButtonType } from '../Enums/ButtonType';
 import { RotateDirection } from '../Enums/RotateDirection';
+import { Direction } from '../Enums/Direction';
 
 const MovementDirectionByCubeRotationConfig: IMovementDirectionByCubeRotationConfig = {
   [MoveDirection.Right]: {
@@ -133,9 +134,17 @@ const TiltAxisConfig: { [key in MoveDirection]: { axis: string, sign: number }} 
   [MoveDirection.Right]: { axis: 'y', sign: 1 },
 }
 
+const ButtonTypeByDirection: { [key in Direction]: ButtonType } = {
+  [Direction.Up]: ButtonType.Up,
+  [Direction.Down]: ButtonType.Down,
+  [Direction.Left]: ButtonType.Left,
+  [Direction.Right]: ButtonType.Right,
+}
+
 export {
   MovementDirectionByCubeRotationConfig,
   MovementDirectionConfig,
   MovementDirectionByButtonConfig,
   TiltAxisConfig,
+  ButtonTypeByDirection,
 };

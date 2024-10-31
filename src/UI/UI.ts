@@ -6,6 +6,8 @@ import ScreensController from './ScreensController';
 import { ScreenType } from '../scene/Enums/UI/ScreenType';
 import { ILevelScore } from '../scene/Interfaces/IScore';
 import MuteButton from './MuteButton';
+import SwipeController from './SwipeController';
+import { Direction } from '../scene/Enums/Direction';
 
 type Events = {
   rotateRight: string;
@@ -17,6 +19,7 @@ type Events = {
   onStartClick: string;
   onNextLevelClick: string;
   onStartAgain: string;
+  onSwipe: Direction;
 };
 
 export default class UI extends PIXI.Container {
@@ -24,6 +27,7 @@ export default class UI extends PIXI.Container {
   private rotateButtons: RotateButtons;
   private muteButton: MuteButton;
   private isMobile: boolean;
+  private swipeController: SwipeController;
 
   public emitter: Emitter<Events> = mitt<Events>();
 
@@ -54,6 +58,10 @@ export default class UI extends PIXI.Container {
 
       this.rotateButtons.x = width * 0.5;
       this.rotateButtons.y = height * 0.5;
+    }
+
+    if (this.swipeController) {
+      this.swipeController.onResize(width, height);
     }
   }
 
@@ -94,6 +102,7 @@ export default class UI extends PIXI.Container {
   }
 
   private init(): void {
+    this.initSwipeController();
     this.initMuteButton();
     this.initScreensController();
     this.initDebugRotateButtons();
@@ -107,6 +116,17 @@ export default class UI extends PIXI.Container {
   private initScreensController(): void {
     const screensController = this.screensController = new ScreensController();
     this.addChild(screensController);
+  }
+
+  private initSwipeController(): void {
+    if (this.isMobile) {
+      const swipeController = this.swipeController = new SwipeController();
+      this.addChild(swipeController);
+  
+      swipeController.emitter.on('onSwipe', (direction: Direction) => {
+        this.emitter.emit('onSwipe', direction);
+      });
+    }
   }
 
   private initDebugRotateButtons(): void {
