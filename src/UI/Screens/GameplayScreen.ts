@@ -2,6 +2,7 @@ import * as PIXI from 'pixi.js';
 import { Text } from 'pixi.js';
 import AbstractScreen from './AbstractScreen';
 import SCENE_CONFIG from '../../core/configs/scene-config';
+import GameplayConfig from '../../scene/Configs/Main/GameplayConfig';
 
 export default class GameplayScreen extends AbstractScreen {
   private scoreText: PIXI.Text;
@@ -44,8 +45,10 @@ export default class GameplayScreen extends AbstractScreen {
   }
 
   private initLives(): void {
+    const livesCount = GameplayConfig.lives;
+
     const livesText = this.livesText = new Text({
-      text: 'Lives: 3',
+      text: `Lives: ${livesCount}`,
       style: {
         fontFamily: 'riky',
         fill: 0xffffff,
