@@ -1,5 +1,5 @@
-const SCENE_CONFIG = {
-  backgroundColor: 0x666666, // 0x201919
+const SceneConfig = {
+  backgroundColor: 0x666666,
   antialias: true,
   fxaaPass: false,
   maxPixelRatio: 2,
@@ -13,4 +13,4 @@ const SCENE_CONFIG = {
   }
 };
 
-export default SCENE_CONFIG;
+export default SceneConfig;

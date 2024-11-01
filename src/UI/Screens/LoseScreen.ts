@@ -3,7 +3,7 @@ import * as PIXI from 'pixi.js';
 import { Text } from 'pixi.js';
 import { Graphics } from 'pixi.js';
 import AbstractScreen from './AbstractScreen';
-import SCENE_CONFIG from '../../core/configs/scene-config';
+import SceneConfig from '../../core/configs/SceneConfig';
 
 type Events = {
   onStartAgain: void;
@@ -93,7 +93,7 @@ export default class LoseScreen extends AbstractScreen {
       },
     });
 
-    loseText.resolution = Math.min(window.devicePixelRatio, SCENE_CONFIG.maxPixelRatio);
+    loseText.resolution = Math.min(window.devicePixelRatio, SceneConfig.maxPixelRatio);
     loseText.anchor.set(0.5);
 
     this.addChild(loseText);
@@ -110,7 +110,7 @@ export default class LoseScreen extends AbstractScreen {
       },
     });
 
-    startAgainText.resolution = Math.min(window.devicePixelRatio, SCENE_CONFIG.maxPixelRatio);
+    startAgainText.resolution = Math.min(window.devicePixelRatio, SceneConfig.maxPixelRatio);
     startAgainText.anchor.set(0.5);
 
     this.addChild(startAgainText);

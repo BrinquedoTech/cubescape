@@ -3,7 +3,7 @@ import * as PIXI from 'pixi.js';
 import { Text } from 'pixi.js';
 import { Graphics } from 'pixi.js';
 import AbstractScreen from './AbstractScreen';
-import SCENE_CONFIG from '../../core/configs/scene-config';
+import SceneConfig from '../../core/configs/SceneConfig';
 
 type Events = {
   onStartAgain: void;
@@ -122,7 +122,7 @@ export default class GameWinScreen extends AbstractScreen {
       },
     });
 
-    congratulationsText.resolution = Math.min(window.devicePixelRatio, SCENE_CONFIG.maxPixelRatio);
+    congratulationsText.resolution = Math.min(window.devicePixelRatio, SceneConfig.maxPixelRatio);
     congratulationsText.anchor.set(0.5);
 
     this.addChild(congratulationsText);
@@ -139,7 +139,7 @@ export default class GameWinScreen extends AbstractScreen {
       },
     });
 
-    winAllLevelsText.resolution = Math.min(window.devicePixelRatio, SCENE_CONFIG.maxPixelRatio);
+    winAllLevelsText.resolution = Math.min(window.devicePixelRatio, SceneConfig.maxPixelRatio);
     winAllLevelsText.anchor.set(0.5);
 
     this.addChild(winAllLevelsText);
@@ -156,7 +156,7 @@ export default class GameWinScreen extends AbstractScreen {
       },
     });
 
-    overallScoreText.resolution = Math.min(window.devicePixelRatio, SCENE_CONFIG.maxPixelRatio);
+    overallScoreText.resolution = Math.min(window.devicePixelRatio, SceneConfig.maxPixelRatio);
     overallScoreText.anchor.set(0.5);
 
     this.addChild(overallScoreText);
@@ -173,7 +173,7 @@ export default class GameWinScreen extends AbstractScreen {
       },
     });
 
-    startAgainText.resolution = Math.min(window.devicePixelRatio, SCENE_CONFIG.maxPixelRatio);
+    startAgainText.resolution = Math.min(window.devicePixelRatio, SceneConfig.maxPixelRatio);
     startAgainText.anchor.set(0.5);
 
     this.addChild(startAgainText);

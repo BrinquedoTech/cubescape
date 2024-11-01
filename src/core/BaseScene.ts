@@ -2,7 +2,7 @@ import * as THREE from 'three';
 import * as PIXI from 'pixi.js';
 import TWEEN from 'three/addons/libs/tween.module.js';
 import MainScene from './MainScene';
-import SCENE_CONFIG from './configs/scene-config';
+import SceneConfig from './configs/SceneConfig';
 import Loader from './loader';
 import Scene3DDebugMenu from './helpers/gui-helper/scene-3d-debug-menu';
 import LoadingOverlay from './loading-overlay';
@@ -132,11 +132,11 @@ export default class BaseScene {
 
     const renderer = this.renderer = new THREE.WebGLRenderer({
       canvas: canvas,
-      antialias: SCENE_CONFIG.antialias,
+      antialias: SceneConfig.antialias,
     });
 
     renderer.setSize(this.windowSizes.width, this.windowSizes.height);
-    renderer.setPixelRatio(Math.min(window.devicePixelRatio, SCENE_CONFIG.maxPixelRatio));
+    renderer.setPixelRatio(Math.min(window.devicePixelRatio, SceneConfig.maxPixelRatio));
 
     renderer.shadowMap.enabled = true;
     renderer.shadowMap.type = THREE.PCFSoftShadowMap;
@@ -179,11 +179,11 @@ export default class BaseScene {
   }
 
   _initFog() {
-    if (SCENE_CONFIG.fog.enabled) {
-      let near = SCENE_CONFIG.fog.desktop.near;
-      let far = SCENE_CONFIG.fog.desktop.far;
+    if (SceneConfig.fog.enabled) {
+      let near = SceneConfig.fog.desktop.near;
+      let far = SceneConfig.fog.desktop.far;
 
-      this.scene.fog = new THREE.Fog(SCENE_CONFIG.backgroundColor, near, far);
+      this.scene.fog = new THREE.Fog(SceneConfig.backgroundColor, near, far);
     }
   }
 
@@ -209,7 +209,7 @@ export default class BaseScene {
   _onResize() {
     this.windowSizes.width = window.innerWidth;
     this.windowSizes.height = window.innerHeight;
-    const pixelRatio = Math.min(window.devicePixelRatio, SCENE_CONFIG.maxPixelRatio);
+    const pixelRatio = Math.min(window.devicePixelRatio, SceneConfig.maxPixelRatio);
 
     this.camera.aspect = this.windowSizes.width / this.windowSizes.height;
     this.camera.updateProjectionMatrix();
@@ -223,7 +223,7 @@ export default class BaseScene {
   }
 
   _setupBackgroundColor() {
-    this.scene.background = new THREE.Color(SCENE_CONFIG.backgroundColor);
+    this.scene.background = new THREE.Color(SceneConfig.backgroundColor);
   }
 
   _initScene3DDebugMenu() {

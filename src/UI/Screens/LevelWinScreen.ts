@@ -3,7 +3,7 @@ import * as PIXI from 'pixi.js';
 import { Text } from 'pixi.js';
 import { Graphics } from 'pixi.js';
 import AbstractScreen from './AbstractScreen';
-import SCENE_CONFIG from '../../core/configs/scene-config';
+import SceneConfig from '../../core/configs/SceneConfig';
 import { ILevelScore } from '../../scene/Interfaces/IScore';
 import { ScoreConfig } from '../../scene/Configs/ScoreConfig';
 
@@ -157,7 +157,7 @@ export default class LevelWinScreen extends AbstractScreen {
       },
     });
 
-    levelWinText.resolution = Math.min(window.devicePixelRatio, SCENE_CONFIG.maxPixelRatio);
+    levelWinText.resolution = Math.min(window.devicePixelRatio, SceneConfig.maxPixelRatio);
     levelWinText.anchor.set(0.5);
 
     this.addChild(levelWinText);
@@ -174,7 +174,7 @@ export default class LevelWinScreen extends AbstractScreen {
       },
     });
 
-    timeText.resolution = Math.min(window.devicePixelRatio, SCENE_CONFIG.maxPixelRatio);
+    timeText.resolution = Math.min(window.devicePixelRatio, SceneConfig.maxPixelRatio);
     timeText.anchor.set(0.5);
 
     this.addChild(timeText);
@@ -191,7 +191,7 @@ export default class LevelWinScreen extends AbstractScreen {
       },
     });
 
-    coinsScoreText.resolution = Math.min(window.devicePixelRatio, SCENE_CONFIG.maxPixelRatio);
+    coinsScoreText.resolution = Math.min(window.devicePixelRatio, SceneConfig.maxPixelRatio);
     coinsScoreText.anchor.set(0.5);
 
     this.addChild(coinsScoreText);
@@ -208,7 +208,7 @@ export default class LevelWinScreen extends AbstractScreen {
       },
     });
 
-    bonusAllScoreText.resolution = Math.min(window.devicePixelRatio, SCENE_CONFIG.maxPixelRatio);
+    bonusAllScoreText.resolution = Math.min(window.devicePixelRatio, SceneConfig.maxPixelRatio);
     bonusAllScoreText.anchor.set(0.5);
 
     this.addChild(bonusAllScoreText);
@@ -225,7 +225,7 @@ export default class LevelWinScreen extends AbstractScreen {
       },
     });
 
-    bonusForTimeText.resolution = Math.min(window.devicePixelRatio, SCENE_CONFIG.maxPixelRatio);
+    bonusForTimeText.resolution = Math.min(window.devicePixelRatio, SceneConfig.maxPixelRatio);
     bonusForTimeText.anchor.set(0.5);
 
     this.addChild(bonusForTimeText);
@@ -242,7 +242,7 @@ export default class LevelWinScreen extends AbstractScreen {
       },
     });
 
-    nextLevelText.resolution = Math.min(window.devicePixelRatio, SCENE_CONFIG.maxPixelRatio);
+    nextLevelText.resolution = Math.min(window.devicePixelRatio, SceneConfig.maxPixelRatio);
     nextLevelText.anchor.set(0.5);
 
     this.addChild(nextLevelText);

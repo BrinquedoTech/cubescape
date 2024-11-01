@@ -1,7 +1,7 @@
 import * as PIXI from 'pixi.js';
 import { Text } from 'pixi.js';
 import AbstractScreen from './AbstractScreen';
-import SCENE_CONFIG from '../../core/configs/scene-config';
+import SceneConfig from '../../core/configs/SceneConfig';
 import GameplayConfig from '../../scene/Configs/Main/GameplayConfig';
 
 export default class GameplayScreen extends AbstractScreen {
@@ -86,7 +86,7 @@ export default class GameplayScreen extends AbstractScreen {
       },
     });
 
-    livesText.resolution = Math.min(window.devicePixelRatio, SCENE_CONFIG.maxPixelRatio);
+    livesText.resolution = Math.min(window.devicePixelRatio, SceneConfig.maxPixelRatio);
     livesText.anchor.set(0.5);
 
     this.addChild(livesText);
@@ -103,7 +103,7 @@ export default class GameplayScreen extends AbstractScreen {
       },
     });
 
-    currentLevelText.resolution = Math.min(window.devicePixelRatio, SCENE_CONFIG.maxPixelRatio);
+    currentLevelText.resolution = Math.min(window.devicePixelRatio, SceneConfig.maxPixelRatio);
     currentLevelText.anchor.set(0.5);
 
     this.addChild(currentLevelText);
@@ -120,7 +120,7 @@ export default class GameplayScreen extends AbstractScreen {
       },
     });
 
-    scoreText.resolution = Math.min(window.devicePixelRatio, SCENE_CONFIG.maxPixelRatio);
+    scoreText.resolution = Math.min(window.devicePixelRatio, SceneConfig.maxPixelRatio);
     scoreText.anchor.set(0.5);
 
     this.addChild(scoreText);

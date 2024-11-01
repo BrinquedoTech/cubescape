@@ -2,7 +2,7 @@ import * as PIXI from 'pixi.js';
 import { Text } from 'pixi.js';
 import AbstractScreen from './AbstractScreen';
 import mitt, { Emitter } from 'mitt';
-import SCENE_CONFIG from '../../core/configs/scene-config';
+import SceneConfig from '../../core/configs/SceneConfig';
 import AudioController from '../../scene/GameScene/AudioController';
 
 type Events = {
@@ -92,7 +92,7 @@ export default class IntroScreen extends AbstractScreen {
       },
     });
 
-    gameNameTextLeft.resolution = Math.min(window.devicePixelRatio, SCENE_CONFIG.maxPixelRatio);
+    gameNameTextLeft.resolution = Math.min(window.devicePixelRatio, SceneConfig.maxPixelRatio);
     gameNameTextLeft.anchor.set(1, 0.5);
 
     this.addChild(gameNameTextLeft);
@@ -107,7 +107,7 @@ export default class IntroScreen extends AbstractScreen {
       },
     });
 
-    gameNameTextRight.resolution = Math.min(window.devicePixelRatio, SCENE_CONFIG.maxPixelRatio);
+    gameNameTextRight.resolution = Math.min(window.devicePixelRatio, SceneConfig.maxPixelRatio);
     gameNameTextRight.anchor.set(0, 0.5);
 
     this.addChild(gameNameTextRight);
@@ -124,7 +124,7 @@ export default class IntroScreen extends AbstractScreen {
       },
     });
 
-    startGameText.resolution = Math.min(window.devicePixelRatio, SCENE_CONFIG.maxPixelRatio);
+    startGameText.resolution = Math.min(window.devicePixelRatio, SceneConfig.maxPixelRatio);
     startGameText.anchor.set(0.5);
 
     this.addChild(startGameText);
@@ -158,7 +158,7 @@ export default class IntroScreen extends AbstractScreen {
       },
     });
 
-    tutorialText.resolution = Math.min(window.devicePixelRatio, SCENE_CONFIG.maxPixelRatio);
+    tutorialText.resolution = Math.min(window.devicePixelRatio, SceneConfig.maxPixelRatio);
     tutorialText.anchor.set(0.5);
 
     this.addChild(tutorialText);
