@@ -3,6 +3,7 @@ import PlayerCharacter from './PlayerCharacter/PlayerCharacter';
 import TWEEN from 'three/addons/libs/tween.module.js';
 import { LightConfig } from '../Configs/Main/LightConfig';
 import ThreeJSHelper from '../Helpers/ThreeJSHelper';
+import { ILevelConfig } from '../Interfaces/ILevelConfig';
 
 export class LightController extends THREE.Group {
   private playerCharacter: PlayerCharacter;
@@ -10,6 +11,7 @@ export class LightController extends THREE.Group {
   private scene: THREE.Scene;
   private ambientLight: THREE.AmbientLight;
   private directionalLight: THREE.DirectionalLight;
+  private shadowCameraHelper: THREE.CameraHelper;
 
   constructor(scene: THREE.Scene, ambientLight: THREE.AmbientLight, directionalLight: THREE.DirectionalLight) {
     super();
@@ -19,6 +21,33 @@ export class LightController extends THREE.Group {
     this.directionalLight = directionalLight;
 
     this.init();
+  }
+
+  public setLightForLevel(levelConfig: ILevelConfig): void {
+    const levelSize: THREE.Vector3 = levelConfig.size;
+    const longestSide: number = Math.max(levelSize.x, levelSize.y, levelSize.z) + 2;
+    const lightConfig = LightConfig.directionalLight;
+
+    const positionX: number = longestSide * Math.sin(THREE.MathUtils.degToRad(lightConfig.position.angleX));
+    const positionY: number = longestSide * Math.sin(THREE.MathUtils.degToRad(lightConfig.position.angleY));
+    this.directionalLight.position.set(positionX, positionY, longestSide + lightConfig.position.bonusDistanceZ);
+
+    const shadowDistance: number = longestSide * 0.5 * lightConfig.shadows.camera.sizeCoefficient;
+
+    this.directionalLight.shadow.camera.left = -shadowDistance;
+    this.directionalLight.shadow.camera.right = shadowDistance;
+    this.directionalLight.shadow.camera.top = shadowDistance;
+    this.directionalLight.shadow.camera.bottom = -shadowDistance;
+
+    const distanceToCenter: number = new THREE.Vector3().copy(this.directionalLight.position).sub(new THREE.Vector3(0, 0, 0)).length();
+
+    this.directionalLight.shadow.camera.far = distanceToCenter + longestSide;
+
+    this.directionalLight.shadow.camera.updateProjectionMatrix();
+
+    if (lightConfig.shadows.helper) {
+      this.shadowCameraHelper.update();
+    }
   }
 
   public setDarkScene(): void {
@@ -85,30 +114,23 @@ export class LightController extends THREE.Group {
   }
 
   private init(): void {
-    // this.initSpotLight();
-    
+    this.configureShadow();
   }
 
-  // private initSpotLight(): void {
-  //   const spotLight = this.spotLight = new THREE.SpotLight(0xffffff, 100, 20, Math.PI * 0.1, 0.2, 1.9);
-  //   spotLight.position.set(0, 0, 12);
-  //   spotLight.lookAt(0, 5, 0);
+  private configureShadow(): void {
+    const shadowConfig = LightConfig.directionalLight.shadows;
+    this.directionalLight.castShadow = shadowConfig.enabled;
 
-  //   spotLight.castShadow = true;
+    this.directionalLight.shadow.mapSize.width = shadowConfig.mapSize.width;
+    this.directionalLight.shadow.mapSize.height = shadowConfig.mapSize.height;
 
-  //   spotLight.shadow.mapSize.width = 1024;
-  //   spotLight.shadow.mapSize.height = 1024;
+    this.directionalLight.shadow.camera.near = shadowConfig.camera.near;
 
-  //   spotLight.shadow.camera.near = 1;
-  //   spotLight.shadow.camera.far = 20;
-  //   spotLight.shadow.camera.fov = 30;
+    this.directionalLight.shadow.bias = shadowConfig.camera.bias;
 
-  //   spotLight.shadow.bias = -0.001;
-
-  //   // this.add(spotLight);
-
-  //   // helper
-  //   // const spotLightHelper = new THREE.SpotLightHelper(spotLight);
-  //   // this.add(spotLightHelper);
-  // }
+    if (shadowConfig.helper) {
+      const shadowCameraHelper = this.shadowCameraHelper = new THREE.CameraHelper(this.directionalLight.shadow.camera);
+      this.scene.add(shadowCameraHelper);
+    }
+  }
 }

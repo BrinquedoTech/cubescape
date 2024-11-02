@@ -151,31 +151,12 @@ export default class BaseScene {
 
   _initLights() {
     const ambientLightConfig = LightConfig.ambientLight
-    const ambientLight = this.ambientLight = new THREE.AmbientLight(ambientLightConfig.color, ambientLightConfig.intensity); // 1
+    const ambientLight = this.ambientLight = new THREE.AmbientLight(ambientLightConfig.color, ambientLightConfig.intensity);
     this.scene.add(ambientLight);
 
     const directionalLightConfig = LightConfig.directionalLight;
-    const directionalLight = this.directionalLight = new THREE.DirectionalLight(directionalLightConfig.color, directionalLightConfig.intensity); // 1.3
-    directionalLight.position.set(-3, 3, 9);
+    const directionalLight = this.directionalLight = new THREE.DirectionalLight(directionalLightConfig.color, directionalLightConfig.intensity);
     this.scene.add(directionalLight);
-
-    directionalLight.castShadow = true;
-
-    directionalLight.shadow.mapSize.width = 2048;
-    directionalLight.shadow.mapSize.height = 2048;
-
-    directionalLight.shadow.camera.near = 1;
-    directionalLight.shadow.camera.far = 17;
-
-    directionalLight.shadow.camera.left = -8;
-    directionalLight.shadow.camera.right = 8;
-    directionalLight.shadow.camera.top = 8;
-    directionalLight.shadow.camera.bottom = -8;
-
-    directionalLight.shadow.bias = -0.001;
-
-    // const directionalLightCameraHelper = new THREE.CameraHelper(directionalLight.shadow.camera);
-    // this.scene.add(directionalLightCameraHelper);
   }
 
   _initFog() {
