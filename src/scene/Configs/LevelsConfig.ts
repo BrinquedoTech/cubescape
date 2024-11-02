@@ -11,6 +11,7 @@ import Level08 from './Levels/Level08';
 import Level09 from './Levels/Level09';
 import Level10 from './Levels/Level10';
 import Level11 from './Levels/Level11';
+import Level12 from './Levels/Level12';
 
 const LevelsConfig: { [key in LevelType]?: ILevelConfig } = {
   [LevelType.Level01]: Level01,
@@ -24,6 +25,7 @@ const LevelsConfig: { [key in LevelType]?: ILevelConfig } = {
   [LevelType.Level09]: Level09,
   [LevelType.Level10]: Level10,
   [LevelType.Level11]: Level11,
+  [LevelType.Level12]: Level12,
 }
 
 const LevelsQueue: LevelType[] = [

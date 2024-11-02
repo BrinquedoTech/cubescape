@@ -121,7 +121,7 @@ const Level11: ILevelConfig = {
       ],
     },
     edges: {
-      [CubeEdge.FrontTop]:   ['WW', 'WW', 'WW', 'WW', 'WW', 'WW', 'WW', 'WW', 'WW', 'WW', 'WW', 'WW', 'WW', 'WW', 'WW'],
+      [CubeEdge.FrontTop]:   ['  ', 'WW', 'WW', 'WW', 'WW', 'WW', 'WW', 'WW', 'WW', 'WW', 'WW', 'WW', 'WW', 'WW', 'WW'],
       [CubeEdge.FrontDown]:  ['WW', 'WW', 'WW', 'WW', 'WW', 'WW', 'WW', 'WW', 'WW', 'WW', 'WW', 'WW', 'WW', 'WW', 'WW'],
       [CubeEdge.FrontLeft]:  ['WW', 'WW', 'WW', 'WW', 'WW', 'WW', 'WW', 'WW', 'WW', 'WW', 'WW', 'WW', 'WW', 'WW', 'WW'],
       [CubeEdge.FrontRight]: ['WW', 'WW', 'WW', 'WW', 'WW', 'WW', 'WW', 'WW', 'WW', 'WW', 'WW', 'WW', 'WW', 'WW', 'WW'],

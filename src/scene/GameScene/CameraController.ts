@@ -7,12 +7,16 @@ import CameraConfig from '../Configs/Main/CameraConfig';
 import { CubeSide } from '../Enums/CubeSide';
 import { AxisByRotationDirection, CubeSideAxisConfig } from '../Configs/SideConfig';
 import { CubeRotationDirection } from '../Enums/CubeRotationDirection';
+import DebugConfig from '../Configs/Main/DebugConfig';
+import { ILevelConfig } from '../Interfaces/ILevelConfig';
 
 export class CameraController extends THREE.Group {
   private camera: THREE.PerspectiveCamera;
   private playerCharacter: PlayerCharacter;
   private cube: Cube;
   private playerCharacterWorldPosition: THREE.Vector3 = new THREE.Vector3();
+  private levelConfig: ILevelConfig;
+  private currentMaxSideSize: number = 0;
 
   private lookAtPosition: THREE.Vector3 = new THREE.Vector3();
   private lookDirection: THREE.Vector3 = new THREE.Vector3();
@@ -24,17 +28,14 @@ export class CameraController extends THREE.Group {
   }
 
   public update(dt: number): void {
-    if (CameraConfig.followPlayer.enabled) {
-      this.followPlayerCharacter(dt);
+    if (DebugConfig.orbitControls) {
+      return;
     }
 
-    if (CameraConfig.lookAtPlayer.enabled) {
-      this.lookAtPlayerCharacter(dt);
-    }
-
-    if (CameraConfig.rotationByPlayerPosition.enabled) {
-      this.rotateByPlayerPosition(dt);
-    }
+    this.followPlayerCharacter(dt);
+    this.lookAtPlayerCharacter(dt);
+    this.rotateByPlayerPosition(dt);
+    this.updatePositionZ(dt);
   }
 
   public setPlayerCharacter(playerCharacter: PlayerCharacter): void {
@@ -47,8 +48,17 @@ export class CameraController extends THREE.Group {
     this.cube = cube;
   }
 
+  public setLevelConfig(levelConfig: ILevelConfig): void {
+    this.levelConfig = levelConfig;
+  }
+
+  public onCubeSideChange(side: CubeSide): void {
+    const map: string[][] = this.levelConfig.map.sides[side];
+    this.currentMaxSideSize = Math.max(map.length, map[0].length);
+  }
+
   private followPlayerCharacter(dt: number): void {
-    if (this.playerCharacter.isActivated()) {
+    if (CameraConfig.followPlayer.enabled && this.playerCharacter.isActivated()) {
       let lerpFactor = CameraConfig.followPlayer.lerpFactor * 60;
 
       if (this.cube.getState() === CubeState.Rotating) {
@@ -65,7 +75,7 @@ export class CameraController extends THREE.Group {
   }
 
   private lookAtPlayerCharacter(dt: number): void {
-    if (this.playerCharacter.isActivated()) {
+    if (CameraConfig.lookAtPlayer.enabled && this.playerCharacter.isActivated()) {
       const targetPosition = this.playerCharacter.getWorldPosition(new THREE.Vector3());
       this.lookDirection.subVectors(targetPosition, this.camera.position).normalize();
 
@@ -82,7 +92,7 @@ export class CameraController extends THREE.Group {
   }
 
   private rotateByPlayerPosition(dt: number): void {
-    if (this.playerCharacter.isActivated()) {
+    if (CameraConfig.rotationByPlayerPosition.enabled && this.playerCharacter.isActivated()) {
       const cubeSide: CubeSide = this.cube.getCurrentSide();
       const cubeSideAxisConfig = CubeSideAxisConfig[cubeSide];
       const cubeRotationDirection: CubeRotationDirection = this.cube.getCurrentRotationDirection();
@@ -97,6 +107,13 @@ export class CameraController extends THREE.Group {
       this.camera.position.y = ThreeJSHelper.lerp(this.camera.position.y, -y * CameraConfig.rotationByPlayerPosition.distanceCoefficient, lerpFactor);
 
       this.camera.lookAt(0, 0, 0);
+    }
+  }
+
+  private updatePositionZ(dt: number): void {
+    if (CameraConfig.updatePositionZ) {
+      const targetPositionZ = 10 + this.currentMaxSideSize * 1.5;
+      this.camera.position.z = ThreeJSHelper.lerp(this.camera.position.z, targetPositionZ, 0.1 * 60 * dt);
     }
   }
 }

@@ -10,4 +10,5 @@ export enum LevelType {
   Level09 = 'Level09',
   Level10 = 'Level10',
   Level11 = 'Level11',
+  Level12 = 'Level12',
 }

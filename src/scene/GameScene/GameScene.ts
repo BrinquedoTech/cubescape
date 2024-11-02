@@ -167,10 +167,13 @@ export default class GameScene extends THREE.Group {
     this.finishLevelObject.init(levelConfig);
     this.enemiesController.init(levelConfig);
     this.coinsController.init(levelConfig);
+    this.cameraController.setLevelConfig(levelConfig);
     this.lightController.setLightForLevel(levelConfig);
   }
 
   public rotateCube(rotateDirection: RotateDirection): void {
+    const nextSide: CubeSide = this.cube.getSideAfterRotation(rotateDirection);
+    this.cameraController.onCubeSideChange(nextSide);
     this.cube.rotateToDirection(rotateDirection);
   }
 

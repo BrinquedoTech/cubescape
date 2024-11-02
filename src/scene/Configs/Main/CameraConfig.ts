@@ -1,4 +1,5 @@
 const CameraConfig = {
+  updatePositionZ: false,
   followPlayer: {
     enabled: false,
     lerpFactor: 0.1,
@@ -13,7 +14,7 @@ const CameraConfig = {
     enabled: true,
     lerpFactor: 0.015,
     distanceCoefficient: 0.5,
-  }
+  },
 }
 
 export default CameraConfig;
