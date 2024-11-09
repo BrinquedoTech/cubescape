@@ -427,6 +427,9 @@ export default class PlayerCharacter extends THREE.Group {
       this.setActiveSide(startPosition.side);
       this.setGridPositionOnActiveSide(startPosition.gridPosition.x, startPosition.gridPosition.y);
       this.setRotationBySide(this.activeSide);
+
+      this.viewGroup.updateMatrixWorld(true);
+      this.updateBody();
       return true;
     } else {
       console.warn('Start position not found');
@@ -500,7 +503,7 @@ export default class PlayerCharacter extends THREE.Group {
   }
 
   private initBody(): void {
-    const material: THREE.Material = Materials.getInstance().materials[MaterialType.DebugBody];
+    const material: THREE.Material = Materials.getInstance().materials[MaterialType.DebugBodyPlayerCharacter];
 
     const boundingBox: THREE.Box3 = new THREE.Box3().setFromObject(this.view);
     const size: THREE.Vector3 = boundingBox.getSize(new THREE.Vector3());

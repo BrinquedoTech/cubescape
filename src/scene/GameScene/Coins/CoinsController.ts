@@ -92,6 +92,9 @@ export default class CoinsController extends THREE.Group {
       this.setStartRandomRotation();
 
       this.initBodies(coinsObjects);
+
+      this.updateMatrixWorld(true);
+      this.updateBodies(true);
     }
   }
 
@@ -137,6 +140,10 @@ export default class CoinsController extends THREE.Group {
     const config = this.coinsConfig[id];
     const scale = new THREE.Vector3(1, 1, 1);
     InstancesHelper.setScaleToInstance(this.coinsInstanced, config.instanceId, scale);
+
+    if (DebugConfig.gameplay.physicalBody) {
+      this.bodies[id].visible = true;
+    }
   }
 
   public hideCoin(id: number): void {
@@ -144,6 +151,10 @@ export default class CoinsController extends THREE.Group {
     const hideScale = CoinsConfig.hideScale;
     const scale = new THREE.Vector3(hideScale, hideScale, hideScale);
     InstancesHelper.setScaleToInstance(this.coinsInstanced, config.instanceId, scale);
+
+    if (DebugConfig.gameplay.physicalBody) {
+      this.bodies[id].visible = false;
+    }
   }
 
   public getBodies(): THREE.Mesh[] {
@@ -161,7 +172,7 @@ export default class CoinsController extends THREE.Group {
   }
 
   private initBodies(coinsObjects: THREE.Object3D[]): void {
-    const material: THREE.Material = Materials.getInstance().materials[MaterialType.DebugBody];
+    const material: THREE.Material = Materials.getInstance().materials[MaterialType.DebugBodyConsumables];
     const viewGeometry: THREE.BufferGeometry = ThreeJSHelper.getGeometryFromModel(CoinsConfig.model);
     const view = new THREE.Mesh(viewGeometry, material);
     const boundingBox: THREE.Box3 = new THREE.Box3().setFromObject(view);
@@ -192,11 +203,11 @@ export default class CoinsController extends THREE.Group {
     }
   }
 
-  private updateBodies(): void {
+  private updateBodies(forced: boolean = false): void {
     for (let i = 0; i < this.bodies.length; i++) {
       const body = this.bodies[i];
 
-      if (body.userData.config.isActive) {
+      if (body.userData.config.isActive || forced) {
         const instanceId: number = body.userData.config.instanceId;
 
         const transform: ITransform = InstancesHelper.getTransformFromInstance(this.coinsInstanced, instanceId);

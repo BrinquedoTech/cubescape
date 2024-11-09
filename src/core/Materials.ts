@@ -20,7 +20,7 @@ export default class Materials {
 
   initMaterials(): void {
     this.initMainMaterial();
-    this.initDebugBodyMaterial();
+    this.initDebugBodyMaterials();
   }
 
   initMainMaterial() {
@@ -34,9 +34,19 @@ export default class Materials {
     });
   }
 
-  initDebugBodyMaterial() {
-    this.materials[MaterialType.DebugBody] = new THREE.MeshBasicMaterial({
+  initDebugBodyMaterials() {
+    this.materials[MaterialType.DebugBodyPlayerCharacter] = new THREE.MeshBasicMaterial({
       color: 0x00ff00,
+      wireframe: true,
+    });
+
+    this.materials[MaterialType.DebugBodyConsumables] = new THREE.MeshBasicMaterial({
+      color: 0x0000ff,
+      wireframe: true,
+    });
+
+    this.materials[MaterialType.DebugBodyEnemies] = new THREE.MeshBasicMaterial({
+      color: 0xff0000,
       wireframe: true,
     });
   }

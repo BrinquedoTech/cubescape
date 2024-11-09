@@ -129,7 +129,7 @@ export default class FloorSpikes extends THREE.Group {
   }
 
   private initBodies(coinsObjects: THREE.Object3D[]): void {
-    const material: THREE.Material = Materials.getInstance().materials[MaterialType.DebugBody];
+    const material: THREE.Material = Materials.getInstance().materials[MaterialType.DebugBodyEnemies];
     const viewGeometry: THREE.BufferGeometry = ThreeJSHelper.getGeometryFromModel('floor_spikes');
     const view = new THREE.Mesh(viewGeometry, material);
     const boundingBox: THREE.Box3 = new THREE.Box3().setFromObject(view);
@@ -158,6 +158,9 @@ export default class FloorSpikes extends THREE.Group {
       
       this.bodies.push(body);
     }
+
+    this.updateMatrixWorld(true);
+    this.updateBodies();
   }
 
   private updateSpikes(dt: number): void {
