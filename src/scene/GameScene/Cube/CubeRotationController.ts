@@ -264,9 +264,14 @@ export default class CubeRotationController {
   }
 
   private snapRotation(): void {
-    this.object.rotation.x = Math.round(this.object.rotation.x / (this.rotationAngle)) * this.rotationAngle;
-    this.object.rotation.y = Math.round(this.object.rotation.y / (this.rotationAngle)) * this.rotationAngle;
-    this.object.rotation.z = Math.round(this.object.rotation.z / (this.rotationAngle)) * this.rotationAngle;
+    const quaternion = new THREE.Quaternion();
+    quaternion.setFromEuler(this.object.rotation);
+
+    const euler = new THREE.Euler();
+    euler.setFromQuaternion(quaternion);
+
+    this.object.rotation.set(euler.x, euler.y, euler.z);
+    this.object.updateMatrixWorld();
   }
 
   private applyRotationByDirection(deltaAngle: number): void {

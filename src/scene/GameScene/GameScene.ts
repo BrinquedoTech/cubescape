@@ -137,6 +137,7 @@ export default class GameScene extends THREE.Group {
     const currentLevelType: LevelType = LevelsQueue[this.levelIndex];
     this.createLevel(currentLevelType);
 
+    this.updateStartCameraPosition();
     this.playerCharacter.hide();
     this.cube.hide();
 
@@ -150,6 +151,7 @@ export default class GameScene extends THREE.Group {
 
     const currentLevelType: LevelType = LevelsQueue[this.levelIndex];
     this.createLevel(currentLevelType);
+    this.updateStartCameraPosition();
     this.activateGame();
   }
 
@@ -251,6 +253,11 @@ export default class GameScene extends THREE.Group {
     this.state = GameState.Active;
     this.playerCharacter.showAnimation();
     this.coinsController.activateCoins();
+  }
+
+  private updateStartCameraPosition(): void {
+    this.cameraController.onCubeSideChange(this.cube.getCurrentSide());
+    this.cameraController.forceUpdateDistanceFromCube();
   }
 
   private moveCharacter(moveDirection: MoveDirection): void {
@@ -626,6 +633,7 @@ export default class GameScene extends THREE.Group {
     if (this.levelIndex < LevelsQueue.length) {
       const currentLevelType: LevelType = LevelsQueue[this.levelIndex];
       this.createLevel(currentLevelType);
+      this.cameraController.onCubeSideChange(this.cube.getCurrentSide());
 
       setTimeout(() => {
         this.cube.showStartLevelAnimation();

@@ -9,6 +9,8 @@ import LoadingOverlay from './loading-overlay';
 import { ILibrariesData } from '../scene/Interfaces/ILibrariesData';
 import { LightConfig } from '../scene/Configs/Main/LightConfig';
 import AudioController from '../scene/GameScene/AudioController';
+import CameraConfig from '../scene/Configs/Main/CameraConfig';
+import { DeviceState } from '../scene/Enums/DeviceState';
 
 export default class BaseScene {
   private scene: any;
@@ -143,10 +145,9 @@ export default class BaseScene {
   }
 
   _initCamera() {
-    const camera = this.camera = new THREE.PerspectiveCamera(50, this.windowSizes.width / this.windowSizes.height, 1, 70);
+    const settings = CameraConfig.settings;
+    const camera = this.camera = new THREE.PerspectiveCamera(settings.fov, this.windowSizes.width / this.windowSizes.height, settings.near, settings.far);
     this.scene.add(camera);
-
-    camera.position.set(0, 0, 20);
   }
 
   _initLights() {
@@ -161,8 +162,8 @@ export default class BaseScene {
 
   _initFog() {
     if (SceneConfig.fog.enabled) {
-      let near = SceneConfig.fog.desktop.near;
-      let far = SceneConfig.fog.desktop.far;
+      let near = SceneConfig.fog[DeviceState.Desktop].near;
+      let far = SceneConfig.fog[DeviceState.Desktop].far;
 
       this.scene.fog = new THREE.Fog(SceneConfig.backgroundColor, near, far);
     }

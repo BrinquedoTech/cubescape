@@ -1,5 +1,26 @@
+import { DeviceState } from "../../Enums/DeviceState";
+
 const CameraConfig = {
-  updatePositionZ: false,
+  settings: {
+    fov: 50,
+    near: 1,
+    far: 70,
+  },
+  distanceFromCube: {
+    static: 20,
+    dynamic: {
+      enable: true,
+      lerpFactor: 0.06,
+      [DeviceState.Desktop]: {
+        start: 9,
+        sideCoefficient: 1.5,
+      },
+      [DeviceState.Mobile]: {
+        start: 12,
+        sideCoefficient: 2.5,
+      }
+    }
+  },
   followPlayer: {
     enabled: false,
     lerpFactor: 0.1,

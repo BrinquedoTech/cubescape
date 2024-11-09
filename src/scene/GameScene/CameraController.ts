@@ -1,4 +1,5 @@
 import * as THREE from 'three';
+import * as PIXI from 'pixi.js';
 import PlayerCharacter from './PlayerCharacter/PlayerCharacter';
 import Cube from './Cube/Cube';
 import { CubeState } from '../Enums/CubeState';
@@ -9,6 +10,7 @@ import { AxisByRotationDirection, CubeSideAxisConfig } from '../Configs/SideConf
 import { CubeRotationDirection } from '../Enums/CubeRotationDirection';
 import DebugConfig from '../Configs/Main/DebugConfig';
 import { ILevelConfig } from '../Interfaces/ILevelConfig';
+import { DeviceState } from '../Enums/DeviceState';
 
 export class CameraController extends THREE.Group {
   private camera: THREE.PerspectiveCamera;
@@ -21,10 +23,16 @@ export class CameraController extends THREE.Group {
   private lookAtPosition: THREE.Vector3 = new THREE.Vector3();
   private lookDirection: THREE.Vector3 = new THREE.Vector3();
 
+  private isMobile: boolean;
+
   constructor(camera: THREE.PerspectiveCamera) {
     super();
 
     this.camera = camera;
+
+    this.isMobile = PIXI.isMobile.any;
+
+    this.init();
   }
 
   public update(dt: number): void {
@@ -35,7 +43,7 @@ export class CameraController extends THREE.Group {
     this.followPlayerCharacter(dt);
     this.lookAtPlayerCharacter(dt);
     this.rotateByPlayerPosition(dt);
-    this.updatePositionZ(dt);
+    this.updateDistanceFromCube(dt);
   }
 
   public setPlayerCharacter(playerCharacter: PlayerCharacter): void {
@@ -55,6 +63,14 @@ export class CameraController extends THREE.Group {
   public onCubeSideChange(side: CubeSide): void {
     const map: string[][] = this.levelConfig.map.sides[side];
     this.currentMaxSideSize = Math.max(map.length, map[0].length);
+  }
+
+  public forceUpdateDistanceFromCube(): void {
+    if (CameraConfig.distanceFromCube.dynamic.enable) {
+      const deviceState: DeviceState = this.isMobile ? DeviceState.Mobile : DeviceState.Desktop;
+      const distanceConfig = CameraConfig.distanceFromCube.dynamic[deviceState];
+      this.camera.position.z = distanceConfig.start + this.currentMaxSideSize * distanceConfig.sideCoefficient;
+    }
   }
 
   private followPlayerCharacter(dt: number): void {
@@ -92,7 +108,7 @@ export class CameraController extends THREE.Group {
   }
 
   private rotateByPlayerPosition(dt: number): void {
-    if (CameraConfig.rotationByPlayerPosition.enabled && this.playerCharacter.isActivated()) {
+    if (CameraConfig.rotationByPlayerPosition.enabled) {
       const cubeSide: CubeSide = this.cube.getCurrentSide();
       const cubeSideAxisConfig = CubeSideAxisConfig[cubeSide];
       const cubeRotationDirection: CubeRotationDirection = this.cube.getCurrentRotationDirection();
@@ -110,10 +126,21 @@ export class CameraController extends THREE.Group {
     }
   }
 
-  private updatePositionZ(dt: number): void {
-    if (CameraConfig.updatePositionZ) {
-      const targetPositionZ = 10 + this.currentMaxSideSize * 1.5;
-      this.camera.position.z = ThreeJSHelper.lerp(this.camera.position.z, targetPositionZ, 0.1 * 60 * dt);
+  private updateDistanceFromCube(dt: number): void {
+    if (CameraConfig.distanceFromCube.dynamic.enable) {
+      const deviceState: DeviceState = this.isMobile ? DeviceState.Mobile : DeviceState.Desktop;
+      const distanceConfig = CameraConfig.distanceFromCube.dynamic[deviceState];
+      const targetPositionZ = distanceConfig.start + this.currentMaxSideSize * distanceConfig.sideCoefficient;
+      this.camera.position.z = ThreeJSHelper.lerp(this.camera.position.z, targetPositionZ, CameraConfig.distanceFromCube.dynamic.lerpFactor * 60 * dt);
+    }
+  }
+
+  private init(): void {
+    if (CameraConfig.distanceFromCube.static) {
+      this.camera.position.z = CameraConfig.distanceFromCube.static;
+    } else {
+      const deviceState: DeviceState = this.isMobile ? DeviceState.Mobile : DeviceState.Desktop;
+      this.camera.position.z = CameraConfig.distanceFromCube.dynamic[deviceState].start;
     }
   }
 }

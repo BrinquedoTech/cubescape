@@ -5,12 +5,12 @@ const DebugConfig = {
   orbitControls: false,
   gui: false,
   gameplay: {
-    disableIntro: false,
+    disableIntro: true,
     grid: false,
-    cubeSideName: false,
-    cubeRotationName: false,
+    cubeSideName: true,
+    cubeRotationName: true,
     gridCoordinates: false,
-    cubeRotationButtons: false,
+    cubeRotationButtons: true,
     physicalBody: false,
   }
 };
