@@ -127,6 +127,21 @@ const EdgeWallsRotation: { [key in CubeEdge]: IEdgeWallsRotation } = {
   [CubeEdge.BackRight]: { axis: new THREE.Vector3(0, 1, 0), leftRotation: -Math.PI * 0.5, rightRotation: 0 },
 }
 
+const EdgeDirectionForwardConfig: { [key in CubeEdge]: boolean } = {
+    [CubeEdge.FrontTop]: true,
+    [CubeEdge.FrontDown]: true,
+    [CubeEdge.FrontLeft]: true,
+    [CubeEdge.FrontRight]: false,
+    [CubeEdge.TopLeft]: true,
+    [CubeEdge.TopRight]: false,
+    [CubeEdge.DownLeft]: false,
+    [CubeEdge.DownRight]: true,
+    [CubeEdge.BackTop]: false,
+    [CubeEdge.BackDown]: true,
+    [CubeEdge.BackLeft]: true,
+    [CubeEdge.BackRight]: false,
+}
+
 export {
   EdgeDistanceConfig,
   EdgeRotationConfig,
@@ -137,4 +152,5 @@ export {
   EdgeWallsRotation,
   EdgeWallModelsConfig,
   EdgeWallCellGeometryConfig,
+  EdgeDirectionForwardConfig,
 };

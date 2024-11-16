@@ -3,7 +3,7 @@ import ThreeJSHelper from '../../Helpers/ThreeJSHelper';
 import GameplayConfig from '../../Configs/Main/GameplayConfig';
 import { ILevelConfig, IMapConfig } from '../../Interfaces/ILevelConfig';
 import CornerCellsConfig from '../../Configs/Cells/CornerCellsConfig';
-import { EdgeRotationConfig, EdgeDistanceConfig, EdgeModelsConfig, CubeSideByEdge, EdgeWallsRotation, EdgeWallModelsConfig, EdgeWallCellGeometryConfig } from '../../Configs/Cells/EdgeCellsConfig';
+import { EdgeRotationConfig, EdgeDistanceConfig, EdgeModelsConfig, CubeSideByEdge, EdgeWallsRotation, EdgeWallModelsConfig, EdgeWallCellGeometryConfig, EdgeDirectionForwardConfig } from '../../Configs/Cells/EdgeCellsConfig';
 import { ICubeSideAxisConfig, IEdgeConfig, IEdgeWallsRotation } from '../../Interfaces/ICubeConfig';
 import CubeHelper from '../../Helpers/CubeHelper';
 import { CellType } from '../../Enums/CellType';
@@ -192,17 +192,28 @@ export default class CubeViewBuilder extends THREE.Group {
           const rightCellType: CellType = CubeHelper.getCellTypeBySymbol(fullEdgeMap[column + 1]);
 
           if (rightCellType === CellType.Empty) {
+            let emptyCellsCount = 0;
+            for (let i = column + 1; i < edgeSize; i++) {
+                const cellType: CellType = CubeHelper.getCellTypeBySymbol(fullEdgeMap[i]);
+                if (cellType === CellType.Empty) {
+                    emptyCellsCount++;
+                } else {
+                    break;
+                }
+            }
+
             const edgeCell = new THREE.Object3D();
 
             edgeCell.position.x = EdgeDistanceConfig[i].x * distance.x;
             edgeCell.position.y = EdgeDistanceConfig[i].y * distance.y;
             edgeCell.position.z = EdgeDistanceConfig[i].z * distance.z;
   
-            edgeCell.position[edgeConfig.axis] += (column + 1) * GameplayConfig.grid.size + GameplayConfig.grid.size * 0.5 - edgeSize * 0.5 * GameplayConfig.grid.size;
+            const cellOffset: number = EdgeDirectionForwardConfig[edgeConfig.edge] === false ? emptyCellsCount + 1 : 0;
+            edgeCell.position[edgeConfig.axis] = (column + cellOffset) * GameplayConfig.grid.size + GameplayConfig.grid.size * 0.5 - edgeSize * 0.5 * GameplayConfig.grid.size;
   
             edgeCell.rotation.set(edgeConfig.rotation.x, edgeConfig.rotation.y, edgeConfig.rotation.z);
-            CubeHelper.setRotationByDirection(edgeCell, cubeSide, Direction.Down);
-            edgeCell.rotateOnWorldAxis(edgeWallRotation.axis, edgeWallRotation.leftRotation);
+            CubeHelper.setRotationByDirection(edgeCell, cubeSide, Direction.Up);
+            edgeCell.rotateOnWorldAxis(edgeWallRotation.axis, edgeWallRotation.rightRotation);
 
             edgeCell.scale.set(GameplayConfig.grid.scale, GameplayConfig.grid.scale, GameplayConfig.grid.scale);
   
@@ -214,17 +225,28 @@ export default class CubeViewBuilder extends THREE.Group {
           const leftCellType: CellType = CubeHelper.getCellTypeBySymbol(fullEdgeMap[column - 1]);
 
           if (leftCellType === CellType.Empty) {
+            let emptyCellsCount = 0;
+            for (let i = column - 1; i >= 0; i--) {
+                const cellType: CellType = CubeHelper.getCellTypeBySymbol(fullEdgeMap[i]);
+                if (cellType === CellType.Empty) {
+                    emptyCellsCount++;
+                } else {
+                    break;
+                }
+            }
+
             const edgeCell = new THREE.Object3D();
 
             edgeCell.position.x = EdgeDistanceConfig[i].x * distance.x;
             edgeCell.position.y = EdgeDistanceConfig[i].y * distance.y;
             edgeCell.position.z = EdgeDistanceConfig[i].z * distance.z;
   
-            edgeCell.position[edgeConfig.axis] += (column - 1) * GameplayConfig.grid.size + GameplayConfig.grid.size * 0.5 - edgeSize * 0.5 * GameplayConfig.grid.size;
+            const cellOffset: number = EdgeDirectionForwardConfig[edgeConfig.edge] === false ? emptyCellsCount + 1 : 0;
+            edgeCell.position[edgeConfig.axis] += (column - cellOffset) * GameplayConfig.grid.size + GameplayConfig.grid.size * 0.5 - edgeSize * 0.5 * GameplayConfig.grid.size;
   
             edgeCell.rotation.set(edgeConfig.rotation.x, edgeConfig.rotation.y, edgeConfig.rotation.z);
-            CubeHelper.setRotationByDirection(edgeCell, cubeSide, Direction.Up);
-            edgeCell.rotateOnWorldAxis(edgeWallRotation.axis, edgeWallRotation.rightRotation);
+            CubeHelper.setRotationByDirection(edgeCell, cubeSide, Direction.Down);
+            edgeCell.rotateOnWorldAxis(edgeWallRotation.axis, edgeWallRotation.leftRotation);
 
             edgeCell.scale.set(GameplayConfig.grid.scale, GameplayConfig.grid.scale, GameplayConfig.grid.scale);
   
