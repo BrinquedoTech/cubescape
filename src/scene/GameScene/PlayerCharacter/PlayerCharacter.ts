@@ -14,13 +14,14 @@ import Loader from '../../../core/loader';
 import { MoveDirection } from '../../Enums/MoveDirection';
 import { Direction } from '../../Enums/Direction';
 import { MoveDirectionToDirectionConfig } from '../../Configs/DirectionConfig';
-import { TiltAxisConfig } from '../../Configs/PlayerCharacterConfig';
+import { CharacterRotationToSideConfig, TiltAxisConfig } from '../../Configs/PlayerCharacterConfig';
 import { PlayerCharacterGeneralConfig } from '../../Configs/PlayerCharacterGeneralConfig';
 import { OBB } from 'three/addons/math/OBB.js';
 import Materials from '../../../core/Materials';
 import { MaterialType } from '../../Enums/MaterialType';
 import DebugConfig from '../../Configs/Main/DebugConfig';
 import AudioController from '../AudioController';
+import { ICharacterRotationToSideConfig } from '../../Interfaces/ICharacterConfig';
 
 type Events = {
   onMovingEnd: string;
@@ -59,6 +60,12 @@ export default class PlayerCharacter extends THREE.Group {
 
   private isActive: boolean = false;
 
+  private rotationToSideProgress: number = 0;
+  private lastEasedAngleToSide: number = 0;
+  private lastEasedRotationAngle: number = 0;
+  private angleRotationToSideConfig: ICharacterRotationToSideConfig;
+  private movingBackOnEdge: boolean = false;
+
   public emitter: Emitter<Events> = mitt<Events>();
 
   constructor() {
@@ -76,6 +83,10 @@ export default class PlayerCharacter extends THREE.Group {
 
     if (this.state === PlayerCharacterState.Idle) {
       this.updateIdleState(dt);
+    }
+
+    if (this.state === PlayerCharacterState.RotatingToNewSide) {
+      this.updateRotatingToNewSide(dt);
     }
 
     this.updateBody();
@@ -150,6 +161,8 @@ export default class PlayerCharacter extends THREE.Group {
 
     if (instant) {
       this.viewGroup.rotation.z = finalRotationAngle;
+      this.idleStartRotation = finalRotationAngle;
+      this.enableIdleRotationAnimation = true;
       return;
     }
 
@@ -161,7 +174,7 @@ export default class PlayerCharacter extends THREE.Group {
     } else if (deltaRotation < -Math.PI) {
       deltaRotation += 2 * Math.PI;
     }
-
+  
     new TWEEN.Tween(this.viewGroup.rotation)
       .to({ z: currentRotation + deltaRotation }, PlayerCharacterGeneralConfig.rotateDuration)
       .easing(TWEEN.Easing.Sinusoidal.Out)
@@ -181,13 +194,25 @@ export default class PlayerCharacter extends THREE.Group {
     this.sidePosition.set(gridX * GameplayConfig.grid.size, gridY * GameplayConfig.grid.size);
   }
 
+  public rotateToNewSide(startSide: CubeSide, endSide: CubeSide, movingBackOnEdge: boolean = false): void {
+    this.idleElapsedTime = 0;
+    this.idleRotationElapsedTime = 0;
+    this.viewGroup.position.z = 0;
+    this.viewGroup.rotation.z = Math.round(this.viewGroup.rotation.z / (Math.PI / 2)) * (Math.PI / 2);
+
+    this.angleRotationToSideConfig = CharacterRotationToSideConfig[startSide][endSide];
+    this.movingBackOnEdge = movingBackOnEdge;
+    this.setState(PlayerCharacterState.RotatingToNewSide);
+  }
+
   public getGridPositionBySide(): THREE.Vector2 {
     return this.gridPosition;
   }
 
   public updatePositionOnRealPosition(): void {
     const gridPosition: THREE.Vector2 = this.getGridPositionFromRealPosition();
-    this.setGridPositionOnActiveSide(gridPosition.x, gridPosition.y);
+    this.gridPosition.set(gridPosition.x, gridPosition.y);
+    this.sidePosition.set(gridPosition.x * GameplayConfig.grid.size, gridPosition.y * GameplayConfig.grid.size);
   }
 
   public death(sendSignal: boolean = true): void {
@@ -381,6 +406,36 @@ export default class PlayerCharacter extends THREE.Group {
     }
   }
 
+  private updateRotatingToNewSide(dt: number): void {
+    this.rotationToSideProgress += dt * PlayerCharacterGeneralConfig.rotationToSideSpeed;
+    this.rotationToSideProgress = Math.min(this.rotationToSideProgress, 1);
+
+    const easedProgress: number = TWEEN.Easing.Sinusoidal.Out(this.rotationToSideProgress);
+    const targetAngle: number = Math.PI * 0.5 * easedProgress;
+    const deltaAngle: number = targetAngle - this.lastEasedAngleToSide;
+
+    this.rotateOnWorldAxis(this.angleRotationToSideConfig.axis, this.angleRotationToSideConfig.sign * deltaAngle);
+
+    if (this.movingBackOnEdge) {
+      const rotationEasedProgress: number = TWEEN.Easing.Sinusoidal.Out(this.rotationToSideProgress);
+      const rotationTargetAngle: number = Math.PI * rotationEasedProgress;
+      const rotationDeltaAngle: number = rotationTargetAngle - this.lastEasedRotationAngle;
+
+      this.viewGroup.rotation.z += rotationDeltaAngle;
+
+      this.lastEasedRotationAngle = rotationTargetAngle;
+    }
+
+    this.lastEasedAngleToSide = targetAngle;
+
+    if (this.rotationToSideProgress >= 1) {
+      this.rotationToSideProgress = 0;
+      this.lastEasedAngleToSide = 0;
+      this.lastEasedRotationAngle = 0;
+      this.setState(PlayerCharacterState.Idle);
+    }
+  }
+
   private resetViewZPosition(): void {
     if (this.viewGroup.position.z !== 0 && Math.abs(this.view.position.z) > 0.01) {
       this.viewGroup.position.z += -this.view.position.z * 0.25;
@@ -454,7 +509,6 @@ export default class PlayerCharacter extends THREE.Group {
 
   private disableIdleRotationAnimation(): void {
     this.enableIdleRotationAnimation = false;
-    this.idleRotationElapsedTime = 0;
   }
 
   private initView(): void {

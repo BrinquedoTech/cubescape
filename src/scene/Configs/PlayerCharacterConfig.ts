@@ -1,10 +1,11 @@
 import * as THREE from 'three';
 import { CubeRotationDirection } from "../Enums/CubeRotationDirection";
 import { MoveDirection } from "../Enums/MoveDirection";
-import { IMovementDirectionByCubeRotationConfig, IMovementDirectionConfig } from "../Interfaces/ICharacterConfig";
+import { ICharacterRotationToSideConfig, IMovementDirectionByCubeRotationConfig, IMovementDirectionConfig } from "../Interfaces/ICharacterConfig";
 import { ButtonType } from '../Enums/ButtonType';
 import { RotateDirection } from '../Enums/RotateDirection';
 import { Direction } from '../Enums/Direction';
+import { CubeSide } from '../Enums/CubeSide';
 
 const MovementDirectionByCubeRotationConfig: IMovementDirectionByCubeRotationConfig = {
   [MoveDirection.Right]: {
@@ -141,10 +142,50 @@ const ButtonTypeByDirection: { [key in Direction]: ButtonType } = {
   [Direction.Right]: ButtonType.Right,
 }
 
+const CharacterRotationToSideConfig: { [key in CubeSide]: { [key in CubeSide]?: ICharacterRotationToSideConfig } } = {
+  [CubeSide.Front]: {
+    [CubeSide.Left]: { axis: new THREE.Vector3(0, 1, 0), sign: -1 },
+    [CubeSide.Right]: { axis: new THREE.Vector3(0, 1, 0), sign: 1 },
+    [CubeSide.Top]: { axis: new THREE.Vector3(1, 0, 0), sign: -1 },
+    [CubeSide.Bottom]: { axis: new THREE.Vector3(1, 0, 0), sign: 1 },
+  },
+  [CubeSide.Left]: {
+    [CubeSide.Front]: { axis: new THREE.Vector3(0, 1, 0), sign: 1 },
+    [CubeSide.Back]: { axis: new THREE.Vector3(0, 1, 0), sign: -1 },
+    [CubeSide.Top]: { axis: new THREE.Vector3(0, 0, 1), sign: -1 },
+    [CubeSide.Bottom]: { axis: new THREE.Vector3(0, 0, 1), sign: 1 },
+  },
+  [CubeSide.Right]: {
+    [CubeSide.Front]: { axis: new THREE.Vector3(0, 1, 0), sign: -1 },
+    [CubeSide.Back]: { axis: new THREE.Vector3(0, 1, 0), sign: 1 },
+    [CubeSide.Top]: { axis: new THREE.Vector3(0, 0, 1), sign: 1 },
+    [CubeSide.Bottom]: { axis: new THREE.Vector3(0, 0, 1), sign: -1 },
+  },
+  [CubeSide.Top]: {
+    [CubeSide.Front]: { axis: new THREE.Vector3(1, 0, 0), sign: 1 },
+    [CubeSide.Left]: { axis: new THREE.Vector3(0, 0, 1), sign: 1 },
+    [CubeSide.Right]: { axis: new THREE.Vector3(0, 0, 1), sign: -1 },
+    [CubeSide.Back]: { axis: new THREE.Vector3(1, 0, 0), sign: -1 },
+  },
+  [CubeSide.Bottom]: {
+    [CubeSide.Front]: { axis: new THREE.Vector3(1, 0, 0), sign: -1 },
+    [CubeSide.Left]: { axis: new THREE.Vector3(0, 0, 1), sign: -1 },
+    [CubeSide.Right]: { axis: new THREE.Vector3(0, 0, 1), sign: 1 },
+    [CubeSide.Back]: { axis: new THREE.Vector3(1, 0, 0), sign: 1 },
+  },
+  [CubeSide.Back]: {
+    [CubeSide.Left]: { axis: new THREE.Vector3(0, 1, 0), sign: 1 },
+    [CubeSide.Right]: { axis: new THREE.Vector3(0, 1, 0), sign: -1 },
+    [CubeSide.Top]: { axis: new THREE.Vector3(1, 0, 0), sign: 1 },
+    [CubeSide.Bottom]: { axis: new THREE.Vector3(1, 0, 0), sign: -1 },
+  },
+};
+
 export {
   MovementDirectionByCubeRotationConfig,
   MovementDirectionConfig,
   MovementDirectionByButtonConfig,
   TiltAxisConfig,
   ButtonTypeByDirection,
+  CharacterRotationToSideConfig,
 };

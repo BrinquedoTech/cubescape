@@ -277,6 +277,7 @@ export default class GameScene extends THREE.Group {
       this.waitingForCubeRotation = true;
       this.nextCubeRotationDirection = MovementDirectionByCubeRotationConfig[movingDirection][currentRotationDirection].cubeRotationDirection;
       this.rotateCube(this.nextCubeRotationDirection);
+      this.rotatePlayerCharacterToNewSide(true);
 
       return;
     }
@@ -500,12 +501,19 @@ export default class GameScene extends THREE.Group {
 
     if (this.waitingForCubeRotation) {
       this.rotateCube(this.nextCubeRotationDirection);
+      this.rotatePlayerCharacterToNewSide();      
     }
 
     if (this.nextMoveDirection && !this.waitingForCubeRotation) {
       this.moveCharacter(this.nextMoveDirection);
       this.nextMoveDirection = null;
     }
+  }
+
+  private rotatePlayerCharacterToNewSide(movingBackOnEdge: boolean = false): void {
+    const currentSide: CubeSide = this.cube.getCurrentSide();
+    const nextSide: CubeSide = this.cube.getSideAfterRotation(this.nextCubeRotationDirection);
+    this.playerCharacter.rotateToNewSide(currentSide, nextSide, movingBackOnEdge);
   }
 
   private onPlayerDeath(): void {
@@ -539,14 +547,14 @@ export default class GameScene extends THREE.Group {
       this.playerCharacter.updatePositionOnRealPosition();
       this.playerCharacter.setRotationBySide(cubeSide);
 
+      const currentRotationDirection: CubeRotationDirection = this.cube.getCurrentRotationDirection();
+      const movingDirection: MoveDirection = MovementDirectionByCubeRotationConfig[this.currentMoveDirection][currentRotationDirection].direction;
+      this.playerCharacter.setRotationByDirection(movingDirection, true);
+
       if (this.nextMoveDirection) {
         this.moveCharacter(this.nextMoveDirection);
         this.nextMoveDirection = null;
       }
-
-      const currentRotationDirection: CubeRotationDirection = this.cube.getCurrentRotationDirection();
-      const movingDirection: MoveDirection = MovementDirectionByCubeRotationConfig[this.currentMoveDirection][currentRotationDirection].direction;
-      this.playerCharacter.setRotationByDirection(movingDirection);
     }
   }
 

@@ -18,3 +18,8 @@ export type IMovementDirectionConfig = {
   activeAxis: string;
   rotateDirection: RotateDirection;
 }
+
+export type ICharacterRotationToSideConfig = {
+  axis: THREE.Vector3;
+  sign: number;
+};

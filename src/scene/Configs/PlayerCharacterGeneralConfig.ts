@@ -13,6 +13,7 @@ const PlayerCharacterGeneralConfig = {
     rotationFrequency: 1,
     rotationAmplitude: 0.2,
   },
+  rotationToSideSpeed: 1.9,
 }
 
 export { PlayerCharacterGeneralConfig };
