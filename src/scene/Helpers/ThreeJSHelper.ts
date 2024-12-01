@@ -1,5 +1,5 @@
 import * as THREE from 'three';
-import Loader from '../../Core/Loader';
+import Loader from '../../core/AssetsLoader';
 import { GLTF } from 'three/examples/jsm/Addons.js';
 
 export default class ThreeJSHelper {
