@@ -1,7 +1,7 @@
 import * as THREE from 'three';
 import * as PIXI from 'pixi.js';
 import { GLTF, GLTFLoader } from 'three/examples/jsm/Addons.js';
-import { AudioAssets, ModelAssets, PixiAssets, TextureAssets } from '../data/Assets';
+import { AudioAssets, ModelAssets, PixiAssets, TextureAssets } from '../Data/Assets';
 
 type Asset = THREE.Texture | THREE.Audio | THREE.Object3D | PIXI.Texture | PIXI.Sprite | GLTF | AudioBuffer;
 
