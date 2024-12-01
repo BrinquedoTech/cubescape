@@ -14,7 +14,7 @@ import { FloorCellsGeometryConfig, FloorModelsConfig } from '../../Configs/Cells
 import { RoofCellsGeometryConfig, RoofModelsConfig } from '../../Configs/Cells/RoofCellsConfig';
 import { Direction } from '../../Enums/Direction';
 import MapHelper from '../../Helpers/MapHelper';
-import Materials from '../../../Core2/Materials';
+import Materials from '../../../Core/Materials';
 import { MaterialType } from '../../Enums/MaterialType';
 import { WallCellGeometryConfig, WallModelsConfig } from '../../Configs/Cells/WallCellsConfig';
 import { ICornerCellsConfig } from '../../Interfaces/ICellConfig';

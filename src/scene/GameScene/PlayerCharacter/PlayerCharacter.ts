@@ -10,14 +10,14 @@ import { ICubePosition, ICubeSideAxisConfig } from '../../Interfaces/ICubeConfig
 import mitt, { Emitter } from 'mitt';
 import { CellType } from '../../Enums/CellType';
 import ThreeJSHelper from '../../Helpers/ThreeJSHelper';
-import Loader from '../../../Core2/AssetsLoader';
+import Loader from '../../../Core/AssetsLoader';
 import { MoveDirection } from '../../Enums/MoveDirection';
 import { Direction } from '../../Enums/Direction';
 import { MoveDirectionToDirectionConfig } from '../../Configs/DirectionConfig';
 import { CharacterRotationToSideConfig, TiltAxisConfig } from '../../Configs/PlayerCharacterConfig';
 import { PlayerCharacterGeneralConfig } from '../../Configs/PlayerCharacterGeneralConfig';
 import { OBB } from 'three/addons/math/OBB.js';
-import Materials from '../../../Core2/Materials';
+import Materials from '../../../Core/Materials';
 import { MaterialType } from '../../Enums/MaterialType';
 import DebugConfig from '../../Configs/Main/DebugConfig';
 import AudioController from '../AudioController';

@@ -5,7 +5,7 @@ import { ILevelConfig } from '../../Interfaces/ILevelConfig';
 import { ICubePosition } from '../../Interfaces/ICubeConfig';
 import { CellType } from '../../Enums/CellType';
 import { Direction } from '../../Enums/Direction';
-import Materials from '../../../Core2/Materials';
+import Materials from '../../../Core/Materials';
 import { MaterialType } from '../../Enums/MaterialType';
 import ThreeJSHelper from '../../Helpers/ThreeJSHelper';
 
