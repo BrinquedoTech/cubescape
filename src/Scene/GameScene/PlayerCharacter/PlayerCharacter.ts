@@ -528,7 +528,7 @@ export default class PlayerCharacter extends THREE.Group {
       transparent: true,
     });
 
-    const normalMap = Loader.assets['ghost_normal'] as THREE.Texture;
+    const normalMap = Loader.assets['ghost_normal2'] as THREE.Texture;
     normalMap.flipY = false;
     material.normalMap = normalMap;
 
