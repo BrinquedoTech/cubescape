@@ -1,13 +1,13 @@
 import * as PIXI from 'pixi.js';
 import mitt, { Emitter } from 'mitt';
 import RotateButtons from './RotateButtons';
-import DebugConfig from '../scene/Configs/Main/DebugConfig';
+import DebugConfig from '../Scene2/Configs/Main/DebugConfig';
 import ScreensController from './ScreensController';
-import { ScreenType } from '../scene/Enums/UI/ScreenType';
-import { ILevelScore } from '../scene/Interfaces/IScore';
+import { ScreenType } from '../Scene2/Enums/UI/ScreenType';
+import { ILevelScore } from '../Scene2/Interfaces/IScore';
 import MuteButton from './MuteButton';
 import SwipeController from './SwipeController';
-import { Direction } from '../scene/Enums/Direction';
+import { Direction } from '../Scene2/Enums/Direction';
 
 type Events = {
   rotateRight: string;

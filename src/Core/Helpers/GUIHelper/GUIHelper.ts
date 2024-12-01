@@ -1,5 +1,5 @@
 import { Pane } from 'tweakpane';
-import DebugConfig from '../../../scene/Configs/Main/DebugConfig';
+import DebugConfig from '../../../Scene2/Configs/Main/DebugConfig';
 
 export default class GUIHelper {
   static instance: GUIHelper;

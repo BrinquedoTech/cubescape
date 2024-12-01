@@ -1,7 +1,7 @@
 import * as PIXI from 'pixi.js';
 import { Graphics } from 'pixi.js';
-import { Direction } from '../scene/Enums/Direction';
-import { SwipeConfig } from '../scene/Configs/SwipeConfig';
+import { Direction } from '../Scene2/Enums/Direction';
+import { SwipeConfig } from '../Scene2/Configs/SwipeConfig';
 import mitt, { Emitter } from 'mitt';
 
 type Events = {

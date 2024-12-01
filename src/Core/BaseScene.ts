@@ -1,18 +1,18 @@
 import * as THREE from 'three';
 import * as PIXI from 'pixi.js';
 import TWEEN from 'three/addons/libs/tween.module.js';
-import MainScene from '../scene/MainScene';
-import SceneConfig from '../scene/Configs/Main/SceneConfig';
+import MainScene from '../Scene2/MainScene';
+import SceneConfig from '../Scene2/Configs/Main/SceneConfig';
 import Loader from './AssetsLoader';
 import LoadingOverlay from './LoadingOverlay';
-import { ILibrariesData, IWindowSizes } from '../scene/Interfaces/IBaseSceneData';
-import { LightConfig } from '../scene/Configs/Main/LightConfig';
-import AudioController from '../scene/GameScene/AudioController';
-import CameraConfig from '../scene/Configs/Main/CameraConfig';
-import { DeviceState } from '../scene/Enums/DeviceState';
+import { ILibrariesData, IWindowSizes } from '../Scene2/Interfaces/IBaseSceneData';
+import { LightConfig } from '../Scene2/Configs/Main/LightConfig';
+import AudioController from '../Scene2/GameScene/AudioController';
+import CameraConfig from '../Scene2/Configs/Main/CameraConfig';
+import { DeviceState } from '../Scene2/Enums/DeviceState';
 import Scene3DDebugMenu from './Helpers/GUIHelper/Scene3DDebugMenu';
-import ShadowConfig from '../scene/Configs/Main/ShadowConfig';
-import FogConfig from '../scene/Configs/Main/FogConfig';
+import ShadowConfig from '../Scene2/Configs/Main/ShadowConfig';
+import FogConfig from '../Scene2/Configs/Main/FogConfig';
 
 export default class BaseScene {
   private scene: THREE.Scene;

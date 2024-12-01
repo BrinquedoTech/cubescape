@@ -2,8 +2,8 @@ import * as PIXI from 'pixi.js';
 import { Text } from 'pixi.js';
 import AbstractScreen from './AbstractScreen';
 import mitt, { Emitter } from 'mitt';
-import SceneConfig from '../../scene/Configs/Main/SceneConfig';
-import AudioController from '../../scene/GameScene/AudioController';
+import SceneConfig from '../../Scene2/Configs/Main/SceneConfig';
+import AudioController from '../../Scene2/GameScene/AudioController';
 
 type Events = {
   onStartClick: string;
