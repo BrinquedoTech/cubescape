@@ -1,6 +1,6 @@
 import * as THREE from 'three';
 import { RotateDirection, TurnDirection } from "./Enums/RotateDirection";
-import UI from "../UI2/UI";
+import UI from "../UI/UI";
 import { ScreenType } from './Enums/UI/ScreenType';
 import DebugConfig from './Configs/Main/DebugConfig';
 import { ILevelScore } from './Interfaces/IScore';
