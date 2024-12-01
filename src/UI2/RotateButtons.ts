@@ -1,6 +1,6 @@
 import * as PIXI from 'pixi.js';
-import Button from './Button';
 import mitt, { Emitter } from 'mitt';
+import Button from './Button';
 
 type Events = {
   rotateRight: string;

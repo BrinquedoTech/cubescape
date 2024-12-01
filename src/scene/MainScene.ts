@@ -1,6 +1,6 @@
 import * as THREE from 'three';
 import { RotateDirection, TurnDirection } from "./Enums/RotateDirection";
-import UI from "../UI/UI";
+import UI from "../UI2/UI";
 import { ScreenType } from './Enums/UI/ScreenType';
 import DebugConfig from './Configs/Main/DebugConfig';
 import { ILevelScore } from './Interfaces/IScore';
@@ -12,14 +12,12 @@ import { ILibrariesData } from './Interfaces/IBaseSceneData';
 export default class MainScene {
   private data: ILibrariesData;
   private scene: THREE.Scene;
-  // private camera: THREE.PerspectiveCamera;
   private scene3D: ThreeJSScene;
   private ui: UI;
 
   constructor(data: ILibrariesData) {
     this.data = data;
     this.scene = data.scene;
-    // this.camera = data.camera;
 
     this._init();
   }
