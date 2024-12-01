@@ -1,26 +1,23 @@
-import DebugConfig from "../../../scene/Configs/Main/DebugConfig";
+import * as THREE from 'three';
+import * as PIXI from 'pixi.js';
+import DebugConfig from "../../../Scene/Configs/Main/DebugConfig";
 import RendererStats from 'three-webgl-stats';
 import Stats from 'three/addons/libs/stats.module.js';
-import GUIHelper from "./gui-helper";
+import GUIHelper from "./GUIHelper";
 import { OrbitControls } from "three/examples/jsm/Addons.js";
 
 export default class Scene3DDebugMenu {
-  // private scene: any;
-  private camera: any;
-  private renderer: any;
-  private pixiApp: any;
+  private camera: THREE.PerspectiveCamera;
+  private renderer: THREE.WebGLRenderer;
+  private pixiApp: PIXI.Application;
 
   private fpsStats: any;
   private rendererStats: any;
   private orbitControls: any;
-  // private gridHelper: any;
-  // private axesHelper: any;
-  // private baseGUI: any;
   
   private _isAssetsLoaded: boolean;
 
-  constructor(camera, renderer, pixiApp) {
-    // this.scene = scene;
+  constructor(camera: THREE.PerspectiveCamera, renderer: THREE.WebGLRenderer, pixiApp: PIXI.Application) {
     this.camera = camera;
     this.renderer = renderer;
     this.pixiApp = pixiApp;
@@ -28,9 +25,6 @@ export default class Scene3DDebugMenu {
     this.fpsStats = null;
     this.rendererStats = null;
     this.orbitControls = null;
-    // this.gridHelper = null;
-    // this.axesHelper = null;
-    // this.baseGUI = null;
 
     this._isAssetsLoaded = false;
 

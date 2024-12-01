@@ -1,4 +1,4 @@
-import BaseScene from './core/BaseScene';
+import BaseScene from './Core/BaseScene';
 import './style.css';
 import { inject } from '@vercel/analytics';
 

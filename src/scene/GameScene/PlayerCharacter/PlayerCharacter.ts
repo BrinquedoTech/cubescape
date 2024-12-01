@@ -10,14 +10,14 @@ import { ICubePosition, ICubeSideAxisConfig } from '../../Interfaces/ICubeConfig
 import mitt, { Emitter } from 'mitt';
 import { CellType } from '../../Enums/CellType';
 import ThreeJSHelper from '../../Helpers/ThreeJSHelper';
-import Loader from '../../../core/loader';
+import Loader from '../../../Core/Loader';
 import { MoveDirection } from '../../Enums/MoveDirection';
 import { Direction } from '../../Enums/Direction';
 import { MoveDirectionToDirectionConfig } from '../../Configs/DirectionConfig';
 import { CharacterRotationToSideConfig, TiltAxisConfig } from '../../Configs/PlayerCharacterConfig';
 import { PlayerCharacterGeneralConfig } from '../../Configs/PlayerCharacterGeneralConfig';
 import { OBB } from 'three/addons/math/OBB.js';
-import Materials from '../../../core/Materials';
+import Materials from '../../../Core/Materials';
 import { MaterialType } from '../../Enums/MaterialType';
 import DebugConfig from '../../Configs/Main/DebugConfig';
 import AudioController from '../AudioController';
@@ -518,7 +518,7 @@ export default class PlayerCharacter extends THREE.Group {
     const geometry: THREE.BufferGeometry = ThreeJSHelper.getGeometryFromModel('ghost');
     ThreeJSHelper.setGeometryRotation(geometry, new THREE.Euler(Math.PI * 0.5, Math.PI, 0));
 
-    const texture = Loader.assets['Ghost_BaseColor'];
+    const texture = Loader.assets['ghost_base_color'] as THREE.Texture;
     texture.flipY = false;
     texture.colorSpace = THREE.SRGBColorSpace;
 
@@ -528,7 +528,7 @@ export default class PlayerCharacter extends THREE.Group {
       transparent: true,
     });
 
-    const normalMap = Loader.assets['Ghost_Normal'];
+    const normalMap = Loader.assets['ghost_normal'] as THREE.Texture;
     normalMap.flipY = false;
     material.normalMap = normalMap;
 

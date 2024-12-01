@@ -8,3 +8,8 @@ export interface ILibrariesData {
   directionalLight: THREE.DirectionalLight;
   pixiApp: PIXI.Application;
 }
+
+export interface IWindowSizes {
+    width: number;
+    height: number;
+}

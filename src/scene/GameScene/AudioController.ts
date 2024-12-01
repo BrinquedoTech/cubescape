@@ -1,5 +1,5 @@
 import * as THREE from 'three';
-import Loader from '../../core/loader';
+import Loader from '../../Core/Loader';
 
 export default class AudioController {
   static instance: AudioController;
@@ -48,7 +48,7 @@ export default class AudioController {
   public initCoinsSound(): void {
     for (let i = 0; i < 10; i++) {
       const sound = new THREE.Audio(this.listener);
-      sound.setBuffer(Loader.assets['coin_pickup']);
+      sound.setBuffer(Loader.assets['coin_pickup'] as AudioBuffer);
       sound.setVolume(0.7);
 
       this.coinsPool.push(sound);
@@ -65,7 +65,7 @@ export default class AudioController {
 
   initSound(soundName: string): void {
     const sound = new THREE.Audio(this.listener);
-    sound.setBuffer(Loader.assets[soundName]);
+    sound.setBuffer(Loader.assets[soundName] as AudioBuffer);
 
     sound.setVolume(1);
 
@@ -74,7 +74,7 @@ export default class AudioController {
 
   public initMusic(soundName: string): void {
     const music = this.music = new THREE.Audio(this.listener);
-    music.setBuffer(Loader.assets[soundName]);
+    music.setBuffer(Loader.assets[soundName] as AudioBuffer);
     music.setLoop(true);
     music.setVolume(0.5);
   }

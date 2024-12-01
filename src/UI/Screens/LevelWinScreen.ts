@@ -3,9 +3,9 @@ import * as PIXI from 'pixi.js';
 import { Text } from 'pixi.js';
 import { Graphics } from 'pixi.js';
 import AbstractScreen from './AbstractScreen';
-import SceneConfig from '../../core/configs/SceneConfig';
-import { ILevelScore } from '../../scene/Interfaces/IScore';
-import { ScoreConfig } from '../../scene/Configs/ScoreConfig';
+import SceneConfig from '../../Scene/Configs/Main/SceneConfig';
+import { ILevelScore } from '../../Scene/Interfaces/IScore';
+import { ScoreConfig } from '../../Scene/Configs/ScoreConfig';
 
 type Events = {
   onNextLevelClick: string;

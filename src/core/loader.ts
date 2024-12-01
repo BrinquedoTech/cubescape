@@ -1,146 +1,61 @@
 import * as THREE from 'three';
 import * as PIXI from 'pixi.js';
-import { GLTFLoader } from 'three/examples/jsm/Addons.js';
+import { GLTF, GLTFLoader } from 'three/examples/jsm/Addons.js';
+import { AudioAssets, ModelAssets, PixiAssets, TextureAssets } from '../Data/Assets';
 
-const textures = [
-  'Ghost_BaseColor.png',
-  'Ghost_Normal.png',
-  'dungeon_texture.png',
-];
+type Asset = THREE.Texture | THREE.Audio | THREE.Object3D | PIXI.Texture | PIXI.Sprite | GLTF | AudioBuffer;
 
-const models = [
-  'wall_01.glb',
-  'wall_02.glb',
-  'wall_03.glb',
-  'wall_04.glb',
-  'wall_05.glb',
-
-  'roof_01.glb',
-  'roof_02.glb',
-  'roof_03.glb',
-  'roof_04.glb',
-  'roof_05.glb',
-  'roof_06.glb',
-
-  'floor_01.glb',
-  'floor_02.glb',
-  'floor_03.glb',
-  'floor_04.glb',
-  'floor_05.glb',
-  'floor_06.glb',
-
-  'corner_01.glb',
-  'corner_02.glb',
-  'corner_03.glb',
-  'corner_04.glb',
-  'corner_05.glb',
-
-  'edge_01.glb',
-  'edge_02.glb',
-  'edge_03.glb',
-  'edge_04.glb',
-
-  'edge_wall_01.glb',
-
-  'ghost.glb',
-
-  'finish-object.glb',
-
-  'floor_spikes.glb',
-  'floor_spikes_base.glb',
-
-  'coin.glb',
-
-  'wall_spikes.glb',
-];
-
-const pixiAssets = [
-  'assets/arrow-right.png',
-  'assets/arrow-left.png',
-  'assets/arrow-up.png',
-  'assets/arrow-down.png',
-  'assets/arrow-clockwise.png',
-  'assets/arrow-counter-clockwise.png',
-  'assets/sound-icon.png',
-  'assets/sound-icon-mute.png',
-  'fonts/casper.ttf',
-  'fonts/riky.ttf',
-];
-
-const audio = [
-  'death.mp3',
-  'swoosh.mp3',
-  'coin_pickup.mp3',
-  'music.mp3',
-]
-
-const loadingPercentElement = document.querySelector('.loading-percent');
+const loadingPercentElement: Element = document.querySelector('.loading-percent');
 
 export default class Loader {
-  static assets = {};
+  static assets: { [key: string]: Asset } = {};
 
   private threeJSManager: THREE.LoadingManager;
 
   constructor() {
-    Loader.assets = {};
+    this.threeJSManager = new THREE.LoadingManager(this.onThreeJSAssetsLoaded, this.onThreeJSAssetsProgress);
 
-    this.threeJSManager = new THREE.LoadingManager(this._onThreeJSAssetsLoaded, this._onThreeJSAssetsProgress);
-
-    this._loadPixiAssets();
+    this.loadPixiAssets();
   }
 
-  // _onBlackAssetsProgress(item, progress) { // eslint-disable-line no-unused-vars
-    // progressRatio = progress;
+  private loadPixiAssets(): void {
+    const texturesNames: string[] = [];
 
-    // const percent = Math.floor(progressRatio * 100);
-    // loadingPercentElement.innerHTML = `${percent}%`;
-  // }
-
-  _onBlackAssetsLoaded() {
-    // this.removeFromParent();
-    // this._loadPixiAssets();
-  }
-
-  _loadPixiAssets() {
-    const texturesNames = [];
-
-    pixiAssets.forEach((assetFilename) => {
+    PixiAssets.forEach((assetFilename: string) => {
       const assetName = assetFilename.replace(/\.[^/.]+$/, "");
-      // console.log(textureName, textureFilename);
 
       PIXI.Assets.add({ alias: assetName, src: assetFilename });
-
       texturesNames.push(assetName);
     });
 
-    const texturesPromise = PIXI.Assets.load(texturesNames);
+    const texturesPromise: Promise<Record<string, PIXI.Texture>> = PIXI.Assets.load(texturesNames);
 
-    texturesPromise.then((textures) => {
-      texturesNames.forEach((name) => {
-        this._onAssetLoad(textures[name], name);
+    texturesPromise.then((textures: { [key in string]: PIXI.Texture }) => {
+      texturesNames.forEach((name: string) => {
+        this.onAssetLoad(textures[name], name);
       });
 
-      this._loadThreeJSAssets();
+      this.loadThreeJSAssets();
     });
   }
 
-  _loadThreeJSAssets() {
-    this._loadTextures();
-    this._loadModels();
-    this._loadAudio();
+  private loadThreeJSAssets(): void {
+    this.loadTextures();
+    this.loadModels();
+    this.loadAudio();
 
-    if (textures.length === 0 && models.length === 0) {
-      this._onThreeJSAssetsLoaded();
+    if (TextureAssets.length === 0 && ModelAssets.length === 0) {
+      this.onThreeJSAssetsLoaded();
     }
   }
 
-  _onThreeJSAssetsLoaded() {
+  private onThreeJSAssetsLoaded(): void {
     setTimeout(() => {
       loadingPercentElement.innerHTML = `100%`;
       loadingPercentElement.classList.add('ended');
 
       setTimeout(() => {
-        (loadingPercentElement as HTMLElement).style.display = 'none'; // eslint-disable-line
+        (loadingPercentElement as HTMLElement).style.display = 'none';
       }, 300);
     }, 450);
 
@@ -151,48 +66,48 @@ export default class Loader {
     }, 100);
   }
 
-  _onThreeJSAssetsProgress() {
-    const percent = Math.floor(0.5 * 100);
+  private onThreeJSAssetsProgress(): void {
+    const percent: number = Math.floor(0.5 * 100);
     loadingPercentElement.innerHTML = `${percent}%`;
   }
 
-  _loadTextures() {
+  private loadTextures(): void {
     const textureLoader = new THREE.TextureLoader(this.threeJSManager);
 
-    const texturesBasePath = '/textures/';
+    const texturesBasePath: string = '/textures/';
 
-    textures.forEach((textureFilename) => {
-      const textureFullPath = `${texturesBasePath}${textureFilename}`;
-      const textureName = textureFilename.replace(/\.[^/.]+$/, "");
+    TextureAssets.forEach((textureFilename: string) => {
+      const textureFullPath: string = `${texturesBasePath}${textureFilename}`;
+      const textureName: string = textureFilename.replace(/\.[^/.]+$/, "");
       Loader.assets[textureName] = textureLoader.load(textureFullPath);
     });
   }
 
-  _loadModels() {
+  private loadModels(): void {
     const gltfLoader = new GLTFLoader(this.threeJSManager);
 
-    const modelsBasePath = '/models/';
+    const modelsBasePath: string = '/models/';
 
-    models.forEach((modelFilename) => {
-      const modelFullPath = `${modelsBasePath}${modelFilename}`;
-      const modelName = modelFilename.replace(/\.[^/.]+$/, "");
-      gltfLoader.load(modelFullPath, (gltfModel) => this._onAssetLoad(gltfModel, modelName));
+    ModelAssets.forEach((modelFilename: string) => {
+      const modelFullPath: string = `${modelsBasePath}${modelFilename}`;
+      const modelName: string = modelFilename.replace(/\.[^/.]+$/, "");
+      gltfLoader.load(modelFullPath, (gltfModel: GLTF) => this.onAssetLoad(gltfModel, modelName));
     });
   }
 
-  _loadAudio() {
+  private loadAudio(): void {
     const audioLoader = new THREE.AudioLoader(this.threeJSManager);
 
-    const audioBasePath = '/audio/';
+    const audioBasePath: string = '/audio/';
 
-    audio.forEach((audioFilename) => {
-      const audioFullPath = `${audioBasePath}${audioFilename}`;
-      const audioName = audioFilename.replace(/\.[^/.]+$/, "");
-      audioLoader.load(audioFullPath, (audioBuffer) => this._onAssetLoad(audioBuffer, audioName));
+    AudioAssets.forEach((audioFilename: string) => {
+      const audioFullPath: string = `${audioBasePath}${audioFilename}`;
+      const audioName: string = audioFilename.replace(/\.[^/.]+$/, "");
+      audioLoader.load(audioFullPath, (audioBuffer: AudioBuffer) => this.onAssetLoad(audioBuffer, audioName));
     });
   }
 
-  _onAssetLoad(asset, name) {
+  onAssetLoad(asset: Asset, name: string) {
     Loader.assets[name] = asset;
   }
 }

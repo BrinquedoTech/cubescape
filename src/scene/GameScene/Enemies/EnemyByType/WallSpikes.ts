@@ -12,7 +12,7 @@ import GameplayConfig from '../../../Configs/Main/GameplayConfig';
 import { ICubeSideAxisConfig } from '../../../Interfaces/ICubeConfig';
 import { CubeSideAxisConfig, SideVectorConfig } from '../../../Configs/SideConfig';
 import { WallCellGeometryConfig, WallModelsConfig } from '../../../Configs/Cells/WallCellsConfig';
-import Materials from '../../../../core/Materials';
+import Materials from '../../../../Core/Materials';
 import { MaterialType } from '../../../Enums/MaterialType';
 import { WallSpikesGeneralConfig } from '../../../Configs/Enemies/WallSpikesConfig';
 

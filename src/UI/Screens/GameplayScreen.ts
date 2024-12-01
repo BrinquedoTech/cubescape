@@ -1,8 +1,8 @@
 import * as PIXI from 'pixi.js';
 import { Text } from 'pixi.js';
 import AbstractScreen from './AbstractScreen';
-import SceneConfig from '../../core/configs/SceneConfig';
-import GameplayConfig from '../../scene/Configs/Main/GameplayConfig';
+import SceneConfig from '../../Scene/Configs/Main/SceneConfig';
+import GameplayConfig from '../../Scene/Configs/Main/GameplayConfig';
 
 export default class GameplayScreen extends AbstractScreen {
   private scoreText: PIXI.Text;

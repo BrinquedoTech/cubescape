@@ -5,7 +5,7 @@ import { ILevelConfig } from '../../Interfaces/ILevelConfig';
 import { ICubePosition } from '../../Interfaces/ICubeConfig';
 import { CellType } from '../../Enums/CellType';
 import { Direction } from '../../Enums/Direction';
-import Materials from '../../../core/Materials';
+import Materials from '../../../Core/Materials';
 import { MaterialType } from '../../Enums/MaterialType';
 import ThreeJSHelper from '../../Helpers/ThreeJSHelper';
 
@@ -60,7 +60,7 @@ export default class FinishLevelObject extends THREE.Group {
   private initView(): void {
     const material: THREE.Material = Materials.getInstance().materials[MaterialType.Main];
 
-    const modelName: string = 'finish-object';
+    const modelName: string = 'finish_object';
     const geometry: THREE.BufferGeometry = ThreeJSHelper.getGeometryFromModel(modelName);
 
     const view: THREE.Mesh = this.view = new THREE.Mesh(geometry, material);

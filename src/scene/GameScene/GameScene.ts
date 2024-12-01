@@ -30,7 +30,7 @@ import CoinsController from './Coins/CoinsController';
 import { ScoreConfig } from '../Configs/ScoreConfig';
 import { ILevelScore } from '../Interfaces/IScore';
 import GameplayConfig from '../Configs/Main/GameplayConfig';
-import { ILibrariesData } from '../Interfaces/ILibrariesData';
+import { ILibrariesData } from '../Interfaces/IBaseSceneData';
 import { SceneType } from '../Enums/SceneType';
 import AudioController from './AudioController';
 import { Direction } from '../Enums/Direction';

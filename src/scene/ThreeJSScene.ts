@@ -1,7 +1,7 @@
 import * as THREE from 'three';
 import GameScene from './GameScene/GameScene';
 import { RotateDirection, TurnDirection } from './Enums/RotateDirection';
-import { ILibrariesData } from './Interfaces/ILibrariesData';
+import { ILibrariesData } from './Interfaces/IBaseSceneData';
 import mitt, { Emitter } from 'mitt';
 import { ILevelScore } from './Interfaces/IScore';
 import { Direction } from './Enums/Direction';

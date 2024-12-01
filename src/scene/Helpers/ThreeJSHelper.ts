@@ -1,5 +1,6 @@
 import * as THREE from 'three';
-import Loader from '../../core/loader';
+import Loader from '../../Core/Loader';
+import { GLTF } from 'three/examples/jsm/Addons.js';
 
 export default class ThreeJSHelper {
   constructor() {
@@ -67,7 +68,8 @@ export default class ThreeJSHelper {
   }
 
   public static getGeometryFromModel(modelName: string): THREE.BufferGeometry {
-    const model: THREE.Mesh = Loader.assets[modelName].scene.children[0];
+    const GLTFModel: GLTF = Loader.assets[modelName] as GLTF;
+    const model: THREE.Mesh = GLTFModel.scene.children[0] as THREE.Mesh;
     return model.geometry.clone();
   }
 

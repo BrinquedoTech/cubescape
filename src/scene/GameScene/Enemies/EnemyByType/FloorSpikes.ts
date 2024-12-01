@@ -2,7 +2,7 @@ import * as THREE from 'three';
 import TWEEN from 'three/addons/libs/tween.module.js';
 import { IFloorSpikeConfig } from '../../../Interfaces/IEnemyConfig';
 import { ILevelConfig } from '../../../Interfaces/ILevelConfig';
-import Materials from '../../../../core/Materials';
+import Materials from '../../../../Core/Materials';
 import { MaterialType } from '../../../Enums/MaterialType';
 import ThreeJSHelper from '../../../Helpers/ThreeJSHelper';
 import { CubeSide } from '../../../Enums/CubeSide';

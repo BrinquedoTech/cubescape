@@ -1,6 +1,6 @@
 import * as THREE from 'three';
-import Loader from './loader';
-import { MaterialType } from '../scene/Enums/MaterialType';
+import Loader from './Loader';
+import { MaterialType } from '../Scene/Enums/MaterialType';
 
 export default class Materials {
   static instance: Materials;
@@ -18,23 +18,23 @@ export default class Materials {
     return Materials.instance;
   }
 
-  initMaterials(): void {
+  private initMaterials(): void {
     this.initMainMaterial();
     this.initDebugBodyMaterials();
   }
 
-  initMainMaterial() {
-    const texture: THREE.Texture = Loader.assets['dungeon_texture'];
+  private initMainMaterial(): void {
+    const texture: THREE.Texture = Loader.assets['dungeon_texture'] as THREE.Texture;
     texture.flipY = false;
     texture.colorSpace = THREE.SRGBColorSpace;
 
     this.materials[MaterialType.Main] = new THREE.MeshPhongMaterial({
       map: texture,
-      // side: THREE.DoubleSide,
+      side: THREE.DoubleSide,
     });
   }
 
-  initDebugBodyMaterials() {
+  private initDebugBodyMaterials(): void {
     this.materials[MaterialType.DebugBodyPlayerCharacter] = new THREE.MeshBasicMaterial({
       color: 0x00ff00,
       wireframe: true,

@@ -1,5 +1,5 @@
 import * as PIXI from 'pixi.js';
-import AudioController from '../scene/GameScene/AudioController';
+import AudioController from '../Scene/GameScene/AudioController';
 
 export default class MuteButton extends PIXI.Container {
   private view: PIXI.Sprite;
