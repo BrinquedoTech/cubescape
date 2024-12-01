@@ -1,5 +1,5 @@
 import * as THREE from 'three';
-import Loader from '../../core/AssetsLoader';
+import Loader from '../../Core2/AssetsLoader';
 
 export default class AudioController {
   static instance: AudioController;
