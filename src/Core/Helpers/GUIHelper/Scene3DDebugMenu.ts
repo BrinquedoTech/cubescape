@@ -1,6 +1,6 @@
 import * as THREE from 'three';
 import * as PIXI from 'pixi.js';
-import DebugConfig from "../../../Scene2/Configs/Main/DebugConfig";
+import DebugConfig from "../../../Scene/Configs/Main/DebugConfig";
 import RendererStats from 'three-webgl-stats';
 import Stats from 'three/addons/libs/stats.module.js';
 import GUIHelper from "./GUIHelper";

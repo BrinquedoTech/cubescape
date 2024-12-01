@@ -2,10 +2,10 @@ import * as PIXI from 'pixi.js';
 import GameplayScreen from './Screens/GameplayScreen';
 import LevelWinScreen from './Screens/LevelWinScreen';
 import mitt, { Emitter } from 'mitt';
-import { ScreenType } from '../Scene2/Enums/UI/ScreenType';
+import { ScreenType } from '../Scene/Enums/UI/ScreenType';
 import AbstractScreen from './Screens/AbstractScreen';
 import IntroScreen from './Screens/IntroScreen';
-import { ILevelScore } from '../Scene2/Interfaces/IScore';
+import { ILevelScore } from '../Scene/Interfaces/IScore';
 import LoseScreen from './Screens/LoseScreen';
 import GameWinScreen from './Screens/GameWinScreen';
 
