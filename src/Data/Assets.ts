@@ -1,6 +1,6 @@
 const TextureAssets: string[] = [
   'ghost_base_color.png',
-  'ghost_normal2.png',
+  'ghost_normal.png',
   'dungeon_texture.png',
 ];
 
