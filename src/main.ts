@@ -11,3 +11,4 @@ document.addEventListener('onLoad', () => {
 
   setTimeout(() => baseScene.afterAssetsLoaded(), 300);
 });
+
