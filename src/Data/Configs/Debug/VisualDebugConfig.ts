@@ -1,6 +1,6 @@
 import * as THREE from 'three';
-import { CubeSide } from './src/Data/Enums/Cube/CubeSide';
-import { CubeRotationDirection } from './src/Data/Enums/Cube/CubeRotationDirection';
+import { CubeSide } from '../../Enums/Cube/CubeSide';
+import { CubeRotationDirection } from '../../Enums/Cube/CubeRotationDirection';
 
 const CubeSideName: { [key in CubeSide]: string } = {
   [CubeSide.Front]: 'Front',
