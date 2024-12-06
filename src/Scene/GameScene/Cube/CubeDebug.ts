@@ -1,6 +1,5 @@
 import * as THREE from 'three';
 import { Text } from 'troika-three-text';
-import { ILevelConfig } from '../../Interfaces/ILevelConfig';
 import GameplayConfig from '../../../Data/Configs/Main/GameplayConfig';
 import { CubeSide } from '../../../Data/Enums/Cube/CubeSide';
 import { SideRotationConfig, SideVectorConfig, CubeSideAxisConfig } from '../../../Data/Configs/SideConfig';
@@ -8,6 +7,7 @@ import { CubeRotationDirection } from '../../../Data/Enums/Cube/CubeRotationDire
 import { CubeEdgeName, CubeEdgeNameVectorsConfig, CubeSideName, GridRotationConfig, TextAxisOnCubeSide } from '../../../../VisualDebugConfig';
 import ThreeJSHelper from '../../Helpers/ThreeJSHelper';
 import DebugConfig from '../../../Data/Configs/Main/DebugConfig';
+import { ILevelConfig } from '../../../Data/Interfaces/ILevelConfig';
 
 export default class CubeDebug extends THREE.Group {
   private levelConfig: ILevelConfig;

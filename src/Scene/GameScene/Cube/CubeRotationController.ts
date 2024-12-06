@@ -9,8 +9,8 @@ import mitt, { Emitter } from 'mitt';
 import { RotationBySideConfig, TurnBySideConfig } from '../../../Data/Configs/StartSideConfig';
 import { CubeRotationAngle, RotationAxisConfig, RotationDirectionsFromSideToSideConfig, TurnDirectionForRotationConfig } from '../../../Data/Configs/CubeRotationConfig';
 import { CubeRotationType } from '../../../Data/Enums/Cube/CubeRotationType';
-import { IRotationAxisConfig } from '../../Interfaces/ICubeRotationConfig';
 import { CubeRotationAngleType } from '../../../Data/Enums/Cube/CubeRotationAngleType';
+import { IRotationAxisConfig } from '../../../Data/Interfaces/ICubeRotationConfig';
 
 type Events = {
   endRotating: string;
