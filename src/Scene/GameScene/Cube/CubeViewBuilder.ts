@@ -1,10 +1,8 @@
 import * as THREE from 'three';
 import ThreeJSHelper from '../../Helpers/ThreeJSHelper';
 import GameplayConfig from '../../../Data/Configs/Main/GameplayConfig';
-import { ILevelConfig, IMapConfig } from '../../Interfaces/ILevelConfig';
 import CornerCellsConfig from '../../../Data/Configs/Cells/CornerCellsConfig';
 import { EdgeRotationConfig, EdgeDistanceConfig, EdgeModelsConfig, CubeSideByEdge, EdgeWallsRotation, EdgeWallModelsConfig, EdgeWallCellGeometryConfig, EdgeDirectionForwardConfig } from '../../../Data/Configs/Cells/EdgeCellsConfig';
-import { ICubeSideAxisConfig, IEdgeConfig, IEdgeWallsRotation } from '../../Interfaces/ICubeConfig';
 import CubeHelper from '../../Helpers/CubeHelper';
 import { CellType } from '../../../Data/Enums/Cube/CellType';
 import InstancesHelper from '../../Helpers/InstancesHelper';
@@ -17,8 +15,10 @@ import MapHelper from '../../Helpers/MapHelper';
 import Materials from '../../../Core/Materials';
 import { MaterialType } from '../../../Data/Enums/MaterialType';
 import { WallCellGeometryConfig, WallModelsConfig } from '../../../Data/Configs/Cells/WallCellsConfig';
-import { ICornerCellsConfig } from '../../Interfaces/ICellConfig';
 import ArrayHelper from '../../Helpers/ArrayHelper';
+import { ILevelConfig, IMapConfig } from '../../../Data/Interfaces/ILevelConfig';
+import { ICubeSideAxisConfig, IEdgeConfig, IEdgeWallsRotation } from '../../../Data/Interfaces/ICubeConfig';
+import { ICornerCellsConfig } from '../../../Data/Interfaces/ICellConfig';
 
 export default class CubeViewBuilder extends THREE.Group {
   private levelMap: ILevelConfig;
@@ -194,12 +194,12 @@ export default class CubeViewBuilder extends THREE.Group {
           if (rightCellType === CellType.Empty) {
             let emptyCellsCount = 0;
             for (let i = column + 1; i < edgeSize; i++) {
-                const cellType: CellType = CubeHelper.getCellTypeBySymbol(fullEdgeMap[i]);
-                if (cellType === CellType.Empty) {
-                    emptyCellsCount++;
-                } else {
-                    break;
-                }
+              const cellType: CellType = CubeHelper.getCellTypeBySymbol(fullEdgeMap[i]);
+              if (cellType === CellType.Empty) {
+                emptyCellsCount++;
+              } else {
+                break;
+              }
             }
 
             const edgeCell = new THREE.Object3D();
@@ -207,17 +207,17 @@ export default class CubeViewBuilder extends THREE.Group {
             edgeCell.position.x = EdgeDistanceConfig[i].x * distance.x;
             edgeCell.position.y = EdgeDistanceConfig[i].y * distance.y;
             edgeCell.position.z = EdgeDistanceConfig[i].z * distance.z;
-  
+
             const cellOffset: number = EdgeDirectionForwardConfig[edgeConfig.edge] === false ? emptyCellsCount + 1 : 0;
             edgeCell.position[edgeConfig.axis] = (column + cellOffset) * GameplayConfig.grid.size + GameplayConfig.grid.size * 0.5 - edgeSize * 0.5 * GameplayConfig.grid.size;
-  
+
             edgeCell.rotation.set(edgeConfig.rotation.x, edgeConfig.rotation.y, edgeConfig.rotation.z);
             CubeHelper.setRotationByDirection(edgeCell, cubeSide, Direction.Up);
             edgeCell.rotateOnWorldAxis(edgeWallRotation.axis, edgeWallRotation.rightRotation);
 
             edgeCell.scale.set(GameplayConfig.grid.scale, GameplayConfig.grid.scale, GameplayConfig.grid.scale);
-  
-            edgeWallCells.push(edgeCell);    
+
+            edgeWallCells.push(edgeCell);
           }
         }
 
@@ -227,12 +227,12 @@ export default class CubeViewBuilder extends THREE.Group {
           if (leftCellType === CellType.Empty) {
             let emptyCellsCount = 0;
             for (let i = column - 1; i >= 0; i--) {
-                const cellType: CellType = CubeHelper.getCellTypeBySymbol(fullEdgeMap[i]);
-                if (cellType === CellType.Empty) {
-                    emptyCellsCount++;
-                } else {
-                    break;
-                }
+              const cellType: CellType = CubeHelper.getCellTypeBySymbol(fullEdgeMap[i]);
+              if (cellType === CellType.Empty) {
+                emptyCellsCount++;
+              } else {
+                break;
+              }
             }
 
             const edgeCell = new THREE.Object3D();
@@ -240,17 +240,17 @@ export default class CubeViewBuilder extends THREE.Group {
             edgeCell.position.x = EdgeDistanceConfig[i].x * distance.x;
             edgeCell.position.y = EdgeDistanceConfig[i].y * distance.y;
             edgeCell.position.z = EdgeDistanceConfig[i].z * distance.z;
-  
+
             const cellOffset: number = EdgeDirectionForwardConfig[edgeConfig.edge] === false ? emptyCellsCount + 1 : 0;
             edgeCell.position[edgeConfig.axis] += (column - cellOffset) * GameplayConfig.grid.size + GameplayConfig.grid.size * 0.5 - edgeSize * 0.5 * GameplayConfig.grid.size;
-  
+
             edgeCell.rotation.set(edgeConfig.rotation.x, edgeConfig.rotation.y, edgeConfig.rotation.z);
             CubeHelper.setRotationByDirection(edgeCell, cubeSide, Direction.Down);
             edgeCell.rotateOnWorldAxis(edgeWallRotation.axis, edgeWallRotation.leftRotation);
 
             edgeCell.scale.set(GameplayConfig.grid.scale, GameplayConfig.grid.scale, GameplayConfig.grid.scale);
-  
-            edgeWallCells.push(edgeCell);            
+
+            edgeWallCells.push(edgeCell);
           }
         }
       }
@@ -489,7 +489,7 @@ export default class CubeViewBuilder extends THREE.Group {
     const cellTypesToCheckSymbol: string[] = [];
 
     for (let i = 0; i < cellTypesToCheck.length; i++) {
-        cellTypesToCheckSymbol.push(CubeHelper.getCellSymbolByType(cellTypesToCheck[i]));
+      cellTypesToCheckSymbol.push(CubeHelper.getCellSymbolByType(cellTypesToCheck[i]));
     }
 
     if (row > 0 && cellTypesToCheckSymbol.includes(map[row - 1][column])) {

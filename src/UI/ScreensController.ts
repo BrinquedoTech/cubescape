@@ -5,9 +5,9 @@ import mitt, { Emitter } from 'mitt';
 import { ScreenType } from '../Data/Enums/UI/ScreenType';
 import AbstractScreen from './Screens/AbstractScreen';
 import IntroScreen from './Screens/IntroScreen';
-import { ILevelScore } from '../Scene/Interfaces/IScore';
 import LoseScreen from './Screens/LoseScreen';
 import GameWinScreen from './Screens/GameWinScreen';
+import { ILevelScore } from '../Data/Interfaces/IScore';
 
 type Events = {
   onStartClick: void;

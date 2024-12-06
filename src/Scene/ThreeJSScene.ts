@@ -1,10 +1,10 @@
 import * as THREE from 'three';
 import GameScene from './GameScene/GameScene';
 import { RotateDirection, TurnDirection } from '../Data/Enums/Cube/RotateDirection';
-import { ILibrariesData } from './Interfaces/IBaseSceneData';
 import mitt, { Emitter } from 'mitt';
-import { ILevelScore } from './Interfaces/IScore';
 import { Direction } from '../Data/Enums/Direction';
+import { ILibrariesData } from '../Data/Interfaces/IBaseSceneData';
+import { ILevelScore } from '../Data/Interfaces/IScore';
 
 type Events = {
   onWinLevel: { levelTime: number; levelScore: ILevelScore };
@@ -37,15 +37,6 @@ export default class ThreeJSScene extends THREE.Group {
 
     this.gameScene.update(dt);
   }
-
-  // onPointerMove(x, y) {
-  // }
-
-  // onPointerDown(x, y) {
-  // }
-
-  // onPointerUp(x, y) 
-  // }
 
   public rotateCubeToDirection(rotateDirection: RotateDirection): void {
     this.gameScene.rotateCube(rotateDirection);

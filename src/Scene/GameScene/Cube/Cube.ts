@@ -1,5 +1,4 @@
 import * as THREE from 'three';
-import { ILevelConfig } from '../../Interfaces/ILevelConfig';
 import { RotateDirection, TurnDirection } from '../../../Data/Enums/Cube/RotateDirection';
 import CubeRotationController from './CubeRotationController';
 import { CubeSide } from '../../../Data/Enums/Cube/CubeSide';
@@ -11,6 +10,7 @@ import { DefaultStartSideConfig } from '../../../Data/Configs/StartSideConfig';
 import CubeViewBuilder from './CubeViewBuilder';
 import TWEEN from 'three/addons/libs/tween.module.js';
 import CubeIntroRotationController from './CubeIntroRotationController';
+import { ILevelConfig } from '../../../Data/Interfaces/ILevelConfig';
 
 type Events = {
   endRotating: string;

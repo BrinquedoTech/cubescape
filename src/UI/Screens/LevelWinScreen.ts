@@ -4,8 +4,8 @@ import { Text } from 'pixi.js';
 import { Graphics } from 'pixi.js';
 import AbstractScreen from './AbstractScreen';
 import SceneConfig from '../../Data/Configs/Main/SceneConfig';
-import { ILevelScore } from '../../Scene/Interfaces/IScore';
 import { ScoreConfig } from '../../Data/Configs/ScoreConfig';
+import { ILevelScore } from '../../Data/Interfaces/IScore';
 
 type Events = {
   onNextLevelClick: string;

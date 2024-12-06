@@ -1,13 +1,13 @@
 import * as THREE from 'three';
 import { CubeSide } from '../../../Data/Enums/Cube/CubeSide';
 import CubeHelper from '../../Helpers/CubeHelper';
-import { ILevelConfig } from '../../Interfaces/ILevelConfig';
-import { ICubePosition } from '../../Interfaces/ICubeConfig';
 import { CellType } from '../../../Data/Enums/Cube/CellType';
 import { Direction } from '../../../Data/Enums/Direction';
 import Materials from '../../../Core/Materials';
 import { MaterialType } from '../../../Data/Enums/MaterialType';
 import ThreeJSHelper from '../../Helpers/ThreeJSHelper';
+import { ICubePosition } from '../../../Data/Interfaces/ICubeConfig';
+import { ILevelConfig } from '../../../Data/Interfaces/ILevelConfig';
 
 export default class FinishLevelObject extends THREE.Group {
   private levelConfig: ILevelConfig;
