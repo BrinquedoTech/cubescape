@@ -16,14 +16,14 @@ export default class Button extends PIXI.Container {
 
     this.isPressed = false;
 
-    this._init(textureName);
+    this.init(textureName);
   }
 
-  _init(textureName: string) {
-    this._initView(textureName);
+  private init(textureName: string): void {
+    this.initView(textureName);
   }
 
-  _initView(textureName: string) {
+  private initView(textureName: string): void {
     const texture = PIXI.Assets.get(textureName);
     const view = new PIXI.Sprite(texture);
     this.addChild(view);
@@ -35,31 +35,31 @@ export default class Button extends PIXI.Container {
 
     view.on('pointerdown', () => {
       this.isPressed = true;
-      this._onScaleIn();
+      this.onScaleIn();
     });
 
     view.on('pointerup', () => {
       this.isPressed = false;
       this.emitter.emit('click');
-      this._onScaleOut();
+      this.onScaleOut();
     });
 
     view.on('pointerout', () => {
       if (this.isPressed) {
         this.isPressed = false;
-        this._onScaleOut();
+        this.onScaleOut();
       }
     });
   }
 
-  _onScaleIn() {
+  private onScaleIn(): void {
     new TWEEN.Tween(this.scale)
       .to({ x: 0.97, y: 0.97 }, 100)
       .easing(TWEEN.Easing.Sinusoidal.In)
       .start();
   }
 
-  _onScaleOut() {
+  private onScaleOut(): void {
     new TWEEN.Tween(this.scale)
       .to({ x: 1, y: 1 }, 100)
       .easing(TWEEN.Easing.Sinusoidal.Out)

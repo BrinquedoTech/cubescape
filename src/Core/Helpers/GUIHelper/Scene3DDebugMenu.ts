@@ -11,39 +11,35 @@ export default class Scene3DDebugMenu {
   private renderer: THREE.WebGLRenderer;
   private pixiApp: PIXI.Application;
 
-  private fpsStats: any;
-  private rendererStats: any;
-  private orbitControls: any;
+  private fpsStats: Stats;
+  private rendererStats: RendererStats;
+  private orbitControls: OrbitControls;
   
-  private _isAssetsLoaded: boolean;
+  private isAssetsLoaded: boolean;
 
   constructor(camera: THREE.PerspectiveCamera, renderer: THREE.WebGLRenderer, pixiApp: PIXI.Application) {
     this.camera = camera;
     this.renderer = renderer;
     this.pixiApp = pixiApp;
 
-    this.fpsStats = null;
-    this.rendererStats = null;
-    this.orbitControls = null;
+    this.isAssetsLoaded = false;
 
-    this._isAssetsLoaded = false;
-
-    this._init();
+    this.init();
   }
 
-  preUpdate() {
+  public preUpdate(): void {
     if (DebugConfig.fpsMeter) {
       this.fpsStats.begin();
     }
   }
 
-  postUpdate() {
+  public postUpdate(): void {
     if (DebugConfig.fpsMeter) {
       this.fpsStats.end();
     }
   }
 
-  update() {
+  public update(): void {
     if (DebugConfig.orbitControls) {
       this.orbitControls.update();
     }
@@ -53,8 +49,8 @@ export default class Scene3DDebugMenu {
     }
   }
 
-  showAfterAssetsLoad() {
-    this._isAssetsLoaded = true;
+  public showAfterAssetsLoad(): void {
+    this.isAssetsLoaded = true;
 
     if (DebugConfig.fpsMeter) {
       this.fpsStats.dom.style.visibility = 'visible';
@@ -71,19 +67,19 @@ export default class Scene3DDebugMenu {
     GUIHelper.instance.showAfterAssetsLoad();
   }
 
-  getOrbitControls() {
+  public getOrbitControls(): OrbitControls {
     return this.orbitControls;
   }
 
-  _init() {
-    this._initRendererStats();
-    this._initFPSMeter();
-    this._initOrbitControls();
+  private init(): void {
+    this.initRendererStats();
+    this.initFPSMeter();
+    this.initOrbitControls();
 
-    this._initLilGUIHelper();
+    this.initLilGUIHelper();
   }
 
-  _initRendererStats() {
+  private initRendererStats(): void {
     if (DebugConfig.rendererStats) {
       const rendererStats = this.rendererStats = new RendererStats();
 
@@ -92,25 +88,25 @@ export default class Scene3DDebugMenu {
       rendererStats.domElement.style.bottom = '0px';
       document.body.appendChild(rendererStats.domElement);
 
-      if (!this._isAssetsLoaded) {
+      if (!this.isAssetsLoaded) {
         this.rendererStats.domElement.style.visibility = 'hidden';
       }
     }
   }
 
-  _initFPSMeter() {
+  private initFPSMeter(): void {
     if (DebugConfig.fpsMeter) {
       const stats = this.fpsStats = new Stats();
       stats.showPanel(0);
       document.body.appendChild(stats.dom);
 
-      if (!this._isAssetsLoaded) {
+      if (!this.isAssetsLoaded) {
         this.fpsStats.dom.style.visibility = 'hidden';
       }
     }
   }
 
-  _initOrbitControls() {
+  private initOrbitControls(): void {
     const orbitControls = this.orbitControls = new OrbitControls(this.camera, this.pixiApp.renderer.canvas);
 
     orbitControls.target.set(0, 0, 0);
@@ -120,49 +116,49 @@ export default class Scene3DDebugMenu {
     orbitControls.rotateSpeed = 1;
     orbitControls.panSpeed = 1;
 
-    if (!this._isAssetsLoaded) {
+    if (!this.isAssetsLoaded) {
       orbitControls.enabled = false;
     }
   }
 
-  _initLilGUIHelper() {
+  private initLilGUIHelper(): void {
     new GUIHelper();
   }
 
-  onFpsMeterClick() {
-    if (DebugConfig.fpsMeter) {
-      if (!this.fpsStats) {
-        this._initFPSMeter();
-      }
-      this.fpsStats.dom.style.display = 'block';
-    } else {
-      this.fpsStats.dom.style.display = 'none';
-    }
-  }
+  // private onFpsMeterClick(): void {
+  //   if (DebugConfig.fpsMeter) {
+  //     if (!this.fpsStats) {
+  //       this.initFPSMeter();
+  //     }
+  //     this.fpsStats.dom.style.display = 'block';
+  //   } else {
+  //     this.fpsStats.dom.style.display = 'none';
+  //   }
+  // }
 
-  onRendererStatsClick(rendererStatsState) {
-    if (DebugConfig.rendererStats) {
-      if (rendererStatsState) {
-        if (!this.rendererStats) {
-          this._initRendererStats();
-        }
+  // private onRendererStatsClick(rendererStatsState): void {
+  //   if (DebugConfig.rendererStats) {
+  //     if (rendererStatsState) {
+  //       if (!this.rendererStats) {
+  //         this.initRendererStats();
+  //       }
 
-        this.rendererStats.domElement.style.display = 'block';
-      } else {
-        this.rendererStats.domElement.style.display = 'none';
-      }
-    }
-  }
+  //       this.rendererStats.domElement.style.display = 'block';
+  //     } else {
+  //       this.rendererStats.domElement.style.display = 'none';
+  //     }
+  //   }
+  // }
 
-  onOrbitControlsClick(orbitControlsState) {
-    if (orbitControlsState) {
-      if (!this.orbitControls) {
-        this._initOrbitControls();
-      }
+  // private onOrbitControlsClick(orbitControlsState): void {
+  //   if (orbitControlsState) {
+  //     if (!this.orbitControls) {
+  //       this.initOrbitControls();
+  //     }
 
-      this.orbitControls.enabled = true;
-    } else {
-      this.orbitControls.enabled = false;
-    }
-  }
+  //     this.orbitControls.enabled = true;
+  //   } else {
+  //     this.orbitControls.enabled = false;
+  //   }
+  // }
 }

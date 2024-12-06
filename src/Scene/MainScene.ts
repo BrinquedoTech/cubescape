@@ -19,10 +19,10 @@ export default class MainScene {
     this.data = data;
     this.scene = data.scene;
 
-    this._init();
+    this.init();
   }
 
-  afterAssetsLoad() {
+  public afterAssetsLoad(): void {
     this.scene.add(this.scene3D);
 
     if (DebugConfig.gameplay.disableIntro) {
@@ -32,30 +32,34 @@ export default class MainScene {
     }
   }
 
-  update(dt: number) {
+  public update(dt: number): void {
     this.scene3D.update(dt);
   }
 
-  private startIntro() {
+  private startIntro(): void {
     this.ui.showScreen(ScreenType.Intro);
     this.scene3D.startIntro();
   }
-
-  _init() {
-    this.scene3D = new ThreeJSScene(this.data);
-    this._initUI();
-
-    this._initSignals();
+  
+  public onResize(): void {
+    this.ui.onResize();
   }
 
-  _initUI() {
+  private init(): void {
+    this.scene3D = new ThreeJSScene(this.data);
+    this.initUI();
+
+    this.initSignals();
+  }
+
+  private initUI(): void {
     const ui = this.ui = new UI();
     this.data.pixiApp.stage.addChild(ui);
 
     ui.onResize();
   }
 
-  _initSignals() {
+  private initSignals(): void {
     this.ui.emitter.on('rotateRight', () => this.scene3D.rotateCubeToDirection(RotateDirection.Right));
     this.ui.emitter.on('rotateLeft', () => this.scene3D.rotateCubeToDirection(RotateDirection.Left));
     this.ui.emitter.on('rotateUp', () => this.scene3D.rotateCubeToDirection(RotateDirection.Up));
@@ -75,17 +79,6 @@ export default class MainScene {
     this.scene3D.emitter.on('updateLives', (lives: number) => this.ui.updateLives(lives));
     this.scene3D.emitter.on('onLoseGame', () => this.onLoseGame());
     this.scene3D.emitter.on('onWinGame', (score: number) => this.onWinGame(score));
-
-
-    // this._ui.on('onPointerMove', (msg, x, y) => this._scene3D.onPointerMove(x, y));
-    // this._ui.on('onPointerMove', (msg, x, y) => this._scene3D.onPointerMove(x, y));
-    // this._ui.on('onPointerDown', (msg, x, y) => this._scene3D.onPointerDown(x, y));
-    // this._ui.on('onPointerUp', (msg, x, y) => this._scene3D.onPointerUp(x, y));
-    // this._ui.on('onWheelScroll', (msg, delta) => this._scene3D.onWheelScroll(delta));
-    // this._ui.on('onSoundChanged', () => this._scene3D.onSoundChanged());
-
-    // this._scene3D.events.on('fpsMeterChanged', () => this.events.post('fpsMeterChanged'));
-    // this._scene3D.events.on('onSoundsEnabledChanged', () => this._ui.updateSoundIcon());
   }
 
   private onWinLevel(levelTime: number, levelScore: ILevelScore): void {
@@ -134,9 +127,5 @@ export default class MainScene {
     this.ui.setOverallScore(score);
     this.ui.showScreen(ScreenType.GameWin);
     this.ui.hideScreen(ScreenType.Gameplay);
-  }
-
-  onResize() {
-    this.ui.onResize();
   }
 }

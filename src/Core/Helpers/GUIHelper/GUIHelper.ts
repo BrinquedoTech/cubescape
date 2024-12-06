@@ -21,7 +21,7 @@ export default class GUIHelper {
     return this.gui;
   }
 
-  getFolder(name) {
+  public getFolder(name: string): any {
     const folders = this.gui.children;
 
     for (let i = 0; i < folders.length; i += 1) {
@@ -35,7 +35,7 @@ export default class GUIHelper {
     return null;
   }
 
-  getController(folder, name) {
+  public getController(folder: any, name: string): any {
     for (let i = 0; i < folder.children.length; i += 1) {
       const controller = folder.children[i];
 
@@ -47,7 +47,7 @@ export default class GUIHelper {
     return null;
   }
 
-  getControllerFromFolder(folderName, controllerName) {
+  public getControllerFromFolder(folderName: string, controllerName: string): any {
     const folder = this.getFolder(folderName);
 
     if (folder) {
@@ -57,25 +57,25 @@ export default class GUIHelper {
     return null;
   }
 
-  showAfterAssetsLoad() {
+  public showAfterAssetsLoad(): void {
     if ((<any>DebugConfig).gui) {
       this.gui.hidden = false;
     }
   }
 
-  static getGui() {
+  public static getGui() {
     return GUIHelper.instance.gui;
   }
 
-  static getFolder(name) {
+  public static getFolder(name: string) {
     return GUIHelper.instance.getFolder(name);
   }
 
-  static getController(folder, name) {
+  public static getController(folder: any, name: string) {
     return GUIHelper.instance.getController(folder, name);
   }
 
-  static getControllerFromFolder(folderName, controllerName) {
+  public static getControllerFromFolder(folderName: string, controllerName: string) {
     return GUIHelper.instance.getControllerFromFolder(folderName, controllerName);
   }
 }
