@@ -1,13 +1,13 @@
 import * as THREE from 'three';
 import { ILevelConfig } from '../../Interfaces/ILevelConfig';
-import { RotateDirection, TurnDirection } from '../../Enums/RotateDirection';
+import { RotateDirection, TurnDirection } from '../../../Data/Enums/Cube/RotateDirection';
 import CubeRotationController from './CubeRotationController';
-import { CubeSide } from '../../Enums/CubeSide';
-import { CubeRotationDirection } from '../../Enums/CubeRotationDirection';
-import { CubeState } from '../../Enums/CubeState';
+import { CubeSide } from '../../../Data/Enums/Cube/CubeSide';
+import { CubeRotationDirection } from '../../../Data/Enums/Cube/CubeRotationDirection';
+import { CubeState } from '../../../Data/Enums/Cube/CubeState';
 import CubeDebug from './CubeDebug';
 import mitt, { Emitter } from 'mitt';
-import { DefaultStartSideConfig } from '../../Configs/StartSideConfig';
+import { DefaultStartSideConfig } from '../../../Data/Configs/StartSideConfig';
 import CubeViewBuilder from './CubeViewBuilder';
 import TWEEN from 'three/addons/libs/tween.module.js';
 import CubeIntroRotationController from './CubeIntroRotationController';

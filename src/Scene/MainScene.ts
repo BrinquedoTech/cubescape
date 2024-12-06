@@ -1,13 +1,13 @@
 import * as THREE from 'three';
-import { RotateDirection, TurnDirection } from "./Enums/RotateDirection";
+import { RotateDirection, TurnDirection } from "../Data/Enums/Cube/RotateDirection";
 import UI from "../UI/UI";
-import { ScreenType } from './Enums/UI/ScreenType';
-import DebugConfig from './Configs/Main/DebugConfig';
-import { ILevelScore } from './Interfaces/IScore';
+import { ScreenType } from '../Data/Enums/UI/ScreenType';
+import DebugConfig from '../Data/Configs/Main/DebugConfig';
+import { ILevelScore } from '../Data/Interfaces/IScore';
 import AudioController from './GameScene/AudioController';
-import { Direction } from './Enums/Direction';
+import { Direction } from '../Data/Enums/Direction';
 import ThreeJSScene from './ThreeJSScene';
-import { ILibrariesData } from './Interfaces/IBaseSceneData';
+import { ILibrariesData } from '../Data/Interfaces/IBaseSceneData';
 
 export default class MainScene {
   private data: ILibrariesData;

@@ -1,7 +1,7 @@
 import * as THREE from 'three';
-import { CubeSide } from "../Enums/CubeSide";
-import { ILevelConfig, IMapConfig } from "../Interfaces/ILevelConfig";
+import { CubeSide } from "../../Data/Enums/Cube/CubeSide";
 import MapHelper from '../Helpers/MapHelper';
+import { ILevelConfig, IMapConfig } from '../../Data/Interfaces/ILevelConfig';
 
 export default class MapController {
   private map: IMapConfig = {};

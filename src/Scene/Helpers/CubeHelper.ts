@@ -1,14 +1,14 @@
 import * as THREE from 'three';
-import GameplayConfig from '../Configs/Main/GameplayConfig';
-import { ICubePosition, ICubePositionWithID, ICubeSideAxisConfig } from '../Interfaces/ICubeConfig';
-import { CellDirectionConfig, CharacterSideConfig, CubeSideAxisConfig, Direction2DVectorConfig, ObjectsRotationBySideConfig, SideVectorConfig } from '../Configs/SideConfig';
-import { CubeSide } from '../Enums/CubeSide';
-import { ILevelConfig, ILevelSideConfig } from '../Interfaces/ILevelConfig';
-import { CellType } from '../Enums/CellType';
-import { Direction } from '../Enums/Direction';
-import { CellConfig } from '../Configs/Cells/CellsConfig';
-import { ICellTypeWithID } from '../Interfaces/ICellConfig';
-import { EnemyConfigMap, IWallSpikeConfig } from '../Interfaces/IEnemyConfig';
+import GameplayConfig from '../../Data/Configs/Main/GameplayConfig';
+import { ICubePosition, ICubePositionWithID, ICubeSideAxisConfig } from '../../Data/Interfaces/ICubeConfig';
+import { CellDirectionConfig, CharacterSideConfig, CubeSideAxisConfig, Direction2DVectorConfig, ObjectsRotationBySideConfig, SideVectorConfig } from '../../Data/Configs/SideConfig';
+import { CubeSide } from '../../Data/Enums/Cube/CubeSide';
+import { ILevelConfig, ILevelSideConfig } from '../../Data/Interfaces/ILevelConfig';
+import { CellType } from '../../Data/Enums/Cube/CellType';
+import { Direction } from '../../Data/Enums/Direction';
+import { CellConfig } from '../../Data/Configs/Cells/CellsConfig';
+import { ICellTypeWithID } from '../../Data/Interfaces/ICellConfig';
+import { EnemyConfigMap, IWallSpikeConfig } from '../../Data/Interfaces/Enemies/IEnemyConfig';
 
 export default class CubeHelper {
   constructor() {

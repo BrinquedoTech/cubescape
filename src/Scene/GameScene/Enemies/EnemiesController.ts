@@ -1,12 +1,12 @@
 import * as THREE from 'three';
-import { ILevelConfig } from '../../Interfaces/ILevelConfig';
-import { EnemyType } from '../../Enums/EnemyType';
-import { EnemyConfigMap } from '../../Interfaces/IEnemyConfig';
-import { EnemiesClassName, EnemyCellType } from '../../Configs/Enemies/EnemiesGeneralConfig';
-import { ICubePosition, ICubePositionWithID } from '../../Interfaces/ICubeConfig';
+import { ILevelConfig } from '../../../Data/Interfaces/ILevelConfig';
+import { EnemyType } from '../../../Data/Enums/Enemy/EnemyType';
+import { EnemyConfigMap } from '../../../Data/Interfaces/Enemies/IEnemyConfig';
+import { EnemiesClassName, EnemyCellType } from '../../../Data/Configs/Enemies/EnemiesGeneralConfig';
+import { ICubePosition, ICubePositionWithID } from '../../../Data/Interfaces/ICubeConfig';
 import CubeHelper from '../../Helpers/CubeHelper';
-import { CellType } from '../../Enums/CellType';
-import { CubeSide } from '../../Enums/CubeSide';
+import { CellType } from '../../../Data/Enums/Cube/CellType';
+import { CubeSide } from '../../../Data/Enums/Cube/CubeSide';
 import FloorSpikes from './EnemyByType/FloorSpikes';
 
 export default class EnemiesController extends THREE.Group {

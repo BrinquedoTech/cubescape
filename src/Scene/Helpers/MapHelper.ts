@@ -1,15 +1,15 @@
-import { CubeSideAxisConfig } from '../Configs/SideConfig';
-import { CubeSide } from '../Enums/CubeSide';
+import { CubeSideAxisConfig } from '../../Data/Configs/SideConfig';
+import { CubeSide } from '../../Data/Enums/Cube/CubeSide';
 import { ILevelConfig, ILevelEdgeConfig, ILevelSideConfig } from '../Interfaces/ILevelConfig';
-import { CellType } from '../Enums/CellType';
-import { CellsForFinalMap } from '../Configs/Cells/CellsConfig';
+import { CellType } from '../../Data/Enums/Cube/CellType';
+import { CellsForFinalMap } from '../../Data/Configs/Cells/CellsConfig';
 import ArrayHelper from './ArrayHelper';
-import { CubeEdge } from '../Enums/CubeEdge';
-import { EdgeBySideConfig, EdgesBySideArrayConfig } from '../Configs/Cells/EdgeCellsConfig';
-import { CubeEdgeOnSidePositionType } from '../Enums/CubeEdgeOnSide';
+import { CubeEdge } from '../../Data/Enums/Cube/CubeEdge';
+import { EdgeBySideConfig, EdgesBySideArrayConfig } from '../../Data/Configs/Cells/EdgeCellsConfig';
+import { CubeEdgeOnSidePositionType } from '../../Data/Enums/Cube/CubeEdgeOnSide';
 import CubeHelper from './CubeHelper';
-import { FloorCellTypes } from '../Configs/Cells/FloorCellsConfig';
-import { RoofCellTypes } from '../Configs/Cells/RoofCellsConfig';
+import { FloorCellTypes } from '../../Data/Configs/Cells/FloorCellsConfig';
+import { RoofCellTypes } from '../../Data/Configs/Cells/RoofCellsConfig';
 
 export default class MapHelper {
   constructor() {

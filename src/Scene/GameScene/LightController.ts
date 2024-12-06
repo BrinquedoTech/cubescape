@@ -1,9 +1,9 @@
 import * as THREE from 'three';
 import PlayerCharacter from './PlayerCharacter/PlayerCharacter';
 import TWEEN from 'three/addons/libs/tween.module.js';
-import { LightConfig } from '../Configs/Main/LightConfig';
+import { LightConfig } from '../../Data/Configs/Main/LightConfig';
 import ThreeJSHelper from '../Helpers/ThreeJSHelper';
-import { ILevelConfig } from '../Interfaces/ILevelConfig';
+import { ILevelConfig } from '../../Data/Interfaces/ILevelConfig';
 
 export class LightController extends THREE.Group {
   private playerCharacter: PlayerCharacter;

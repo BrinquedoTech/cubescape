@@ -1,6 +1,6 @@
 import * as THREE from 'three';
 import Loader from './AssetsLoader';
-import { MaterialType } from '../Scene/Enums/MaterialType';
+import { MaterialType } from '../Data/Enums/MaterialType';
 
 export default class Materials {
   static instance: Materials;

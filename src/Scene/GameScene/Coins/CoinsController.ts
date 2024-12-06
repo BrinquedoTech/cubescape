@@ -2,16 +2,16 @@ import * as THREE from 'three';
 import CubeHelper from '../../Helpers/CubeHelper';
 import { ILevelConfig } from '../../Interfaces/ILevelConfig';
 import { ICubePosition } from '../../Interfaces/ICubeConfig';
-import { CellType } from '../../Enums/CellType';
+import { CellType } from '../../../Data/Enums/Cube/CellType';
 import Materials from '../../../Core/Materials';
-import { MaterialType } from '../../Enums/MaterialType';
+import { MaterialType } from '../../../Data/Enums/MaterialType';
 import ThreeJSHelper from '../../Helpers/ThreeJSHelper';
-import { CubeSide } from '../../Enums/CubeSide';
+import { CubeSide } from '../../../Data/Enums/Cube/CubeSide';
 import InstancesHelper from '../../Helpers/InstancesHelper';
 import { ITransform } from '../../Interfaces/IThreeJS';
-import { CoinsConfig } from '../../Configs/CoinsConfig';
+import { CoinsConfig } from '../../../Data/Configs/CoinsConfig';
 import { OBB } from 'three/addons/math/OBB.js';
-import DebugConfig from '../../Configs/Main/DebugConfig';
+import DebugConfig from '../../../Data/Configs/Main/DebugConfig';
 
 export default class CoinsController extends THREE.Group {
   private levelConfig: ILevelConfig;

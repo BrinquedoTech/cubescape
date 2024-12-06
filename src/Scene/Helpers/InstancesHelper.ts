@@ -1,8 +1,8 @@
 import * as THREE from 'three';
-import { ITransform } from '../Interfaces/IThreeJS';
-import { ICubeSideAxisConfig } from '../Interfaces/ICubeConfig';
-import { CubeSideAxisConfig } from '../Configs/SideConfig';
-import { CubeSide } from '../Enums/CubeSide';
+import { ITransform } from '../../Data/Interfaces/IThreeJS';
+import { ICubeSideAxisConfig } from '../../Data/Interfaces/ICubeConfig';
+import { CubeSideAxisConfig } from '../../Data/Configs/SideConfig';
+import { CubeSide } from '../../Data/Enums/Cube/CubeSide';
 
 export default class InstancesHelper {
   constructor() {
