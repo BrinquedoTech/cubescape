@@ -1,13 +1,13 @@
 import * as THREE from 'three';
 import { RotateDirection, TurnDirection } from "../../../Data/Enums/Cube/RotateDirection";
 import TWEEN from 'three/addons/libs/tween.module.js';
-import GameplayConfig from '../../../Data/Configs/Main/GameplayConfig';
+import GameplayConfig from '../../../Data/Configs/GameplayConfig';
 import { CubeSide } from '../../../Data/Enums/Cube/CubeSide';
-import { LocalEdgeDirections, NeighboringSidesConfig, SideVectorConfig } from '../../../Data/Configs/SideConfig';
+import { LocalEdgeDirections, NeighboringSidesConfig, SideVectorConfig } from '../../../Data/Configs/Cube/SideConfig';
 import { CubeRotationDirection } from '../../../Data/Enums/Cube/CubeRotationDirection';
 import mitt, { Emitter } from 'mitt';
-import { RotationBySideConfig, TurnBySideConfig } from '../../../Data/Configs/StartSideConfig';
-import { CubeRotationAngle, RotationAxisConfig, RotationDirectionsFromSideToSideConfig, TurnDirectionForRotationConfig } from '../../../Data/Configs/CubeRotationConfig';
+import { RotationBySideConfig, TurnBySideConfig } from '../../../Data/Configs/Cube/StartSideConfig';
+import { CubeRotationAngle, RotationAxisConfig, RotationDirectionsFromSideToSideConfig, TurnDirectionForRotationConfig } from '../../../Data/Configs/Cube/CubeRotationConfig';
 import { CubeRotationType } from '../../../Data/Enums/Cube/CubeRotationType';
 import { CubeRotationAngleType } from '../../../Data/Enums/Cube/CubeRotationAngleType';
 import { IRotationAxisConfig } from '../../../Data/Interfaces/ICubeRotationConfig';

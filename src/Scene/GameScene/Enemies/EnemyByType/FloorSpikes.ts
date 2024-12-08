@@ -2,19 +2,19 @@ import * as THREE from 'three';
 import TWEEN from 'three/addons/libs/tween.module.js';
 import { IFloorSpikeConfig } from '../../../../Data/Interfaces/Enemies/IEnemyConfig';
 import { ILevelConfig } from '../../../../Data/Interfaces/ILevelConfig';
-import Materials from '../../../../Core/Materials';
+import Materials from '../../../../Core/Materials/Materials';
 import { MaterialType } from '../../../../Data/Enums/MaterialType';
-import ThreeJSHelper from '../../../Helpers/ThreeJSHelper';
 import { CubeSide } from '../../../../Data/Enums/Cube/CubeSide';
-import CubeHelper from '../../../Helpers/CubeHelper';
-import InstancesHelper from '../../../Helpers/InstancesHelper';
 import { FloorSpikesGeneralConfig } from '../../../../Data/Configs/Enemies/FloorSpikesConfig';
 import { IFloorSpikeInstanceConfig } from '../../../../Data/Interfaces/IFloorSpikesConfig';
 import { OBB } from 'three/addons/math/OBB.js';
-import DebugConfig from '../../../../Data/Configs/Main/DebugConfig';
+import DebugConfig from '../../../../Data/Configs/Debug/DebugConfig';
 import { ITransform } from '../../../../Data/Interfaces/IThreeJS';
 import { ICubeSideAxisConfig } from '../../../../Data/Interfaces/ICubeConfig';
-import { CubeSideAxisConfig } from '../../../../Data/Configs/SideConfig';
+import { CubeSideAxisConfig } from '../../../../Data/Configs/Cube/SideConfig';
+import ThreeJSHelper from '../../../../Helpers/ThreeJSHelper';
+import CubeHelper from '../../../../Helpers/CubeHelper';
+import InstancesHelper from '../../../../Helpers/InstancesHelper';
 
 export default class FloorSpikes extends THREE.Group {
   private configs: IFloorSpikeConfig[];

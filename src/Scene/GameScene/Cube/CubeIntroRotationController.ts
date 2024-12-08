@@ -1,5 +1,5 @@
 import * as THREE from 'three';
-import { CubeIntroConfig } from '../../../Data/Configs/CubeIntroConfig';
+import { CubeIntroConfig } from '../../../Data/Configs/Cube/CubeIntroConfig';
 import mitt, { Emitter } from 'mitt';
 import TWEEN from 'three/addons/libs/tween.module.js';
 

@@ -2,17 +2,17 @@ import * as THREE from 'three';
 import * as PIXI from 'pixi.js';
 import TWEEN from 'three/addons/libs/tween.module.js';
 import MainScene from '../Scene/MainScene';
-import SceneConfig from '../Data/Configs/Main/SceneConfig';
-import Loader from './AssetsLoader';
-import LoadingOverlay from './LoadingOverlay';
-import { LightConfig } from '../Data/Configs/Main/LightConfig';
+import SceneConfig from '../Data/Configs/Scene/SceneConfig';
+import Loader from './Loader/AssetsLoader';
+import LoadingOverlay from './Loader/LoadingOverlay';
+import { LightConfig } from '../Data/Configs/Scene/LightConfig';
 import AudioController from '../Scene/GameScene/AudioController';
-import CameraConfig from '../Data/Configs/Main/CameraConfig';
+import CameraConfig from '../Data/Configs/Scene/CameraConfig';
 import { DeviceState } from '../Data/Enums/DeviceState';
-import Scene3DDebugMenu from './Helpers/GUIHelper/Scene3DDebugMenu';
-import ShadowConfig from '../Data/Configs/Main/ShadowConfig';
-import FogConfig from '../Data/Configs/Main/FogConfig';
+import ShadowConfig from '../Data/Configs/Scene/ShadowConfig';
+import FogConfig from '../Data/Configs/Scene/FogConfig';
 import { ILibrariesData, IWindowSizes } from '../Data/Interfaces/IBaseSceneData';
+import DebugMenu from './DebugMenu/DebugMenu';
 
 export default class BaseScene {
   private scene: THREE.Scene;
@@ -20,7 +20,7 @@ export default class BaseScene {
   private camera: THREE.PerspectiveCamera;
   private loadingOverlay: LoadingOverlay;
   private mainScene: MainScene;
-  private scene3DDebugMenu: Scene3DDebugMenu;
+  private debugMenu: DebugMenu;
   private pixiApp: PIXI.Application;
   private ambientLight: THREE.AmbientLight;
   private directionalLight: THREE.DirectionalLight;
@@ -49,7 +49,7 @@ export default class BaseScene {
 
     this.initAudioAssets();
     this.loadingOverlay.hide();
-    this.scene3DDebugMenu.showAfterAssetsLoad();
+    this.debugMenu.showAfterAssetsLoad();
     this.mainScene.afterAssetsLoad();
     this.setupBackgroundColor();
   }
@@ -95,7 +95,7 @@ export default class BaseScene {
     this.initAudioController();
     this.initOnResize();
 
-    this.initScene3DDebugMenu();
+    this.initDebugMenu();
   }
 
   private initLoader(): void {
@@ -185,21 +185,21 @@ export default class BaseScene {
     this.scene.background = new THREE.Color(SceneConfig.backgroundColor);
   }
 
-  private initScene3DDebugMenu(): void {
-    this.scene3DDebugMenu = new Scene3DDebugMenu(this.camera, this.renderer, this.pixiApp);
+  private initDebugMenu(): void {
+    this.debugMenu = new DebugMenu(this.camera, this.renderer, this.pixiApp);
   }
 
   private initUpdate(): void {
     const clock = new THREE.Clock(true);
 
     const update = () => {
-      this.scene3DDebugMenu.preUpdate();
+      this.debugMenu.preUpdate();
 
       const deltaTime = clock.getDelta();
 
       if (this.isAssetsLoaded) {
         TWEEN.update();
-        this.scene3DDebugMenu.update();
+        this.debugMenu.update();
 
         if (this.mainScene) {
           this.mainScene.update(deltaTime);
@@ -209,7 +209,7 @@ export default class BaseScene {
         this.renderer.render(this.scene, this.camera);
       }
 
-      this.scene3DDebugMenu.postUpdate();
+      this.debugMenu.postUpdate();
       window.requestAnimationFrame(update);
     }
 

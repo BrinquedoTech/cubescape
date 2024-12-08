@@ -6,7 +6,7 @@ import { CubeRotationDirection } from '../../../Data/Enums/Cube/CubeRotationDire
 import { CubeState } from '../../../Data/Enums/Cube/CubeState';
 import CubeDebug from './CubeDebug';
 import mitt, { Emitter } from 'mitt';
-import { DefaultStartSideConfig } from '../../../Data/Configs/StartSideConfig';
+import { DefaultStartSideConfig } from '../../../Data/Configs/Cube/StartSideConfig';
 import CubeViewBuilder from './CubeViewBuilder';
 import TWEEN from 'three/addons/libs/tween.module.js';
 import CubeIntroRotationController from './CubeIntroRotationController';

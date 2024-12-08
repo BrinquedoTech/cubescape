@@ -1,20 +1,20 @@
 import * as THREE from 'three';
-import CubeHelper from '../../../Helpers/CubeHelper';
 import { CubeSide } from '../../../../Data/Enums/Cube/CubeSide';
-import InstancesHelper from '../../../Helpers/InstancesHelper';
-import ThreeJSHelper from '../../../Helpers/ThreeJSHelper';
 import { Direction } from '../../../../Data/Enums/Direction';
-import MapHelper from '../../../Helpers/MapHelper';
 import { CellType } from '../../../../Data/Enums/Cube/CellType';
-import GameplayConfig from '../../../../Data/Configs/Main/GameplayConfig';
-import { CubeSideAxisConfig, SideVectorConfig } from '../../../../Data/Configs/SideConfig';
+import GameplayConfig from '../../../../Data/Configs/GameplayConfig';
+import { CubeSideAxisConfig, SideVectorConfig } from '../../../../Data/Configs/Cube/SideConfig';
 import { WallCellGeometryConfig, WallModelsConfig } from '../../../../Data/Configs/Cells/WallCellsConfig';
-import Materials from '../../../../Core/Materials';
+import Materials from '../../../../Core/Materials/Materials';
 import { MaterialType } from '../../../../Data/Enums/MaterialType';
 import { WallSpikesGeneralConfig } from '../../../../Data/Configs/Enemies/WallSpikesConfig';
 import { IWallSpikeConfig } from '../../../../Data/Interfaces/Enemies/IEnemyConfig';
 import { ILevelConfig } from '../../../../Data/Interfaces/ILevelConfig';
 import { ICubeSideAxisConfig } from '../../../../Data/Interfaces/ICubeConfig';
+import MapHelper from '../../../../Helpers/MapHelper';
+import CubeHelper from '../../../../Helpers/CubeHelper';
+import ThreeJSHelper from '../../../../Helpers/ThreeJSHelper';
+import InstancesHelper from '../../../../Helpers/InstancesHelper';
 
 export default class WallSpikes extends THREE.Group {
   private configs: IWallSpikeConfig[];

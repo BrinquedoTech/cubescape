@@ -1,13 +1,13 @@
 import * as THREE from 'three';
 import { Text } from 'troika-three-text';
-import GameplayConfig from '../../../Data/Configs/Main/GameplayConfig';
+import GameplayConfig from '../../../Data/Configs/GameplayConfig';
 import { CubeSide } from '../../../Data/Enums/Cube/CubeSide';
-import { SideRotationConfig, SideVectorConfig, CubeSideAxisConfig } from '../../../Data/Configs/SideConfig';
+import { SideRotationConfig, SideVectorConfig, CubeSideAxisConfig } from '../../../Data/Configs/Cube/SideConfig';
 import { CubeRotationDirection } from '../../../Data/Enums/Cube/CubeRotationDirection';
 import { CubeEdgeName, CubeEdgeNameVectorsConfig, CubeSideName, GridRotationConfig, TextAxisOnCubeSide } from '../../../Data/Configs/Debug/VisualDebugConfig';
-import ThreeJSHelper from '../../Helpers/ThreeJSHelper';
-import DebugConfig from '../../../Data/Configs/Main/DebugConfig';
+import DebugConfig from '../../../Data/Configs/Debug/DebugConfig';
 import { ILevelConfig } from '../../../Data/Interfaces/ILevelConfig';
+import ThreeJSHelper from '../../../Helpers/ThreeJSHelper';
 
 export default class CubeDebug extends THREE.Group {
   private levelConfig: ILevelConfig;

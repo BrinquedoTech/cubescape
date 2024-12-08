@@ -1,5 +1,5 @@
 import mitt, { Emitter } from "mitt";
-import { ButtonConfig } from "../../Data/Configs/ButtonsConfig";
+import { ButtonConfig } from "../../Data/Configs/Controls/ButtonsConfig";
 import { ButtonType } from "../../Data/Enums/ButtonType";
 
 type Events = {

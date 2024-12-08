@@ -1,27 +1,27 @@
 import * as THREE from 'three';
 import { CubeSide } from '../../../Data/Enums/Cube/CubeSide';
-import GameplayConfig from '../../../Data/Configs/Main/GameplayConfig';
-import { CellDirectionConfig, CubeSideAxisConfig, ObjectsRotationBySideConfig } from '../../../Data/Configs/SideConfig';
+import GameplayConfig from '../../../Data/Configs/GameplayConfig';
+import { CellDirectionConfig, CubeSideAxisConfig, ObjectsRotationBySideConfig } from '../../../Data/Configs/Cube/SideConfig';
 import { PlayerCharacterState } from '../../../Data/Enums/Player/PlayerCharacterState';
 import TWEEN from 'three/addons/libs/tween.module.js';
-import CubeHelper from '../../Helpers/CubeHelper';
 import { ICubePosition, ICubeSideAxisConfig } from '../../../Data/Interfaces/ICubeConfig';
 import mitt, { Emitter } from 'mitt';
 import { CellType } from '../../../Data/Enums/Cube/CellType';
-import ThreeJSHelper from '../../Helpers/ThreeJSHelper';
-import Loader from '../../../Core/AssetsLoader';
+import Loader from '../../../Core/Loader/AssetsLoader';
 import { MoveDirection } from '../../../Data/Enums/MoveDirection';
 import { Direction } from '../../../Data/Enums/Direction';
-import { MoveDirectionToDirectionConfig } from '../../../Data/Configs/DirectionConfig';
-import { CharacterRotationToSideConfig, TiltAxisConfig } from '../../../Data/Configs/PlayerCharacterConfig';
-import { PlayerCharacterGeneralConfig } from '../../../Data/Configs/PlayerCharacterGeneralConfig';
+import { MoveDirectionToDirectionConfig } from '../../../Data/Configs/Player/DirectionConfig';
+import { CharacterRotationToSideConfig, TiltAxisConfig } from '../../../Data/Configs/Player/PlayerCharacterConfig';
+import { PlayerCharacterGeneralConfig } from '../../../Data/Configs/Player/PlayerCharacterGeneralConfig';
 import { OBB } from 'three/addons/math/OBB.js';
-import Materials from '../../../Core/Materials';
+import Materials from '../../../Core/Materials/Materials';
 import { MaterialType } from '../../../Data/Enums/MaterialType';
-import DebugConfig from '../../../Data/Configs/Main/DebugConfig';
+import DebugConfig from '../../../Data/Configs/Debug/DebugConfig';
 import AudioController from '../AudioController';
 import { ICharacterRotationToSideConfig } from '../../../Data/Interfaces/ICharacterConfig';
 import { ILevelConfig } from '../../../Data/Interfaces/ILevelConfig';
+import CubeHelper from '../../../Helpers/CubeHelper';
+import ThreeJSHelper from '../../../Helpers/ThreeJSHelper';
 
 type Events = {
   onMovingEnd: string;

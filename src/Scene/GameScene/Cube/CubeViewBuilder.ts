@@ -1,24 +1,24 @@
 import * as THREE from 'three';
-import ThreeJSHelper from '../../Helpers/ThreeJSHelper';
-import GameplayConfig from '../../../Data/Configs/Main/GameplayConfig';
+import GameplayConfig from '../../../Data/Configs/GameplayConfig';
 import CornerCellsConfig from '../../../Data/Configs/Cells/CornerCellsConfig';
 import { EdgeRotationConfig, EdgeDistanceConfig, EdgeModelsConfig, CubeSideByEdge, EdgeWallsRotation, EdgeWallModelsConfig, EdgeWallCellGeometryConfig, EdgeDirectionForwardConfig } from '../../../Data/Configs/Cells/EdgeCellsConfig';
-import CubeHelper from '../../Helpers/CubeHelper';
 import { CellType } from '../../../Data/Enums/Cube/CellType';
-import InstancesHelper from '../../Helpers/InstancesHelper';
-import { CubeSideAxisConfig, SideVectorConfig } from '../../../Data/Configs/SideConfig';
+import { CubeSideAxisConfig, SideVectorConfig } from '../../../Data/Configs/Cube/SideConfig';
 import { CubeSide } from '../../../Data/Enums/Cube/CubeSide';
 import { FloorCellsGeometryConfig, FloorModelsConfig } from '../../../Data/Configs/Cells/FloorCellsConfig';
 import { RoofCellsGeometryConfig, RoofModelsConfig } from '../../../Data/Configs/Cells/RoofCellsConfig';
 import { Direction } from '../../../Data/Enums/Direction';
-import MapHelper from '../../Helpers/MapHelper';
-import Materials from '../../../Core/Materials';
+import Materials from '../../../Core/Materials/Materials';
 import { MaterialType } from '../../../Data/Enums/MaterialType';
 import { WallCellGeometryConfig, WallModelsConfig } from '../../../Data/Configs/Cells/WallCellsConfig';
-import ArrayHelper from '../../Helpers/ArrayHelper';
 import { ILevelConfig, IMapConfig } from '../../../Data/Interfaces/ILevelConfig';
 import { ICubeSideAxisConfig, IEdgeConfig, IEdgeWallsRotation } from '../../../Data/Interfaces/ICubeConfig';
 import { ICornerCellsConfig } from '../../../Data/Interfaces/ICellConfig';
+import ThreeJSHelper from '../../../Helpers/ThreeJSHelper';
+import MapHelper from '../../../Helpers/MapHelper';
+import CubeHelper from '../../../Helpers/CubeHelper';
+import InstancesHelper from '../../../Helpers/InstancesHelper';
+import ArrayHelper from '../../../Helpers/ArrayHelper';
 
 export default class CubeViewBuilder extends THREE.Group {
   private levelMap: ILevelConfig;

@@ -1,17 +1,17 @@
 import * as THREE from 'three';
-import CubeHelper from '../../Helpers/CubeHelper';
 import { CellType } from '../../../Data/Enums/Cube/CellType';
-import Materials from '../../../Core/Materials';
+import Materials from '../../../Core/Materials/Materials';
 import { MaterialType } from '../../../Data/Enums/MaterialType';
-import ThreeJSHelper from '../../Helpers/ThreeJSHelper';
 import { CubeSide } from '../../../Data/Enums/Cube/CubeSide';
-import InstancesHelper from '../../Helpers/InstancesHelper';
-import { CoinsConfig } from '../../../Data/Configs/CoinsConfig';
+import { CoinsConfig } from '../../../Data/Configs/Score/CoinsConfig';
 import { OBB } from 'three/addons/math/OBB.js';
-import DebugConfig from '../../../Data/Configs/Main/DebugConfig';
+import DebugConfig from '../../../Data/Configs/Debug/DebugConfig';
 import { ILevelConfig } from '../../../Data/Interfaces/ILevelConfig';
 import { ICubePosition } from '../../../Data/Interfaces/ICubeConfig';
 import { ITransform } from '../../../Data/Interfaces/IThreeJS';
+import CubeHelper from '../../../Helpers/CubeHelper';
+import ThreeJSHelper from '../../../Helpers/ThreeJSHelper';
+import InstancesHelper from '../../../Helpers/InstancesHelper';
 
 export default class CoinsController extends THREE.Group {
   private levelConfig: ILevelConfig;

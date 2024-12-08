@@ -4,10 +4,10 @@ import { EnemyType } from '../../../Data/Enums/Enemy/EnemyType';
 import { EnemyConfigMap } from '../../../Data/Interfaces/Enemies/IEnemyConfig';
 import { EnemiesClassName, EnemyCellType } from '../../../Data/Configs/Enemies/EnemiesGeneralConfig';
 import { ICubePosition, ICubePositionWithID } from '../../../Data/Interfaces/ICubeConfig';
-import CubeHelper from '../../Helpers/CubeHelper';
 import { CellType } from '../../../Data/Enums/Cube/CellType';
 import { CubeSide } from '../../../Data/Enums/Cube/CubeSide';
 import FloorSpikes from './EnemyByType/FloorSpikes';
+import CubeHelper from '../../../Helpers/CubeHelper';
 
 export default class EnemiesController extends THREE.Group {
   private levelConfig: ILevelConfig;

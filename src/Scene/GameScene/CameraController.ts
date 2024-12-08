@@ -3,14 +3,14 @@ import * as PIXI from 'pixi.js';
 import PlayerCharacter from './PlayerCharacter/PlayerCharacter';
 import Cube from './Cube/Cube';
 import { CubeState } from '../../Data/Enums/Cube/CubeState';
-import ThreeJSHelper from '../Helpers/ThreeJSHelper';
-import CameraConfig from '../../Data/Configs/Main/CameraConfig';
+import CameraConfig from '../../Data/Configs/Scene/CameraConfig';
 import { CubeSide } from '../../Data/Enums/Cube/CubeSide';
-import { AxisByRotationDirection, CubeSideAxisConfig } from '../../Data/Configs/SideConfig';
+import { AxisByRotationDirection, CubeSideAxisConfig } from '../../Data/Configs/Cube/SideConfig';
 import { CubeRotationDirection } from '../../Data/Enums/Cube/CubeRotationDirection';
-import DebugConfig from '../../Data/Configs/Main/DebugConfig';
+import DebugConfig from '../../Data/Configs/Debug/DebugConfig';
 import { ILevelConfig } from '../../Data/Interfaces/ILevelConfig';
 import { DeviceState } from '../../Data/Enums/DeviceState';
+import ThreeJSHelper from '../../Helpers/ThreeJSHelper';
 
 export class CameraController extends THREE.Group {
   private camera: THREE.PerspectiveCamera;
