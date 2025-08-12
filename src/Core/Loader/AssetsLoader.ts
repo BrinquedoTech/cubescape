@@ -74,7 +74,7 @@ export default class Loader {
   private loadTextures(): void {
     const textureLoader = new THREE.TextureLoader(this.threeJSManager);
 
-    const texturesBasePath: string = '/textures/';
+    const texturesBasePath: string = `${import.meta.env.BASE_URL}textures/`;
 
     TextureAssets.forEach((textureFilename: string) => {
       const textureFullPath: string = `${texturesBasePath}${textureFilename}`;
@@ -86,7 +86,7 @@ export default class Loader {
   private loadModels(): void {
     const gltfLoader = new GLTFLoader(this.threeJSManager);
 
-    const modelsBasePath: string = '/models/';
+    const modelsBasePath: string = `${import.meta.env.BASE_URL}models/`;
 
     ModelAssets.forEach((modelFilename: string) => {
       const modelFullPath: string = `${modelsBasePath}${modelFilename}`;
@@ -98,7 +98,7 @@ export default class Loader {
   private loadAudio(): void {
     const audioLoader = new THREE.AudioLoader(this.threeJSManager);
 
-    const audioBasePath: string = '/audio/';
+    const audioBasePath: string = `${import.meta.env.BASE_URL}audio/`;
 
     AudioAssets.forEach((audioFilename: string) => {
       const audioFullPath: string = `${audioBasePath}${audioFilename}`;
