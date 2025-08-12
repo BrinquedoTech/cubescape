@@ -134,5 +134,30 @@ export default class MainScene {
     this.ui.setOverallScore(score);
     this.ui.showScreen(ScreenType.GameWin);
     this.ui.hideScreen(ScreenType.Gameplay);
+
+    // Integração com API de pontuações
+    try {
+      // Salvar via API global, se disponível
+      const anyWindow = window as any;
+      if (anyWindow && anyWindow.gameScoreAPI && anyWindow.gameScoreAPI.isInitialized) {
+        anyWindow.gameScoreAPI.saveScore('cubescape', score, { levels: 'all' })
+          .then(() => {
+            // Atualizar ranking, se existir
+            if (anyWindow.refreshRanking) anyWindow.refreshRanking();
+          })
+          .catch((e: any) => console.error('Erro ao salvar score (API):', e));
+      }
+
+      // Notificar parent via postMessage (compatibilidade WorkAdventure)
+      if (window.parent && window.parent !== window) {
+        window.parent.postMessage({
+          type: 'GAME_SCORE',
+          gameId: 'cubescape',
+          score: score,
+        }, '*');
+      }
+    } catch (err) {
+      console.error('Falha ao integrar score:', err);
+    }
   }
 }

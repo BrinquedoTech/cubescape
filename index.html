@@ -14,8 +14,68 @@
   <div id="container"></div>
   <div class="loading-percent"></div>
 
-  <div class="credits">Made by <u><a href="https://www.andriibabintsev.com/" target="_blank"
-    style="color: #000000; text-decoration: none;">Andrii Babintsev</a></u></div>
+  <!-- Supabase -->
+  <script src="https://unpkg.com/@supabase/supabase-js@2"></script>
+  <script>
+    // Inicializar Supabase
+    window.supabase = supabase.createClient(
+      'https://ctoffxmespqcgsdfxxll.supabase.co',
+      'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImN0b2ZmeG1lc3BxY2dzZGZ4eGxsIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NTMyNTc1OTIsImV4cCI6MjA2ODgzMzU5Mn0.OMNHUHAociZqrhbY6HtkeWk_BwGaPn2uaRFWDZh-Yx4'
+    );
+
+    // Cross-domain auth via querystring
+    const urlParams = new URLSearchParams(window.location.search);
+    const authToken = urlParams.get('auth_token');
+    const userIdParam = urlParams.get('user_id');
+    const userEmail = urlParams.get('user_email');
+    const userName = urlParams.get('user_name');
+    const userType = urlParams.get('user_type');
+
+    if (authToken && userIdParam && userEmail && userName && userType) {
+      console.log('🔑 Token de autenticação encontrado na URL, configurando sessão...');
+      window.supabase.auth.setSession({
+        access_token: authToken,
+        refresh_token: authToken
+      }).then(({ data, error }) => {
+        if (error) {
+          console.error('❌ Erro ao configurar sessão:', error);
+        } else {
+          console.log('✅ Sessão configurada com sucesso para cross-domain auth');
+          console.log('👤 Usuário:', userName, '(', userEmail, ')');
+        }
+      });
+    } else {
+      console.log('ℹ️ Nenhum token de autenticação encontrado na URL');
+      window.supabase.auth.getSession().then(({ data: { session } }) => {
+        if (session) {
+          console.log('✅ Sessão encontrada');
+        } else {
+          console.log('ℹ️ Nenhuma sessão encontrada, usuário pode ser anônimo');
+        }
+      });
+    }
+  </script>
+
+  <!-- API de pontuações -->
+  <script src="../game-api.js"></script>
+  <script>
+    // Inicializar API de pontuação quando houver sessão
+    (function initScoreAPI() {
+      if (!window.supabase || !window.initGameScoreAPI) return;
+      window.supabase.auth.getSession().then(({ data: { session }, error }) => {
+        if (error) {
+          console.error('❌ Erro ao obter sessão:', error);
+          return;
+        }
+        if (session && session.user) {
+          console.log('🚀 Inicializando API de pontuações para:', session.user.id);
+          window.initGameScoreAPI(session.user.id);
+        } else {
+          console.log('ℹ️ Usuário não logado - API de pontuação não inicializada');
+        }
+      });
+    })();
+  </script>
 
   <script type="module" src="./src/main.ts"></script>
 </body>
