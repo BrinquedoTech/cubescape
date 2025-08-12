@@ -43,7 +43,7 @@ export default class GameWinScreen extends AbstractScreen {
         this.congratulationsText.x = width * 0.5;
         this.congratulationsText.y = 150;
     
-        this.winAllLevelsText.text = "You've completed\nall levels !";
+        this.winAllLevelsText.text = "Você completou\ntodos os níveis!";
         this.winAllLevelsText.x = width * 0.5;
         this.winAllLevelsText.y = height * 0.5 - 150;
     
@@ -60,7 +60,7 @@ export default class GameWinScreen extends AbstractScreen {
         this.congratulationsText.x = width * 0.5;
         this.congratulationsText.y = 70;
     
-        this.winAllLevelsText.text = "You've completed all levels !";
+        this.winAllLevelsText.text = "Você completou todos os níveis!";
         this.winAllLevelsText.x = width * 0.5;
         this.winAllLevelsText.y = height * 0.5 - 40;
     
@@ -89,7 +89,7 @@ export default class GameWinScreen extends AbstractScreen {
   }
 
   public setOverallScore(score: number): void {
-    this.overallScoreText.text = `Overall score: ${score}`;
+    this.overallScoreText.text = `Pontuação total: ${score}`;
   }
 
   private init(): void {
@@ -113,7 +113,7 @@ export default class GameWinScreen extends AbstractScreen {
 
   private initCongratulationsText(): void {
     const congratulationsText = this.congratulationsText = new Text({
-      text: 'Congratulations !',
+      text: 'Parabéns!',
       style: {
         fontFamily: 'riky',
         fill: 0xffd700,
@@ -130,7 +130,7 @@ export default class GameWinScreen extends AbstractScreen {
 
   private initWinAllLevelsText(): void {
     const winAllLevelsText = this.winAllLevelsText = new Text({
-      text: "You've completed all levels !",
+      text: 'Você completou todos os níveis!',
       style: {
         fontFamily: 'riky',
         fill: 0xffffff,
@@ -147,7 +147,7 @@ export default class GameWinScreen extends AbstractScreen {
 
   private initOverallScoreText(): void {
     const overallScoreText = this.overallScoreText = new Text({
-      text: 'Overall score: 0',
+      text: 'Pontuação total: 0',
       style: {
         fontFamily: 'riky',
         fill: 0xffffff,
@@ -164,7 +164,7 @@ export default class GameWinScreen extends AbstractScreen {
 
   private initStartAgainText(): void {
     const startAgainText = this.startAgainText = new Text({
-      text: 'Start again',
+      text: 'Jogar novamente',
       style: {
         fontFamily: 'riky',
         fill: 0xfa3240,

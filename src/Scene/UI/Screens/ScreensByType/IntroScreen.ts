@@ -115,7 +115,7 @@ export default class IntroScreen extends AbstractScreen {
 
   private initStartGameText(): void {
     const startGameText = this.startGameText = new Text({
-      text: 'Start Game',
+      text: 'Iniciar Jogo',
       style: {
         fontFamily: 'riky',
         fill: 0xfa3240,
@@ -142,10 +142,10 @@ export default class IntroScreen extends AbstractScreen {
   }
 
   private initTutorialText(): void {
-    let tutorialTextString: string = 'Press w, a, s, d or arrows to move';
+    let tutorialTextString: string = 'Pressione W, A, S, D ou as setas para mover';
 
     if (this.isMobile) {
-      tutorialTextString = 'Swipe to move';
+      tutorialTextString = 'Deslize para mover';
     }
 
     const tutorialText = this.tutorialText = new Text({

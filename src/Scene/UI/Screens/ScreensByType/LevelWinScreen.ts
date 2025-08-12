@@ -114,16 +114,16 @@ export default class LevelWinScreen extends AbstractScreen {
 
   public setLevelTime(time: number): void {
     const timeWithDecimals = time.toFixed(3);
-    this.timeText.text = `Your time: ${timeWithDecimals} sec`;
+    this.timeText.text = `Seu tempo: ${timeWithDecimals} s`;
   }
 
   public setScoreForLevel(score: ILevelScore): void {
     const scoreForCoins: number = score.coinsCollected * ScoreConfig.coin;
     const bonusAllCoins: number = score.bonusAllCoins ? ScoreConfig.allCoinsBonus : 0;
 
-    this.coinsScoreText.text = `Score for coins: ${scoreForCoins}`;
-    this.bonusAllScoreText.text = `Bonus for all coins: ${bonusAllCoins}`;
-    this.bonusForTimeText.text = `Time bonus: ${score.timeBonus}`;
+    this.coinsScoreText.text = `Pontos por moedas: ${scoreForCoins}`;
+    this.bonusAllScoreText.text = `Bônus por todas as moedas: ${bonusAllCoins}`;
+    this.bonusForTimeText.text = `Bônus por tempo: ${score.timeBonus}`;
   }
 
   private init(): void {
@@ -149,7 +149,7 @@ export default class LevelWinScreen extends AbstractScreen {
 
   private initLevelWinText(): void {
     const levelWinText = this.levelWinText = new Text({
-      text: 'Level completed',
+      text: 'Nível concluído',
       style: {
         fontFamily: 'riky',
         fill: 0xffd700,
@@ -166,7 +166,7 @@ export default class LevelWinScreen extends AbstractScreen {
 
   private initTimeText(): void {
     const timeText = this.timeText = new Text({
-      text: 'Your time: 0',
+      text: 'Seu tempo: 0',
       style: {
         fontFamily: 'riky',
         fill: 0xffffff,
@@ -183,7 +183,7 @@ export default class LevelWinScreen extends AbstractScreen {
 
   private initCoinsScoreText(): void {
     const coinsScoreText = this.coinsScoreText = new Text({
-      text: 'Score for coins: 0',
+      text: 'Pontos por moedas: 0',
       style: {
         fontFamily: 'riky',
         fill: 0xffffff,
@@ -200,7 +200,7 @@ export default class LevelWinScreen extends AbstractScreen {
 
   private initBonusAllCoinsText(): void {
     const bonusAllScoreText = this.bonusAllScoreText = new Text({
-      text: 'Bonus for all coins: 0',
+      text: 'Bônus por todas as moedas: 0',
       style: {
         fontFamily: 'riky',
         fill: 0xffffff,
@@ -217,7 +217,7 @@ export default class LevelWinScreen extends AbstractScreen {
 
   private initBonusForTimeText(): void {
     const bonusForTimeText = this.bonusForTimeText = new Text({
-      text: 'Time bonus: 0',
+      text: 'Bônus por tempo: 0',
       style: {
         fontFamily: 'riky',
         fill: 0xffffff,
@@ -234,7 +234,7 @@ export default class LevelWinScreen extends AbstractScreen {
 
   private initNextLevelText(): void {
     const nextLevelText = this.nextLevelText = new Text({
-      text: 'Next Level',
+      text: 'Próximo Nível',
       style: {
         fontFamily: 'riky',
         fill: 0xfa3240,

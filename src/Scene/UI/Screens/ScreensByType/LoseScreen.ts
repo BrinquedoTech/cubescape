@@ -84,7 +84,7 @@ export default class LoseScreen extends AbstractScreen {
 
   private initLoseText(): void {
     const loseText = this.loseText = new Text({
-      text: 'Game Over',
+      text: 'Fim de Jogo',
       style: {
         fontFamily: 'riky',
         fill: 0xffffff,
@@ -101,7 +101,7 @@ export default class LoseScreen extends AbstractScreen {
 
   private initStartAgainText(): void {
     const startAgainText = this.startAgainText = new Text({
-      text: 'Start again',
+      text: 'Jogar novamente',
       style: {
         fontFamily: 'riky',
         fill: 0xfa3240,

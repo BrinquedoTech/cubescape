@@ -56,15 +56,15 @@ export default class GameplayScreen extends AbstractScreen {
   }
 
   public updateLevelText(level: number): void {
-    this.currentLevelText.text = `Level ${level + 1}`;
+    this.currentLevelText.text = `Nível ${level + 1}`;
   }
 
   public updateScore(score: number): void {
-    this.scoreText.text = `Score: ${score}`;
+    this.scoreText.text = `Pontos: ${score}`;
   }
 
   public updateLives(lives: number): void {
-    this.livesText.text = `Lives: ${lives}`;
+    this.livesText.text = `Vidas: ${lives}`;
   }
 
   private init(): void {
@@ -77,7 +77,7 @@ export default class GameplayScreen extends AbstractScreen {
     const livesCount = GameplayConfig.lives;
 
     const livesText = this.livesText = new Text({
-      text: `Lives: ${livesCount}`,
+      text: `Vidas: ${livesCount}`,
       style: {
         fontFamily: 'riky',
         fill: 0xffffff,
@@ -94,7 +94,7 @@ export default class GameplayScreen extends AbstractScreen {
 
   private initCurrentLevel(): void {
     const currentLevelText = this.currentLevelText = new Text({
-      text: 'Level 1',
+      text: 'Nível 1',
       style: {
         fontFamily: 'riky',
         fill: 0xffffff,
@@ -111,7 +111,7 @@ export default class GameplayScreen extends AbstractScreen {
 
   private initScore(): void {
     const scoreText = this.scoreText = new Text({
-      text: 'Score: 0',
+      text: 'Pontos: 0',
       style: {
         fontFamily: 'riky',
         fill: 0xffffff,
