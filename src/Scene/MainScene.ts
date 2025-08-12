@@ -81,18 +81,46 @@ export default class MainScene {
   private initGameSceneSignals(): void {
     this.gameScene.emitter.on('onPressStart', () => this.onPressStart());
     this.gameScene.emitter.on('updateLevelOnStartLevel', (levelIndex: number) => this.ui.updateLevelText(levelIndex));
-    this.gameScene.emitter.on('onWinLevel', ({ levelTime, levelScore }) => this.onWinLevel(levelTime, levelScore));
+    this.gameScene.emitter.on('onWinLevel', ({ levelTime, levelScore, totalScore, levelIndex }) => this.onWinLevel(levelTime, levelScore, totalScore, levelIndex));
     this.gameScene.emitter.on('updateScore', (score: number) => this.ui.updateScore(score));
     this.gameScene.emitter.on('updateLives', (lives: number) => this.ui.updateLives(lives));
     this.gameScene.emitter.on('onLoseGame', () => this.onLoseGame());
     this.gameScene.emitter.on('onWinGame', (score: number) => this.onWinGame(score));
   }
 
-  private onWinLevel(levelTime: number, levelScore: ILevelScore): void {
+  private onWinLevel(levelTime: number, levelScore: ILevelScore, totalScore?: number, levelIndex?: number): void {
     this.ui.setLevelTime(levelTime);
     this.ui.setScoreForLevel(levelScore);
     this.ui.showScreen(ScreenType.LevelWin);
     this.ui.hideScreen(ScreenType.Gameplay);
+
+    // Salvar score ao finalizar o nível
+    try {
+      const anyWindow = window as any;
+      if (anyWindow && anyWindow.gameScoreAPI && anyWindow.gameScoreAPI.isInitialized) {
+        anyWindow.gameScoreAPI.saveScore('cubescape', totalScore ?? 0, {
+          levelIndex: levelIndex ?? 0,
+          levelTime,
+          coinsCollected: levelScore.coinsCollected,
+          bonusAllCoins: levelScore.bonusAllCoins,
+          timeBonus: levelScore.timeBonus,
+        }).then(() => {
+          if (anyWindow.refreshRanking) anyWindow.refreshRanking();
+        }).catch((e: any) => console.error('Erro ao salvar score (nível):', e));
+      }
+
+      if (window.parent && window.parent !== window) {
+        window.parent.postMessage({
+          type: 'GAME_SCORE_LEVEL',
+          gameId: 'cubescape',
+          totalScore: totalScore ?? 0,
+          levelIndex: levelIndex ?? 0,
+          levelTime,
+        }, '*');
+      }
+    } catch (err) {
+      console.error('Falha ao integrar score no nível:', err);
+    }
   }
 
   private onPressStart(): void {

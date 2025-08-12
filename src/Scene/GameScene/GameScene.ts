@@ -36,7 +36,7 @@ import { ScoreConfig } from '../../Data/Configs/Score/ScoreConfig';
 import CubeHelper from '../../Helpers/CubeHelper';
 
 type Events = {
-  onWinLevel: { levelTime: number; levelScore: ILevelScore };
+  onWinLevel: { levelTime: number; levelScore: ILevelScore; totalScore: number; levelIndex: number };
   onPressStart: void;
   updateLevelOnStartLevel: number;
   updateScore: number;
@@ -568,7 +568,7 @@ export default class GameScene extends THREE.Group {
     if (this.levelIndex === LevelsQueue.length - 1) {
       this.emitter.emit('onWinGame', this.score);
     } else {
-      this.emitter.emit('onWinLevel', { levelTime: this.levelTime, levelScore: this.levelScore });
+      this.emitter.emit('onWinLevel', { levelTime: this.levelTime, levelScore: this.levelScore, totalScore: this.score, levelIndex: this.levelIndex });
     }
   }
 
